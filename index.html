@@ -1061,6 +1061,11 @@ input, textarea, select, button { font-family: inherit; }
         </div>
       </div>
       <button class="btn btn-primary btn-full" onclick="doLogin()" style="margin-top:8px">כניסה →</button>
+      <div id="faceIdLoginBtn" style="display:none;margin-top:10px">
+        <button class="btn btn-ghost btn-full" onclick="loginWithFaceID()" style="display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--border)">
+          <span style="font-size:1.2rem">🔐</span> כניסה עם Face ID / טביעת אצבע
+        </button>
+      </div>
       <div class="divider-text mt-12">אין לך חשבון?</div>
       <button class="btn btn-ghost btn-full" onclick="switchAuthMode('register')">הרשמה חינמית</button>
     </div>
@@ -2308,6 +2313,9 @@ function initFirebase() {
       _isSyncingFromRemote = true;
       try {
         const remote = JSON.parse(data.db);
+        // Preserve local chats — they are stored in localStorage separately and not synced to Firestore
+        const localChats = db.chats || JSON.parse(localStorage.getItem(CHAT_KEY)||'{}');
+        remote.chats = localChats;
         db = remote;
         // Keep localStorage cache fresh
         try { localStorage.setItem(DB_KEY, JSON.stringify({...db, chats:{}})); } catch(e) {}
@@ -2340,7 +2348,7 @@ function saveToFirestore(data) {
 }
 
 // Start Firebase after page loads
-window.addEventListener('load', () => { try { initFirebase(); } catch(e) {} });
+window.addEventListener('load', () => { try { initFirebase(); } catch(e) {} checkFaceIDButton(); });
 let timerInterval = null;
 let workoutStart = null;
 let editingTraineeId = null;
@@ -2382,6 +2390,7 @@ function switchAuthMode(mode) {
     document.getElementById('loginForm').style.display = '';
     document.getElementById('registerForm').style.display = 'none';
     clearErrors();
+    checkFaceIDButton();
   } else {
     tabs[1].classList.add('active'); tabs[0].classList.remove('active');
     document.getElementById('loginForm').style.display = 'none';
@@ -2417,6 +2426,80 @@ async function doLogin() {
   const user  = db.users.find(u => u.email.toLowerCase() === email && u.password === pHash);
   if (!user) { showError('loginError','מייל או סיסמא שגויים'); return; }
   enterApp(user);
+  // Offer Face ID registration after successful login
+  if (window.PublicKeyCredential && !localStorage.getItem('faceId_cred_' + user.id)) {
+    setTimeout(() => offerFaceIDRegistration(user), 800);
+  }
+}
+
+// ════════════ FACE ID / WebAuthn ════════════
+function isFaceIDSupported() {
+  return !!window.PublicKeyCredential;
+}
+
+function checkFaceIDButton() {
+  // Show Face ID button if any credential is stored for any user
+  const hasCred = db.users.some(u => localStorage.getItem('faceId_cred_' + u.id));
+  const btn = el('faceIdLoginBtn');
+  if (btn) btn.style.display = (hasCred && isFaceIDSupported()) ? '' : 'none';
+}
+
+async function offerFaceIDRegistration(user) {
+  if (!isFaceIDSupported()) return;
+  const want = confirm('🔐 רוצה להיכנס בפעם הבאה עם Face ID / טביעת אצבע?');
+  if (!want) return;
+  try {
+    const challenge = new Uint8Array(32);
+    crypto.getRandomValues(challenge);
+    const userId = new TextEncoder().encode(user.id);
+    const cred = await navigator.credentials.create({
+      publicKey: {
+        challenge,
+        rp: { name: 'TrainTrack', id: location.hostname },
+        user: { id: userId, name: user.email, displayName: user.name },
+        pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
+        authenticatorSelection: { userVerification: 'required' },
+        timeout: 60000
+      }
+    });
+    // Store credential ID → user mapping
+    const credId = btoa(String.fromCharCode(...new Uint8Array(cred.rawId)));
+    localStorage.setItem('faceId_cred_' + user.id, credId);
+    localStorage.setItem('faceId_user_' + credId, user.id);
+    alert('✅ Face ID / טביעת אצבע נרשמו בהצלחה!');
+  } catch(e) {
+    console.warn('Face ID registration failed:', e);
+  }
+}
+
+async function loginWithFaceID() {
+  if (!isFaceIDSupported()) { alert('הדפדפן שלך לא תומך ב-Face ID'); return; }
+  try {
+    // Collect all stored credential IDs
+    const allowCreds = db.users
+      .map(u => localStorage.getItem('faceId_cred_' + u.id))
+      .filter(Boolean)
+      .map(credId => ({
+        type: 'public-key',
+        id: Uint8Array.from(atob(credId), c => c.charCodeAt(0))
+      }));
+    if (!allowCreds.length) { alert('לא נמצאו פרטי Face ID — נכנס עם סיסמא'); return; }
+    const challenge = new Uint8Array(32);
+    crypto.getRandomValues(challenge);
+    const assertion = await navigator.credentials.get({
+      publicKey: { challenge, allowCredentials: allowCreds, userVerification: 'required', timeout: 60000 }
+    });
+    const usedCredId = btoa(String.fromCharCode(...new Uint8Array(assertion.rawId)));
+    const userId = localStorage.getItem('faceId_user_' + usedCredId);
+    const user = userId && db.users.find(u => u.id === userId);
+    if (user) {
+      enterApp(user);
+    } else {
+      alert('לא נמצא משתמש — נסה להיכנס עם סיסמא');
+    }
+  } catch(e) {
+    if (e.name !== 'NotAllowedError') console.warn('Face ID login failed:', e);
+  }
 }
 
 async function doRegister() {
