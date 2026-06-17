@@ -73,6 +73,9 @@
     if (!recaptchaReady) showFallback();
   }, 4000);
 </script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <style>
 .recaptcha-wrap { margin: 10px 0 4px; min-height: 78px; display:flex; align-items:center; }
 .recaptcha-wrap iframe { border-radius: 8px; }
@@ -2147,6 +2150,8 @@ function saveDB() {
   try { localStorage.setItem(FOOD_BANK_KEY, JSON.stringify(db.foodBank||[])); } catch(e) {}
   try { localStorage.setItem(CHAT_KEY, JSON.stringify(chatData||{})); } catch(e) {}
   try { localStorage.setItem(CHEAT_BANK_KEY, JSON.stringify(db.cheatBank||[])); } catch(e) {}
+  // Sync to Firestore (no-op if Firebase not ready)
+  saveToFirestore(db);
 }
 function showSaveFeedback(msg='נשמר ✓') {
   let toast = el('saveToast');
@@ -2276,6 +2281,66 @@ function uid() { return Math.random().toString(36).slice(2,10) + Date.now().toSt
 
 let db = loadDB();
 let currentUser = null;
+
+// ════════════════════════════════════════════════
+//  FIREBASE SYNC
+// ════════════════════════════════════════════════
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAe_IMH2qz5WjtNVBQOaHjEvnaAVfcpxyE",
+  authDomain: "traintrack-632df.firebaseapp.com",
+  projectId: "traintrack-632df",
+  storageBucket: "traintrack-632df.firebasestorage.app",
+  messagingSenderId: "134654114539",
+  appId: "1:134654114539:web:7492e9447759f892505cae"
+};
+let fsDB = null;
+let _isSyncingFromRemote = false;
+
+function initFirebase() {
+  try {
+    if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+    fsDB = firebase.firestore();
+    // Listen for real-time updates from other devices
+    fsDB.collection('traintrack').doc('main').onSnapshot(snap => {
+      if (!snap.exists || _isSyncingFromRemote) return;
+      const data = snap.data();
+      if (!data || !data.db) return;
+      _isSyncingFromRemote = true;
+      try {
+        const remote = JSON.parse(data.db);
+        db = remote;
+        // Keep localStorage cache fresh
+        try { localStorage.setItem(DB_KEY, JSON.stringify({...db, chats:{}})); } catch(e) {}
+        try { localStorage.setItem(BANK_KEY, JSON.stringify(db.exerciseBank||[])); } catch(e) {}
+        try { localStorage.setItem(FOOD_BANK_KEY, JSON.stringify(db.foodBank||[])); } catch(e) {}
+        try { localStorage.setItem(CHEAT_BANK_KEY, JSON.stringify(db.cheatBank||[])); } catch(e) {}
+        if (currentUser) {
+          const fresh = db.users.find(u => u.id === currentUser.id);
+          if (fresh) currentUser = fresh;
+        }
+      } catch(e) { console.warn('Firestore parse error:', e); }
+      _isSyncingFromRemote = false;
+    });
+    // Initial push if Firestore is empty
+    fsDB.collection('traintrack').doc('main').get().then(snap => {
+      if (!snap.exists) saveToFirestore(db);
+    }).catch(()=>{});
+  } catch(e) { console.warn('Firebase init failed (localStorage-only mode):', e); }
+}
+
+function saveToFirestore(data) {
+  if (!fsDB || _isSyncingFromRemote) return;
+  try {
+    const slim = {...data, chats:{}};
+    fsDB.collection('traintrack').doc('main').set({
+      db: JSON.stringify(slim),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(e => console.warn('Firestore write error:', e));
+  } catch(e) { console.warn('saveToFirestore error:', e); }
+}
+
+// Start Firebase after page loads
+window.addEventListener('load', () => { try { initFirebase(); } catch(e) {} });
 let timerInterval = null;
 let workoutStart = null;
 let editingTraineeId = null;
@@ -4960,7 +5025,7 @@ function clearChatBadge(role) {
 //  LIVE REFRESH
 // ════════════════════════════════════════════════
 setInterval(() => {
-  db = loadDB(); // refresh from storage (simulates multi-user)
+  // db is kept live by Firestore onSnapshot — no need to reload from localStorage
   if (!currentUser) return;
   // Update currentUser from db
   const fresh = db.users.find(u=>u.id===currentUser.id);
