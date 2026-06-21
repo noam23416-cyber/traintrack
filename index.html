@@ -1048,45 +1048,48 @@ input, textarea, select, button { font-family: inherit; }
   <div class="auth-panel">
     <!-- Mode tabs -->
     <div class="auth-tab-row">
-      <button class="auth-tab active" onclick="switchAuthMode('login')">כניסה</button>
-      <button class="auth-tab" onclick="switchAuthMode('register')">הרשמה</button>
+      <button class="auth-tab active" onclick="switchAuthMode('login')" data-i18n="כניסה">כניסה</button>
+      <button class="auth-tab" onclick="switchAuthMode('register')" data-i18n="הרשמה">הרשמה</button>
+    </div>
+    <div style="text-align:center;margin-bottom:12px">
+      <button class="lang-toggle-btn" onclick="setLang(currentLang==='he'?'en':'he')" style="background:none;border:1px solid var(--border-light);border-radius:20px;padding:5px 14px;font-size:0.82rem;cursor:pointer;color:var(--text-muted)">🌐 English</button>
     </div>
 
     <!-- LOGIN FORM -->
     <div id="loginForm">
-      <div class="auth-panel-title">ברוך הבא! 👋</div>
-      <div class="auth-panel-sub">התחבר לחשבונך</div>
+      <div class="auth-panel-title" data-i18n="ברוך הבא! 👋">ברוך הבא! 👋</div>
+      <div class="auth-panel-sub" data-i18n="התחבר לחשבונך">התחבר לחשבונך</div>
 
       <div class="alert-error" id="loginError"></div>
 
       <div class="form-group">
-        <label>כתובת מייל</label>
+        <label data-i18n="כתובת מייל">כתובת מייל</label>
         <div class="input-icon">
           <span class="iicon">📧</span>
           <input type="email" id="loginEmail" placeholder="coach@example.com" autocomplete="email">
         </div>
       </div>
       <div class="form-group">
-        <label>סיסמא</label>
+        <label data-i18n="סיסמא">סיסמא</label>
         <div class="input-icon">
           <span class="iicon">🔒</span>
           <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
         </div>
       </div>
-      <button class="btn btn-primary btn-full" onclick="doLogin()" style="margin-top:8px">כניסה →</button>
+      <button class="btn btn-primary btn-full" onclick="doLogin()" style="margin-top:8px" data-i18n="כניסה →">כניסה →</button>
       <div id="faceIdLoginBtn" style="display:none;margin-top:10px">
         <button class="btn btn-ghost btn-full" onclick="loginWithFaceID()" style="display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--border)">
-          <span style="font-size:1.2rem">🔐</span> כניסה עם Face ID / טביעת אצבע
+          <span style="font-size:1.2rem">🔐</span> <span data-i18n="כניסה עם Face ID / טביעת אצבע">כניסה עם Face ID / טביעת אצבע</span>
         </button>
       </div>
-      <div class="divider-text mt-12">אין לך חשבון?</div>
-      <button class="btn btn-ghost btn-full" onclick="switchAuthMode('register')">הרשמה חינמית</button>
+      <div class="divider-text mt-12" data-i18n="אין לך חשבון?">אין לך חשבון?</div>
+      <button class="btn btn-ghost btn-full" onclick="switchAuthMode('register')" data-i18n="הרשמה חינמית">הרשמה חינמית</button>
     </div>
 
     <!-- REGISTER FORM -->
     <div id="registerForm" style="display:none">
-      <div class="auth-panel-title">הצטרף אלינו 🚀</div>
-      <div class="auth-panel-sub">צור חשבון חדש</div>
+      <div class="auth-panel-title" data-i18n="הצטרף אלינו 🚀">הצטרף אלינו 🚀</div>
+      <div class="auth-panel-sub" data-i18n="צור חשבון חדש">צור חשבון חדש</div>
 
       <!-- ההרשמה הציבורית היא למתאמנים בלבד; מאמן חדש מתווסף ע"י מאמן קיים -->
       <div style="background:rgba(124,111,255,0.08);border:1px solid rgba(124,111,255,0.2);border-radius:10px;padding:10px 14px;margin-bottom:18px;font-size:0.84rem;color:var(--text-muted)">
@@ -1097,29 +1100,29 @@ input, textarea, select, button { font-family: inherit; }
 
       <div class="form-row">
         <div class="form-group">
-          <label>שם פרטי</label>
-          <input id="regFirst" placeholder="ישראל">
+          <label data-i18n="שם פרטי">שם פרטי</label>
+          <input id="regFirst" placeholder="ישראל" data-i18n-ph="שם פרטי">
         </div>
         <div class="form-group">
-          <label>שם משפחה</label>
-          <input id="regLast" placeholder="ישראלי">
+          <label data-i18n="שם משפחה">שם משפחה</label>
+          <input id="regLast" placeholder="ישראלי" data-i18n-ph="שם משפחה">
         </div>
       </div>
       <div class="form-group">
-        <label>כתובת מייל</label>
+        <label data-i18n="כתובת מייל">כתובת מייל</label>
         <input type="email" id="regEmail" placeholder="me@example.com" autocomplete="email">
       </div>
       <div class="form-group">
-        <label>סיסמא (לפחות 6 תווים)</label>
+        <label data-i18n="סיסמא (לפחות 6 תווים)">סיסמא (לפחות 6 תווים)</label>
         <input type="password" id="regPassword" placeholder="••••••••" autocomplete="new-password">
       </div>
       <div id="traineeFields">
         <div class="form-group">
-          <label>מטרת האימון שלי</label>
-          <input id="regGoal" placeholder="לדוג׳ ירידה במשקל, עלייה במסה...">
+          <label data-i18n="מטרת האימון שלי">מטרת האימון שלי</label>
+          <input id="regGoal" placeholder="לדוג׳ ירידה במשקל, עלייה במסה..." data-i18n-ph="לדוג׳ ירידה במשקל, עלייה במסה...">
         </div>
         <div class="form-group">
-          <label>בחר מאמן</label>
+          <label data-i18n="בחר מאמן">בחר מאמן</label>
           <select id="regCoachSelect"><option value="">— בחר מאמן —</option></select>
         </div>
       </div>
@@ -1139,9 +1142,9 @@ input, textarea, select, button { font-family: inherit; }
         <input type="number" id="mathAnswer" placeholder="הכנס תשובה..." autocomplete="off">
       </div>
 
-      <button class="btn btn-primary btn-full" onclick="doRegister()" style="margin-top:8px">יצירת חשבון →</button>
-      <div class="divider-text mt-12">כבר יש לך חשבון?</div>
-      <button class="btn btn-ghost btn-full" onclick="switchAuthMode('login')">כניסה</button>
+      <button class="btn btn-primary btn-full" onclick="doRegister()" style="margin-top:8px" data-i18n="יצירת חשבון →">יצירת חשבון →</button>
+      <div class="divider-text mt-12" data-i18n="כבר יש לך חשבון?">כבר יש לך חשבון?</div>
+      <button class="btn btn-ghost btn-full" onclick="switchAuthMode('login')" data-i18n="כניסה">כניסה</button>
     </div>
   </div>
 </div>
@@ -1511,21 +1514,23 @@ input, textarea, select, button { font-family: inherit; }
     <div class="topnav-right">
       <span class="topnav-user" id="traineeNavName"></span>
       <div class="topnav-avatar" id="traineeAvatar"></div>
+      <button class="lang-toggle-btn logout-btn" onclick="setLang(currentLang==='he'?'en':'he')" style="font-size:0.8rem">🌐 English</button>
       <button class="logout-btn" id="themeToggleTrainee" onclick="toggleTheme()" title="עבור למצב לילה/יום" style="font-size:1.1rem;padding:5px 10px">☀️</button>
-      <button class="logout-btn" onclick="doLogout()">יציאה</button>
+      <button class="logout-btn" onclick="doLogout()" data-i18n="יציאה">יציאה</button>
     </div>
   </nav>
 
   <div class="tabs">
-    <button class="tab-btn active" data-panel="t-workout" onclick="switchTab(this,'trainee')">🏋️ אימון</button>
-    <button class="tab-btn" data-panel="t-menu" onclick="switchTab(this,'trainee')">🥗 תפריט</button>
-    <button class="tab-btn has-dot" data-panel="t-chat" id="traineeChatTab" onclick="switchTab(this,'trainee')">
+    <button class="tab-btn active" data-panel="t-workout" onclick="switchTab(this,'trainee')" data-i18n="🏋️ אימון">🏋️ אימון</button>
+    <button class="tab-btn" data-panel="t-menu" onclick="switchTab(this,'trainee')" data-i18n="🥗 תפריט">🥗 תפריט</button>
+    <button class="tab-btn has-dot" data-panel="t-chat" id="traineeChatTab" onclick="switchTab(this,'trainee')" data-i18n="💬 צ׳אט">
       <span class="unread-badge"></span>💬 צ׳אט
     </button>
-    <button class="tab-btn" data-panel="t-history" onclick="switchTab(this,'trainee')">📅 היסטוריה</button>
-    <button class="tab-btn" data-panel="t-reminders" onclick="switchTab(this,'trainee');renderReminderSettings()">⏰ תזכורות</button>
-    <button class="tab-btn" data-panel="t-achievements" onclick="switchTab(this,'trainee');renderAchievementsTab()">🏆 הישגים</button>
-    <button class="tab-btn" data-panel="t-bug" onclick="switchTab(this,'trainee')">🐛 דיווח</button>
+    <button class="tab-btn" data-panel="t-history" onclick="switchTab(this,'trainee')" data-i18n="📅 היסטוריה">📅 היסטוריה</button>
+    <button class="tab-btn" data-panel="t-reminders" onclick="switchTab(this,'trainee');renderReminderSettings()" data-i18n="⏰ תזכורות">⏰ תזכורות</button>
+    <button class="tab-btn" data-panel="t-achievements" onclick="switchTab(this,'trainee');renderAchievementsTab()" data-i18n="🏆 הישגים">🏆 הישגים</button>
+    <button class="tab-btn" data-panel="t-music" onclick="switchTab(this,'trainee');renderMusicTab()" data-i18n="🎵 מוזיקה">🎵 מוזיקה</button>
+    <button class="tab-btn" data-panel="t-bug" onclick="switchTab(this,'trainee')" data-i18n="🐛 דיווח">🐛 דיווח</button>
   </div>
 
   <div class="content">
@@ -1541,10 +1546,10 @@ input, textarea, select, button { font-family: inherit; }
         <div class="timer-bg" id="timerBg2"></div>
         <div class="timer-overlay"></div>
         <div class="timer-time" id="timerDisplay">00:00:00</div>
-        <div class="timer-label" id="timerLabel">לחץ "התחל אימון" לתחילת המעקב</div>
+        <div class="timer-label" id="timerLabel" data-i18n="לחץ &quot;התחל אימון&quot; לתחילת המעקב">לחץ "התחל אימון" לתחילת המעקב</div>
         <div class="timer-btns">
-          <button id="startBtn" class="btn btn-success" onclick="startWorkout()">▶ התחל אימון</button>
-          <button id="stopBtn" class="btn btn-danger" onclick="stopWorkout()" style="display:none">⏹ סיים אימון</button>
+          <button id="startBtn" class="btn btn-success" onclick="startWorkout()" data-i18n="התחל אימון">▶ התחל אימון</button>
+          <button id="stopBtn" class="btn btn-danger" onclick="stopWorkout()" style="display:none" data-i18n="סיים אימון">⏹ סיים אימון</button>
         </div>
       </div>
       <div id="activeBanner" class="active-banner" style="display:none">
@@ -1662,7 +1667,7 @@ input, textarea, select, button { font-family: inherit; }
           <button class="chat-photo-btn" onclick="el('traineePhotoInput').click()" title="שלח תמונה">📷</button>
           <button class="btn btn-ghost btn-sm chat-photo-btn" id="traineeRecordBtn" onclick="toggleVideoRecord()" title="הקלט סרטון">⏺</button>
           <span id="recordTimer" style="display:none;font-size:0.75rem;color:var(--danger);font-weight:700;align-self:center"></span>
-          <input class="chat-input" id="traineeChatInput" placeholder="כתוב שאלה..." onkeydown="if(event.key==='Enter')sendTraineeMsg()">
+          <input class="chat-input" id="traineeChatInput" placeholder="כתוב שאלה..." data-i18n-ph="כתוב שאלה..." onkeydown="if(event.key==='Enter')sendTraineeMsg()">
           <button class="chat-send-btn" onclick="sendTraineeMsg()">➤</button>
         </div>
       </div>
@@ -1723,6 +1728,11 @@ input, textarea, select, button { font-family: inherit; }
     <!-- ACHIEVEMENTS TAB -->
     <div id="t-achievements" class="tab-panel">
       <div id="achievementsTabBody"></div>
+    </div>
+
+    <!-- MUSIC TAB -->
+    <div class="tab-panel" id="t-music">
+      <div id="musicTabContent"></div>
     </div>
 
     <!-- BUG REPORT TAB (trainee) -->
@@ -2410,6 +2420,159 @@ function saveChatStatToFirestore(coachId, traineeId, responseTimeMs) {
   } catch(e) { console.warn('saveChatStatToFirestore error:', e); }
 }
 
+// ════════════════════════════════════════════════
+//  LANGUAGE / i18n
+// ════════════════════════════════════════════════
+let currentLang = localStorage.getItem('tt_lang') || 'he';
+
+const TR = {
+  // Auth tabs
+  'כניסה':'Login', 'הרשמה':'Sign Up',
+  // Auth titles
+  'ברוך הבא! 👋':'Welcome! 👋', 'התחבר לחשבונך':'Sign in to your account',
+  'הצטרף אלינו 🚀':'Join Us 🚀', 'צור חשבון חדש':'Create a new account',
+  'יצירת חשבון →':'Sign Up →', 'כבר יש לך חשבון?':'Already have an account?',
+  // Auth labels
+  'כתובת מייל':'Email Address', 'סיסמא':'Password',
+  'סיסמא (לפחות 6 תווים)':'Password (at least 6 characters)',
+  'שם פרטי':'First Name', 'שם משפחה':'Last Name',
+  'מטרת האימון שלי':'My Training Goal', 'בחר מאמן':'Select Coach',
+  // Auth buttons
+  'כניסה →':'Login →', 'הרשמה חינמית':'Sign Up Free',
+  'אין לך חשבון?':"Don't have an account?",
+  'כניסה עם Face ID / טביעת אצבע':'Login with Face ID / Fingerprint',
+  'הרשמה זו היא':'Registration is','למתאמנים בלבד':'for trainees only',
+  'מאמן חדש יתווסף ע"י מאמן קיים':'New coaches are added by an existing coach',
+  // Auth placeholders
+  'לדוג׳ ירידה במשקל, עלייה במסה...':'e.g. weight loss, muscle gain...',
+  '— בחר מאמן —':'— Select Coach —',
+  // Trainee tabs
+  '🏋️ אימון':'🏋️ Workout', '🥗 תפריט':'🥗 Meal Plan',
+  '💬 צ׳אט':'💬 Chat', '📅 היסטוריה':'📅 History',
+  '⏰ תזכורות':'⏰ Reminders', '🏆 הישגים':'🏆 Achievements',
+  '🎵 מוזיקה':'🎵 Music', '🐛 דיווח':'🐛 Report',
+  // Nav
+  'יציאה':'Logout',
+  // Workout
+  'התחל אימון':'Start Workout', 'סיים אימון':'End Workout',
+  'לחץ "התחל אימון" לתחילת המעקב':'Press "Start Workout" to begin',
+  'אין תרגילים להיום':'No exercises today',
+  'אין אימון מוגדר להיום':'No workout scheduled for today',
+  'השלמתי':'Done', 'לא בוצע':'Not done',
+  'סיים וקבל תגמול':'Finish & Earn Reward',
+  'כן, סיים':'Yes, Finish', 'המשך אימון':'Continue Workout',
+  'אימון הסתיים! 🎉':'Workout Complete! 🎉',
+  'ביצוע מעולה':'Great performance',
+  // Days
+  'ראשון':'Sun','שני':'Mon','שלישי':'Tue','רביעי':'Wed',
+  'חמישי':'Thu','שישי':'Fri','שבת':'Sat','היום':'Today',
+  // Meals
+  'בוקר':'Breakfast','צהריים':'Lunch','חטיף':'Snack','ערב':'Dinner',
+  'ירידה':'loss','עלייה':'gain',
+  'המאמן עדיין לא הגדיר תפריט':'Your coach hasn\'t set a meal plan yet',
+  'קלוריות':'Calories','חלבון':'Protein','פחמימות':'Carbs','שומן':'Fat',
+  'סה"כ יומי':'Daily Total','אין ארוחות מוגדרות':'No meals set yet',
+  'קל׳':'kcal','גרם':'g','ק"ג':'kg',
+  'תפריט יומי':'Daily Meal Plan',
+  'יחידות':'units','יח׳':'pcs',
+  // Progress
+  'עדכון משקל':'Weight Update','משקל נוכחי':'Current Weight',
+  'תמונה (אופציונלי)':'Photo (optional)',
+  'הכנס משקל':'Enter weight',
+  'עדכן משקל שבועי':'Weekly Weight Update',
+  'זה הזמן לעדכן את המשקל שלך!':'Time to update your weight!',
+  '+ עדכון':'+ Update',
+  'אין עדכונים עדיין — לחץ "+ עדכון" להוספה':'No updates yet — press "+ Update" to add',
+  // Chat
+  'כתוב שאלה...':'Write a question...',
+  'שלח שאלה למאמן שלך!':'Send your coach a question!',
+  'אין הודעות עדיין — שלח הודעה ראשונה!':'No messages yet — send the first one!',
+  // Common buttons
+  'שמור עדכון':'Save Update','ביטול':'Cancel','מחק':'Delete',
+  'הוסף':'Add','שלח':'Send','עדכון':'Update','סגור':'Close',
+  'נשמר ✓':'Saved ✓',
+  // Music
+  'שתף פלייליסט אימון':'Share a Workout Playlist',
+  'שם הפלייליסט':'Playlist Name',
+  'לינק מ-Spotify או Apple Music':'Link from Spotify or Apple Music',
+  '+ שתף פלייליסט':'+ Share Playlist',
+  'פלייליסטים משותפים':'Shared Playlists',
+  'אין פלייליסטים עדיין — היה הראשון לשתף! 🎶':'No playlists yet — be the first! 🎶',
+  'שותף ע"י':'Shared by',
+  'למשל: אימון כוח 🔥':'e.g. Strength Training 🔥',
+  'https://open.spotify.com/playlist/...':'https://open.spotify.com/playlist/...',
+  // Bug report
+  'דיווח על בעיה':'Report an Issue',
+  'הדיווח יישלח ישירות למנהל המערכת':'Your report will be sent to the system admin',
+  'מתי נתקלת בבעיה?':'When did you encounter this issue?',
+  'נושא הבעיה':'Issue Subject',
+  'תיאור קצר של הבעיה':'Brief description of the issue',
+  'פירוט':'Details',
+  'מה קרה? על איזה מסך? מה ניסית לעשות?':'What happened? On which screen?',
+  'צילום מסך (אופציונלי)':'Screenshot (optional)',
+  '📎 לחץ להוספת תמונה':'📎 Click to add image',
+  'נקה':'Clear','📤 שלח דיווח':'📤 Submit Report',
+  'שולח...':'Sending...',
+  '✓ הדיווח נשלח! תודה רבה':'✓ Report sent! Thank you',
+  // History/activity
+  'אין פעילות':'No activity yet',
+  'לוחות אימון':'Workout Schedules',
+  // Achievements
+  'הישגים שלי':'My Achievements',
+  'עוד לא השגת הישגים — התחל לאמן!':'No achievements yet — start training!',
+  // Reminders
+  'שעת אימון':'Workout Time',
+  'הגדר תזכורת':'Set Reminder',
+  'תוספי תזונה':'Supplements',
+  // Hero
+  'הפלטפורמה החכמה לניהול אימונים בין מאמן למתאמן':'The smart platform for managing training between coach and trainee',
+  'תוכניות אישיות':'Personal Plans',
+  'בניית תוכנית אימון ותפריט מותאם':'Custom workout & meal plans',
+  'מעקב אימון חי':'Live Workout Tracking',
+  'טיימר ועדכונים בזמן אמת':'Timer and real-time updates',
+  'צ׳אט ישיר':'Direct Chat',
+  'תקשורת מידית בין מאמן למתאמן':'Instant coach-trainee communication',
+};
+
+function t(str) {
+  if (!str) return str;
+  if (currentLang === 'en' && TR[str]) return TR[str];
+  return str;
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('tt_lang', lang);
+  const isEn = lang === 'en';
+  document.documentElement.dir = isEn ? 'ltr' : 'rtl';
+  document.documentElement.lang = isEn ? 'en' : 'he';
+  // Update all data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    el.textContent = t(key);
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    el.placeholder = t(el.getAttribute('data-i18n-ph'));
+  });
+  // Update lang toggle buttons
+  document.querySelectorAll('.lang-toggle-btn').forEach(b => {
+    b.textContent = isEn ? '🇮🇱 עברית' : '🌐 English';
+  });
+  // Re-render trainee dynamic content if logged in
+  if (currentUser && currentUser.role === 'trainee') {
+    try { renderTraineeDayNav(); } catch(e) {}
+    try { renderTraineeMenu(); } catch(e) {}
+    try { renderMusicTab(); } catch(e) {}
+    try { renderBugReportPanel('traineeBugPanel'); } catch(e) {}
+  }
+}
+
+// Apply saved lang on load (runs after DOM ready)
+window.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('tt_lang') || 'he';
+  if (saved !== 'he') setLang(saved);
+});
+
 // ── Theme (light/dark) ──
 function applyTheme(dark) {
   document.body.classList.toggle('dark', dark);
@@ -2733,38 +2896,38 @@ function renderBugReportPanel(containerId) {
   if (!c) return;
   c.innerHTML = `
     <div style="max-width:520px;margin:0 auto;padding:8px 0">
-      <div style="font-size:1.1rem;font-weight:700;margin-bottom:4px">🐛 דיווח על בעיה</div>
-      <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:20px">הדיווח יישלח ישירות למנהל המערכת</div>
+      <div style="font-size:1.1rem;font-weight:700;margin-bottom:4px">🐛 ${t('דיווח על בעיה')}</div>
+      <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:20px">${t('הדיווח יישלח ישירות למנהל המערכת')}</div>
 
       <div class="form-group">
-        <label>מתי נתקלת בבעיה?</label>
+        <label>${t('מתי נתקלת בבעיה?')}</label>
         <input type="datetime-local" id="bugWhen" value="${localDT}" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-size:0.9rem">
       </div>
 
       <div class="form-group">
-        <label>נושא הבעיה</label>
-        <input id="bugSubject2" placeholder="תיאור קצר של הבעיה" style="width:100%">
+        <label>${t('נושא הבעיה')}</label>
+        <input id="bugSubject2" placeholder="${t('תיאור קצר של הבעיה')}" style="width:100%">
       </div>
 
       <div class="form-group">
-        <label>פירוט</label>
-        <textarea id="bugDetails2" rows="5" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px;color:var(--text);font-size:0.9rem;resize:vertical" placeholder="מה קרה? על איזה מסך? מה ניסית לעשות?"></textarea>
+        <label>${t('פירוט')}</label>
+        <textarea id="bugDetails2" rows="5" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px;color:var(--text);font-size:0.9rem;resize:vertical" placeholder="${t('מה קרה? על איזה מסך? מה ניסית לעשות?')}"></textarea>
       </div>
 
       <div class="form-group">
-        <label>צילום מסך (אופציונלי)</label>
+        <label>${t('צילום מסך (אופציונלי)')}</label>
         <div style="border:1px dashed var(--border);border-radius:10px;padding:16px;text-align:center;cursor:pointer" onclick="el('bugScreenshot').click()">
           <div id="bugScreenshotPreview" style="display:none;margin-bottom:8px">
             <img id="bugScreenshotImg" style="max-width:100%;max-height:200px;border-radius:8px">
           </div>
-          <div id="bugScreenshotPlaceholder" style="color:var(--text-muted);font-size:0.85rem">📎 לחץ להוספת תמונה</div>
+          <div id="bugScreenshotPlaceholder" style="color:var(--text-muted);font-size:0.85rem">${t('📎 לחץ להוספת תמונה')}</div>
           <input type="file" id="bugScreenshot" accept="image/*" style="display:none" onchange="previewBugScreenshot(this)">
         </div>
       </div>
 
       <div style="display:flex;gap:8px;margin-top:16px">
-        <button class="btn btn-ghost" style="flex:1" onclick="clearBugForm()">נקה</button>
-        <button class="btn btn-primary" style="flex:2" onclick="submitBugReport2()">📤 שלח דיווח</button>
+        <button class="btn btn-ghost" style="flex:1" onclick="clearBugForm()">${t('נקה')}</button>
+        <button class="btn btn-primary" style="flex:2" onclick="submitBugReport2()">${t('📤 שלח דיווח')}</button>
       </div>
       <div id="bugSendStatus" style="margin-top:10px;text-align:center;font-size:0.85rem;min-height:20px"></div>
     </div>
@@ -2799,7 +2962,7 @@ function submitBugReport2() {
   const screenshotSrc = el('bugScreenshotImg')?.src && el('bugScreenshotPreview')?.style.display !== 'none' ? el('bugScreenshotImg').src : null;
   if (!subject) { alert('נא להזין נושא'); return; }
   const status = el('bugSendStatus');
-  if (status) status.textContent = 'שולח...';
+  if (status) status.textContent = t('שולח...');
   const report = {
     subject, details: details||'',
     when: new Date(when).toISOString(),
@@ -2812,7 +2975,7 @@ function submitBugReport2() {
   if (fsDB) {
     fsDB.collection('bug_reports').add(report)
       .then(() => {
-        if (status) status.innerHTML = '<span style="color:var(--success,#4caf50)">✓ הדיווח נשלח! תודה רבה</span>';
+        if (status) status.innerHTML = `<span style="color:var(--success,#4caf50)">${t('✓ הדיווח נשלח! תודה רבה')}</span>`;
         clearBugForm();
       })
       .catch(() => { if (status) status.textContent = 'שגיאה בשליחה — נסה שוב'; });
@@ -3866,7 +4029,8 @@ function renderTraineeDayNav() {
     const dStr = dateKey(d);
     const hasSched = getScheduleForDay(currentUser.id, dStr).length > 0;
     const isToday = dStr === todayStr;
-    const label = isToday ? 'היום' : d.toLocaleDateString('he-IL',{weekday:'short'});
+    const rawLabel = isToday ? 'היום' : d.toLocaleDateString('he-IL',{weekday:'short'});
+    const label = t(rawLabel);
     return `<div class="day-chip ${traineeSelectedDate===dStr?'active':''} ${hasSched&&traineeSelectedDate!==dStr?'has-workout':''}"
       onclick="selectTraineeDay('${dStr}')">
       <div class="day-chip-name">${label}</div>
@@ -4090,6 +4254,96 @@ function deleteProgressEntry(entryId) {
   saveWeightLogToFirestore(currentUser.id, log);
   renderProgressLog();
   checkWeeklyReminder();
+}
+
+// ════════════════════════════════════════════════
+//  MUSIC PLAYLISTS
+// ════════════════════════════════════════════════
+function getPlaylistEmbedUrl(url) {
+  try {
+    // Spotify: https://open.spotify.com/playlist/ID → https://open.spotify.com/embed/playlist/ID
+    if (url.includes('spotify.com')) {
+      return url.replace('open.spotify.com/', 'open.spotify.com/embed/').split('?')[0];
+    }
+    // Apple Music: https://music.apple.com/xx/playlist/... → https://embed.music.apple.com/xx/playlist/...
+    if (url.includes('music.apple.com')) {
+      return url.replace('music.apple.com', 'embed.music.apple.com').split('?')[0];
+    }
+  } catch(e) {}
+  return null;
+}
+
+function getPlaylistPlatform(url) {
+  if (url.includes('spotify.com')) return { name: 'Spotify', color: '#1DB954', icon: '🎧' };
+  if (url.includes('music.apple.com')) return { name: 'Apple Music', color: '#FC3C44', icon: '🎵' };
+  return { name: 'מוזיקה', color: '#7C6FFF', icon: '🎶' };
+}
+
+function renderMusicTab() {
+  const c = el('musicTabContent');
+  if (!c) return;
+  const playlists = (db.playlists || []).sort((a,b) => (b.timestamp||0) - (a.timestamp||0));
+
+  c.innerHTML = `
+    <div style="margin-bottom:20px">
+      <div style="font-size:1.05rem;font-weight:700;margin-bottom:12px">🎵 ${t('שתף פלייליסט אימון')}</div>
+      <div style="background:var(--surface2);border-radius:14px;padding:16px;border:1px solid var(--border-light)">
+        <div class="form-group" style="margin-bottom:10px">
+          <label>${t('שם הפלייליסט')}</label>
+          <input id="musicTitle" placeholder="${t('למשל: אימון כוח 🔥')||'למשל: אימון כוח 🔥'}">
+        </div>
+        <div class="form-group" style="margin-bottom:12px">
+          <label>${t('לינק מ-Spotify או Apple Music')}</label>
+          <input id="musicUrl" placeholder="https://open.spotify.com/playlist/..." style="direction:ltr">
+        </div>
+        <button class="btn btn-primary btn-full" onclick="addPlaylist()">${t('+ שתף פלייליסט')}</button>
+      </div>
+    </div>
+
+    <div style="font-size:0.95rem;font-weight:700;margin-bottom:12px">🎧 ${t('פלייליסטים משותפים')} (${playlists.length})</div>
+    ${playlists.length ? playlists.map(p => {
+      const embedUrl = getPlaylistEmbedUrl(p.url);
+      const platform = getPlaylistPlatform(p.url);
+      const isOwner = p.userId === currentUser.id;
+      return `<div style="background:var(--surface2);border-radius:16px;padding:14px;margin-bottom:16px;border:1px solid var(--border-light)">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="width:36px;height:36px;border-radius:50%;background:${platform.color}22;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">${platform.icon}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:700;font-size:0.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.title||'פלייליסט'}</div>
+            <div style="font-size:0.75rem;color:var(--text-muted)">${t('שותף ע"י')} ${p.userName} · <span style="color:${platform.color}">${platform.name}</span></div>
+          </div>
+          ${isOwner ? `<button onclick="deletePlaylist('${p.id}')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1rem;padding:4px" title="מחק">🗑️</button>` : ''}
+        </div>
+        ${embedUrl ? `<iframe src="${embedUrl}" style="border-radius:12px;border:none;width:100%;height:${p.url.includes('spotify')?'152':'175'}px" frameborder="0" allowtransparency="true" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>` :
+          `<a href="${p.url}" target="_blank" style="color:var(--primary);font-size:0.85rem;word-break:break-all">${p.url}</a>`}
+      </div>`;
+    }).join('') : `<div style="text-align:center;color:var(--text-muted);padding:40px 0;font-size:0.9rem">${t('אין פלייליסטים עדיין — היה הראשון לשתף! 🎶')}</div>`}
+  `;
+}
+
+function addPlaylist() {
+  const title = (el('musicTitle')?.value||'').trim();
+  const url = (el('musicUrl')?.value||'').trim();
+  if (!url) { alert('הכנס לינק לפלייליסט'); return; }
+  if (!url.includes('spotify.com') && !url.includes('music.apple.com')) {
+    alert('נתמך רק Spotify ו-Apple Music'); return;
+  }
+  if (!db.playlists) db.playlists = [];
+  db.playlists.push({
+    id: uid(), userId: currentUser.id, userName: currentUser.name,
+    title: title || 'פלייליסט אימון', url, timestamp: Date.now()
+  });
+  saveDB();
+  el('musicTitle').value = '';
+  el('musicUrl').value = '';
+  renderMusicTab();
+}
+
+function deletePlaylist(id) {
+  if (!confirm('למחוק פלייליסט זה?')) return;
+  db.playlists = (db.playlists||[]).filter(p => p.id !== id);
+  saveDB();
+  renderMusicTab();
 }
 
 // ── Food Bank (Coach) ──
@@ -4404,9 +4658,11 @@ function renderTraineeMenu() {
     if (sw && tw) {
       const diff = +(sw - tw).toFixed(1);
       const absDiff = Math.abs(diff);
-      const direction = diff > 0 ? 'ירידה' : 'עלייה';
+      const direction = diff > 0 ? t('ירידה') : t('עלייה');
       wpr.style.display = '';
-      wpr.innerHTML = `נשאר ${direction} של <b style="color:var(--primary)">${absDiff} ק"ג</b> להגעה ליעד`;
+      wpr.innerHTML = currentLang==='en'
+        ? `<b style="color:var(--primary)">${absDiff} kg</b> remaining to goal`
+        : `נשאר ${direction} של <b style="color:var(--primary)">${absDiff} ק"ג</b> להגעה ליעד`;
     } else {
       wpr.style.display = 'none';
     }
@@ -4414,12 +4670,12 @@ function renderTraineeMenu() {
   const mk = `meals_${currentUser.id}_${todayKey()}`;
   const state = JSON.parse(localStorage.getItem(mk)||'{}');
   if (!meals.length) {
-    el('traineeMealList').innerHTML = '<div class="empty-state"><div class="es-icon">🥗</div><p>המאמן עדיין לא הגדיר תפריט</p></div>';
+    el('traineeMealList').innerHTML = `<div class="empty-state"><div class="es-icon">🥗</div><p>${t('המאמן עדיין לא הגדיר תפריט')||'המאמן עדיין לא הגדיר תפריט'}</p></div>`;
   } else {
     const grouped = {};
     meals.forEach(m=>{ grouped[m.type]=grouped[m.type]||[]; grouped[m.type].push(m); });
     el('traineeMealList').innerHTML = sortedMealEntries(grouped).map(([type,items])=>`
-      <div class="meal-group-title">${mealIcon(type)} ${type}</div>
+      <div class="meal-group-title">${mealIcon(type)} ${t(type)}</div>
       ${items.map(m=>{
         const s = state[m.id]||{};
         const isWhole = !!m.wholeUnit;
@@ -4430,7 +4686,7 @@ function renderTraineeMenu() {
         const reportedUnits = isWhole && m.wholeGrams ? Math.round(reported / m.wholeGrams) : 0;
         const targetUnits  = isWhole && m.wholeGrams ? Math.round(target  / m.wholeGrams) : 0;
         const rMode = isWhole ? (mealReportMode[m.id] || 'unit') : 'grams';
-        const toggleBtn = isWhole ? `<button onclick="toggleMealReportMode('${m.id}')" style="display:block;margin-top:4px;font-size:0.68rem;color:var(--text-muted);background:none;border:1px solid var(--border);border-radius:10px;padding:1px 7px;cursor:pointer">${rMode==='unit'?'הכנס בגרמים':'הכנס ביחידות'}</button>` : '';
+        const toggleBtn = isWhole ? `<button onclick="toggleMealReportMode('${m.id}')" style="display:block;margin-top:4px;font-size:0.68rem;color:var(--text-muted);background:none;border:1px solid var(--border);border-radius:10px;padding:1px 7px;cursor:pointer">${rMode==='unit'?(currentLang==='en'?'Enter in grams':'הכנס בגרמים'):(currentLang==='en'?'Enter in units':'הכנס ביחידות')}</button>` : '';
         const inputSection = isWhole && rMode === 'unit' ? `
           <div>
             <div style="display:flex;align-items:center;gap:4px">
@@ -5185,7 +5441,7 @@ function stopConfetti() {
 
 function resetTimerUI() {
   el('timerDisplay').textContent='00:00:00';
-  el('timerLabel').textContent='לחץ "התחל אימון" לתחילת המעקב';
+  el('timerLabel').textContent=t('לחץ "התחל אימון" לתחילת המעקב');
   el('startBtn') && (el('startBtn').style.display='inline-flex');
   el('stopBtn') && (el('stopBtn').style.display='none');
   el('activeBanner') && (el('activeBanner').style.display='none');
