@@ -105,6 +105,34 @@
   .tab-section { display: none; }
   .tab-section.active { display: block; }
 
+  /* BACK BUTTON */
+  .back-btn {
+    display: none;
+  }
+  .back-btn.visible {
+    display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px;
+    background: none; border: 1px solid var(--border); border-radius: 10px;
+    padding: 8px 16px; cursor: pointer; color: var(--muted); font-size: 0.88rem;
+    transition: all 0.2s;
+  }
+  .back-btn.visible:hover { border-color: var(--primary); color: var(--primary); }
+
+  /* CARD EDIT MODE */
+  .stat-card.edit-mode { border: 2px dashed var(--primary); position: relative; }
+  .card-edit-btns { display: none; position: absolute; top: 6px; left: 6px; gap: 4px; }
+  .edit-mode .card-edit-btns { display: flex; }
+  .card-edit-btn {
+    width: 22px; height: 22px; border-radius: 50%; border: none; cursor: pointer;
+    font-size: 0.65rem; display: flex; align-items: center; justify-content: center;
+  }
+  .add-card-btn {
+    background: var(--surface); border: 2px dashed var(--border); border-radius: var(--radius);
+    padding: 20px 24px; text-align: center; cursor: pointer; color: var(--muted);
+    font-size: 1.5rem; transition: all 0.2s; display: none;
+  }
+  .add-card-btn:hover { border-color: var(--primary); color: var(--primary); }
+  .add-card-btn.visible { display: block; }
+
   /* STAT CARDS */
   .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 28px; }
   .stat-card {
@@ -226,6 +254,10 @@
 
     <!-- OVERVIEW -->
     <div class="tab-section active" id="tab-overview">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div style="font-size:0.9rem;color:var(--muted)">לחץ על קוביה לצפייה בפרטים</div>
+        <button onclick="toggleEditMode()" id="editModeBtn" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 14px;cursor:pointer;color:var(--muted);font-size:0.82rem" title="ערוך קוביות">✏️ ערוך</button>
+      </div>
       <div class="stats-row" id="statsRow"></div>
       <div class="charts-row">
         <div class="chart-card">
@@ -254,24 +286,83 @@
 
     <!-- COACHES -->
     <div class="tab-section" id="tab-coaches">
+      <button class="back-btn" id="back-coaches" onclick="showTab('overview')">← חזרה לסקירה</button>
       <div id="coachesContent"></div>
     </div>
 
     <!-- TRAINEES -->
     <div class="tab-section" id="tab-trainees">
+      <button class="back-btn" id="back-trainees" onclick="showTab('overview')">← חזרה לסקירה</button>
       <div id="traineesContent"></div>
     </div>
 
     <!-- ACTIVITY -->
     <div class="tab-section" id="tab-activity">
+      <button class="back-btn" id="back-activity" onclick="showTab('overview')">← חזרה לסקירה</button>
       <div id="activityContent"></div>
     </div>
 
     <!-- BUGS -->
     <div class="tab-section" id="tab-bugs">
+      <button class="back-btn" id="back-bugs" onclick="showTab('overview')">← חזרה לסקירה</button>
       <div id="bugsContent"></div>
     </div>
 
+  </div>
+</div>
+
+<!-- SAVE TOAST -->
+<div id="dashSaveToast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1DB954;color:#fff;padding:10px 24px;border-radius:20px;font-size:0.88rem;font-weight:700;opacity:0;transition:opacity 0.3s;z-index:99999;pointer-events:none">✓ נשמר ועודכן באפליקציה</div>
+
+<!-- TRAINEE DETAIL MODAL -->
+<div id="traineeModalOverlay" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.5);align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto">
+  <div style="background:var(--surface);border-radius:20px;padding:32px;width:100%;max-width:560px;position:relative">
+    <button onclick="closeTraineeModal()" style="position:absolute;top:16px;left:16px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted)">×</button>
+    <div id="traineeModalContent"></div>
+  </div>
+</div>
+
+<!-- CARD EDITOR MODAL -->
+<div id="cardEditorOverlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);align-items:center;justify-content:center">
+  <div style="background:var(--surface);border-radius:16px;padding:28px;width:340px;box-shadow:0 8px 40px rgba(0,0,0,0.3)">
+    <div style="font-size:1rem;font-weight:700;margin-bottom:20px" id="cardEditorTitle">✏️ ערוך קוביה</div>
+    <input type="hidden" id="cardEditorIdx">
+    <div style="margin-bottom:12px">
+      <label style="font-size:0.8rem;color:var(--muted);display:block;margin-bottom:4px">אייקון (אמוג׳י)</label>
+      <input id="cardEditorIcon" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:1.2rem" placeholder="📌">
+    </div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:0.8rem;color:var(--muted);display:block;margin-bottom:4px">כותרת</label>
+      <input id="cardEditorLabel" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:0.9rem" placeholder="שם הקוביה">
+    </div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:0.8rem;color:var(--muted);display:block;margin-bottom:4px">צבע</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="colorPicker">
+        <div onclick="selectCardColor('#7C6FFF')" style="width:28px;height:28px;border-radius:50%;background:#7C6FFF;cursor:pointer;border:3px solid transparent"></div>
+        <div onclick="selectCardColor('#64E2B7')" style="width:28px;height:28px;border-radius:50%;background:#64E2B7;cursor:pointer;border:3px solid transparent"></div>
+        <div onclick="selectCardColor('#FFB547')" style="width:28px;height:28px;border-radius:50%;background:#FFB547;cursor:pointer;border:3px solid transparent"></div>
+        <div onclick="selectCardColor('#F472B6')" style="width:28px;height:28px;border-radius:50%;background:#F472B6;cursor:pointer;border:3px solid transparent"></div>
+        <div onclick="selectCardColor('#60A5FA')" style="width:28px;height:28px;border-radius:50%;background:#60A5FA;cursor:pointer;border:3px solid transparent"></div>
+        <div onclick="selectCardColor('#34D399')" style="width:28px;height:28px;border-radius:50%;background:#34D399;cursor:pointer;border:3px solid transparent"></div>
+        <div onclick="selectCardColor('#FF6464')" style="width:28px;height:28px;border-radius:50%;background:#FF6464;cursor:pointer;border:3px solid transparent"></div>
+      </div>
+      <input type="hidden" id="cardEditorColor" value="#7C6FFF">
+    </div>
+    <div style="margin-bottom:20px">
+      <label style="font-size:0.8rem;color:var(--muted);display:block;margin-bottom:4px">קישור לטאב</label>
+      <input id="cardEditorTab" list="tabOptions" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:0.9rem" placeholder="הקלד או בחר מהרשימה">
+      <datalist id="tabOptions">
+        <option value="overview">סקירה כללית</option>
+        <option value="coaches">מאמנים</option>
+        <option value="trainees">מתאמנים</option>
+        <option value="activity">פעילות</option>
+        <option value="bugs">דיווחי בעיות</option>
+      </datalist>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button onclick="closeCardEditor()" style="flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer">ביטול</button>
+      <button onclick="saveCardEditor()" style="flex:2;padding:10px;border-radius:8px;border:none;background:#7C6FFF;color:#fff;font-weight:700;cursor:pointer">שמור</button>
+    </div>
   </div>
 </div>
 
@@ -291,12 +382,28 @@ const ADMIN_EMAIL = 'admin@admin.com';
 const ADMIN_HASH = 'cb310d7bab04769b5627b0ffe12383dbfb3af174a983f104a7c5d462eb3847e6';
 
 let fsDB = null;
-let appDB = null;  // parsed db from Firestore
+let appDB = null;
 let bugReports = [];
-let weightLogs = {};   // userId → { log: [{date,weight,timestamp},...] }
-let chatStats = [];    // [{coachId, traineeId, responseCount, totalResponseMs, avgResponseMs}]
+let weightLogs = {};
+let chatStats = [];
 let charts = {};
 let searchQuery = '';
+let editMode = false;
+
+const DEFAULT_CARDS = [
+  { id:'coaches',  icon:'🧑‍💼', label:'מאמנים',                   color:'var(--primary)',  tab:'coaches'  },
+  { id:'trainees', icon:'🏃',   label:'מתאמנים',                   color:'var(--primary2)', tab:'trainees' },
+  { id:'workouts', icon:'🏋️',   label:'לוחות אימון',               color:'var(--accent)',   tab:'activity' },
+  { id:'meals',    icon:'🥗',   label:'פריטי תפריט',               color:'var(--pink)',     tab:'trainees' },
+  { id:'weight',   icon:'⚖️',   label:'מתאמנים עם מעקב משקל',     color:'#60A5FA',         tab:'trainees' },
+  { id:'chat',     icon:'💬',   label:'תגובות מאמנים בצ׳אט',     color:'#34D399',         tab:'coaches'  },
+  { id:'bugs',     icon:'🐛',   label:'דיווחי בעיות',              color:'var(--red)',       tab:'bugs'     },
+];
+
+function loadCardConfig() {
+  try { return JSON.parse(localStorage.getItem('dash_cards') || 'null') || DEFAULT_CARDS.map(c=>({...c})); } catch(e) { return DEFAULT_CARDS.map(c=>({...c})); }
+}
+function saveCardConfig(cards) { localStorage.setItem('dash_cards', JSON.stringify(cards)); }
 
 // ─── SHA-256 ───────────────────────────────────
 async function sha256(msg) {
@@ -635,29 +742,105 @@ function renderAll() {
   renderBugsTab();
 }
 
-function renderStats() {
+function getStatValue(cardId) {
   const cs = coaches(); const ts = trainees();
-  const totalWorkouts = ts.reduce((s,t) => s + totalWorkoutsForTrainee(t), 0);
-  const totalMeals = ts.reduce((s,t) => s + (t.meals||[]).length, 0);
-  // Weight stats: count trainees who have logged weight
-  const traineesWithWeight = ts.filter(t => getWeightLog(t.id).length > 0).length;
-  // Total kg lost/gained (sum of abs changes for weight-logging trainees)
-  const totalChatResponses = chatStats.reduce((s,r) => s + (r.responseCount||0), 0);
-  const stats = [
-    { icon:'🧑‍💼', num: cs.length, label:'מאמנים', color:'var(--primary)', tab:'coaches' },
-    { icon:'🏃', num: ts.length, label:'מתאמנים', color:'var(--primary2)', tab:'trainees' },
-    { icon:'🏋️', num: totalWorkouts, label:'לוחות אימון', color:'var(--accent)', tab:'activity' },
-    { icon:'🥗', num: totalMeals, label:'פריטי תפריט', color:'var(--pink)', tab:'trainees' },
-    { icon:'⚖️', num: traineesWithWeight, label:'מתאמנים עם מעקב משקל', color:'#60A5FA', tab:'trainees' },
-    { icon:'💬', num: totalChatResponses, label:'תגובות מאמנים בצ׳אט', color:'#34D399', tab:'coaches' },
-    { icon:'🐛', num: bugReports.length, label:'דיווחי בעיות', color:'var(--red)', tab:'bugs' },
-  ];
-  document.getElementById('statsRow').innerHTML = stats.map(s => `
-    <div class="stat-card" onclick="showTab('${s.tab}')" style="cursor:pointer;transition:transform 0.15s,border-color 0.15s" onmouseover="this.style.transform='translateY(-3px)';this.style.borderColor='rgba(124,111,255,0.4)'" onmouseout="this.style.transform='';this.style.borderColor=''">
-      <div class="stat-icon">${s.icon}</div>
-      <div class="stat-num" style="color:${s.color}">${s.num}</div>
-      <div class="stat-label">${s.label}</div>
-    </div>`).join('');
+  switch(cardId) {
+    case 'coaches':  return cs.length;
+    case 'trainees': return ts.length;
+    case 'workouts': return ts.reduce((s,t) => s + totalWorkoutsForTrainee(t), 0);
+    case 'meals':    return ts.reduce((s,t) => s + (t.meals||[]).length, 0);
+    case 'weight':   return ts.filter(t => getWeightLog(t.id).length > 0).length;
+    case 'chat':     return chatStats.reduce((s,r) => s + (r.responseCount||0), 0);
+    case 'bugs':     return bugReports.length;
+    default:         return cardId.startsWith('custom_') ? '—' : '?';
+  }
+}
+
+function renderStats() {
+  const cards = loadCardConfig();
+  const row = document.getElementById('statsRow');
+  row.innerHTML = cards.map((c, i) => {
+    const num = getStatValue(c.id);
+    return `<div class="stat-card ${editMode?'edit-mode':''}"
+      onclick="${editMode ? '' : `showTab('${c.tab}',true)`}"
+      style="cursor:${editMode?'default':'pointer'};transition:transform 0.15s,border-color 0.15s;position:relative"
+      ${!editMode ? `onmouseover="this.style.transform='translateY(-3px)';this.style.borderColor='rgba(124,111,255,0.4)'" onmouseout="this.style.transform='';this.style.borderColor=''"` : ''}>
+      <div class="card-edit-btns">
+        <button class="card-edit-btn" style="background:#7C6FFF;color:#fff" onclick="openEditCard(${i})" title="ערוך">✏️</button>
+        <button class="card-edit-btn" style="background:#FF6464;color:#fff" onclick="deleteCard(${i})" title="מחק">✕</button>
+      </div>
+      <div class="stat-icon">${c.icon}</div>
+      <div class="stat-num" style="color:${c.color}">${num}</div>
+      <div class="stat-label">${c.label}</div>
+    </div>`;
+  }).join('');
+  // Add card button
+  row.innerHTML += `<div class="add-card-btn ${editMode?'visible':''}" onclick="openAddCard()">+<div style="font-size:0.75rem;margin-top:4px">הוסף קוביה</div></div>`;
+}
+
+function toggleEditMode() {
+  editMode = !editMode;
+  const btn = document.getElementById('editModeBtn');
+  if (btn) btn.textContent = editMode ? '✓ סיים עריכה' : '✏️ ערוך';
+  renderStats();
+}
+
+function deleteCard(idx) {
+  if (!confirm('למחוק קוביה זו?')) return;
+  const cards = loadCardConfig();
+  cards.splice(idx, 1);
+  saveCardConfig(cards);
+  renderStats();
+}
+
+function openAddCard() {
+  document.getElementById('cardEditorTitle').textContent = '+ הוסף קוביה';
+  document.getElementById('cardEditorIdx').value = '-1';
+  document.getElementById('cardEditorIcon').value = '📌';
+  document.getElementById('cardEditorLabel').value = '';
+  document.getElementById('cardEditorTab').value = 'overview';
+  selectCardColor('#7C6FFF');
+  document.getElementById('cardEditorOverlay').style.display = 'flex';
+}
+
+function openEditCard(idx) {
+  const cards = loadCardConfig();
+  const c = cards[idx];
+  document.getElementById('cardEditorTitle').textContent = '✏️ ערוך קוביה';
+  document.getElementById('cardEditorIdx').value = idx;
+  document.getElementById('cardEditorIcon').value = c.icon;
+  document.getElementById('cardEditorLabel').value = c.label;
+  document.getElementById('cardEditorTab').value = c.tab;
+  selectCardColor(c.color.startsWith('#') ? c.color : '#7C6FFF');
+  document.getElementById('cardEditorOverlay').style.display = 'flex';
+}
+
+function selectCardColor(hex) {
+  document.getElementById('cardEditorColor').value = hex;
+  document.querySelectorAll('#colorPicker > div').forEach(d => {
+    d.style.border = d.style.background === hex ? '3px solid #333' : '3px solid transparent';
+  });
+}
+
+function closeCardEditor() {
+  document.getElementById('cardEditorOverlay').style.display = 'none';
+}
+
+function saveCardEditor() {
+  const idx = parseInt(document.getElementById('cardEditorIdx').value);
+  const icon  = document.getElementById('cardEditorIcon').value.trim() || '📌';
+  const label = document.getElementById('cardEditorLabel').value.trim() || 'קוביה';
+  const color = document.getElementById('cardEditorColor').value || '#7C6FFF';
+  const tab   = document.getElementById('cardEditorTab').value;
+  const cards = loadCardConfig();
+  if (idx === -1) {
+    cards.push({ id: 'custom_' + Date.now(), icon, label, color, tab });
+  } else {
+    cards[idx] = { ...cards[idx], icon, label, color, tab };
+  }
+  saveCardConfig(cards);
+  closeCardEditor();
+  renderStats();
 }
 
 function renderCharts() {
@@ -734,7 +917,7 @@ function traineeTableHTML(ts, title) {
           const cw = currentWeight(t.id);
           const delta = weightChange(t.id, sw);
           return `<tr>
-            <td><strong>${hl(t.name, searchQuery)}</strong></td>
+            <td><strong style="cursor:pointer;color:var(--primary);text-decoration:underline dotted" onclick="openTraineeModal('${t.id}')">${hl(t.name, searchQuery)}</strong></td>
             <td>${hl(coach?.name||'לא משויך', searchQuery)}</td>
             <td>${goalBadge(t.goal)}</td>
             <td>${sw ? sw+'ק"ג' : '—'}</td>
@@ -793,7 +976,7 @@ function renderCoachesTab() {
             const tcRaw = chatStats.find(r=>r.coachId===c.id && r.traineeId===t.id);
             const tc = tcRaw ? { responseCount: tcRaw.responseCount, avgMs: tcRaw.avgResponseMs } : null;
             return `<tr>
-              <td>${hl(t.name,searchQuery)}</td>
+              <td><span style="cursor:pointer;color:var(--primary);text-decoration:underline dotted" onclick="openTraineeModal('${t.id}')">${hl(t.name,searchQuery)}</span></td>
               <td>${goalBadge(t.goal)}</td>
               <td>${cw ? cw+'ק"ג' : '—'}</td>
               <td>${formatWeightChange(delta, t.goal)}</td>
@@ -824,7 +1007,7 @@ function renderTraineesTab() {
     const diff = sw && tw ? Math.abs(sw-tw) : 0;
     return `<div class="table-card" style="margin-top:16px">
       <div class="table-header-row">
-        <span class="table-title">🏃 ${hl(t.name,searchQuery)}</span>
+        <span class="table-title" style="cursor:pointer;color:var(--primary)" onclick="openTraineeModal('${t.id}')">🏃 ${hl(t.name,searchQuery)} <span style="font-size:0.75rem;opacity:0.7">↗</span></span>
         <span style="color:var(--muted);font-size:0.82rem">${coach?'מאמן: '+coach.name:'לא משויך'}</span>
       </div>
       <div style="padding:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px">
@@ -949,15 +1132,167 @@ function renderBugsTab() {
   `;
 }
 
+// ─── Save appDB back to Firestore (live sync to app) ──
+function saveAppDB() {
+  if (!fsDB || !appDB) return;
+  fsDB.collection('traintrack').doc('main').set({
+    db: JSON.stringify({...appDB, chats:{}}),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(() => {
+    const t = document.getElementById('dashSaveToast');
+    if (t) { t.style.opacity='1'; setTimeout(()=>t.style.opacity='0', 2000); }
+  }).catch(e => alert('שגיאה בשמירה: ' + e.message));
+}
+
+// ─── Trainee Detail Modal ──────────────────────
+let currentTraineeId = null;
+
+function openTraineeModal(traineeId) {
+  currentTraineeId = traineeId;
+  renderTraineeModal();
+  document.getElementById('traineeModalOverlay').style.display = 'flex';
+}
+
+function closeTraineeModal() {
+  document.getElementById('traineeModalOverlay').style.display = 'none';
+  currentTraineeId = null;
+  renderAll(); // refresh tables to show any edits
+}
+
+function renderTraineeModal() {
+  const t = (appDB?.users||[]).find(u => u.id === currentTraineeId);
+  if (!t) return;
+  const coach = (appDB?.users||[]).find(u => u.id === t.coachId);
+  const wlog = getWeightLog(t.id);
+  const cw = currentWeight(t.id);
+  const delta = weightChange(t.id, parseFloat(t.startWeight)||null);
+  const meals = t.meals||[];
+  const exercises = t.exercises||[];
+  const workouts = totalWorkoutsForTrainee(t);
+
+  document.getElementById('traineeModalContent').innerHTML = `
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:24px">
+      <div style="width:52px;height:52px;border-radius:50%;background:rgba(100,226,183,0.15);display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700;color:var(--primary2);flex-shrink:0">${(t.name||'?')[0]}</div>
+      <div>
+        <div style="font-size:1.2rem;font-weight:800">${t.name}</div>
+        <div style="font-size:0.82rem;color:var(--muted)">${t.email} · מאמן: ${coach?.name||'לא משויך'}</div>
+      </div>
+    </div>
+
+    <!-- EDIT FIELDS -->
+    <div style="background:var(--surface2);border-radius:14px;padding:16px;margin-bottom:20px">
+      <div style="font-size:0.85rem;font-weight:700;margin-bottom:12px;color:var(--primary)">✏️ עריכה — ישמר ויסתנכרן לאפליקציה</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <label style="font-size:0.75rem;color:var(--muted);display:block;margin-bottom:3px">שם</label>
+          <input id="te_name" value="${t.name||''}" oninput="autoSaveTrainee()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:0.88rem">
+        </div>
+        <div>
+          <label style="font-size:0.75rem;color:var(--muted);display:block;margin-bottom:3px">מטרה</label>
+          <input id="te_goal" value="${t.goal||''}" oninput="autoSaveTrainee()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:0.88rem" placeholder="חיטוב / מסה...">
+        </div>
+        <div>
+          <label style="font-size:0.75rem;color:var(--muted);display:block;margin-bottom:3px">משקל התחלה (ק"ג)</label>
+          <input id="te_sw" type="number" value="${t.startWeight||''}" oninput="autoSaveTrainee()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:0.88rem">
+        </div>
+        <div>
+          <label style="font-size:0.75rem;color:var(--muted);display:block;margin-bottom:3px">משקל יעד (ק"ג)</label>
+          <input id="te_tw" type="number" value="${t.targetWeight||''}" oninput="autoSaveTrainee()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:0.88rem">
+        </div>
+      </div>
+      <div id="autoSaveStatus" style="font-size:0.78rem;color:var(--muted);text-align:center;min-height:18px"></div>
+    </div>
+
+    <!-- STATS -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">
+      <div style="background:var(--surface2);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:1.5rem;font-weight:800;color:var(--primary)">${workouts}</div>
+        <div style="font-size:0.72rem;color:var(--muted)">לוחות אימון</div>
+      </div>
+      <div style="background:var(--surface2);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:1.5rem;font-weight:800;color:var(--primary2)">${cw ? cw+'kg' : '—'}</div>
+        <div style="font-size:0.72rem;color:var(--muted)">משקל נוכחי</div>
+      </div>
+      <div style="background:var(--surface2);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:1.5rem;font-weight:800;color:${delta===null?'var(--muted)':delta<0?'var(--primary2)':'var(--red)'}">${delta===null?'—':(delta>0?'+':'')+delta+'kg'}</div>
+        <div style="font-size:0.72rem;color:var(--muted)">שינוי משקל</div>
+      </div>
+    </div>
+
+    <!-- WEIGHT LOG -->
+    ${wlog.length ? `<div style="margin-bottom:20px">
+      <div style="font-size:0.85rem;font-weight:700;margin-bottom:8px">📊 היסטוריית משקל</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        ${wlog.slice(-10).map((e,i,arr)=>{
+          const prev = i>0?arr[i-1].weight:null;
+          const d = prev?+(e.weight-prev).toFixed(1):null;
+          const arrow = d===null?'':d>0?' <span style="color:var(--red)">▲</span>':d<0?' <span style="color:var(--primary2)">▼</span>':'';
+          return `<span style="background:rgba(124,111,255,0.08);border:1px solid rgba(124,111,255,0.15);border-radius:20px;padding:4px 10px;font-size:0.78rem">${e.date}: ${e.weight}kg${arrow}</span>`;
+        }).join('')}
+      </div>
+    </div>` : ''}
+
+    <!-- MEALS -->
+    ${meals.length ? `<div style="margin-bottom:20px">
+      <div style="font-size:0.85rem;font-weight:700;margin-bottom:8px">🥗 תפריט (${meals.length} פריטים)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        ${meals.slice(0,12).map(m=>`<span style="background:rgba(100,226,183,0.08);border:1px solid rgba(100,226,183,0.2);border-radius:20px;padding:4px 10px;font-size:0.78rem">${m.name} — ${m.cal}kcal</span>`).join('')}
+        ${meals.length>12?`<span style="color:var(--muted);font-size:0.78rem">+${meals.length-12} נוספים</span>`:''}
+      </div>
+    </div>` : ''}
+
+    <!-- EXERCISES -->
+    ${exercises.length ? `<div>
+      <div style="font-size:0.85rem;font-weight:700;margin-bottom:8px">💪 תרגילים (${exercises.length})</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        ${exercises.slice(0,10).map(e=>`<span style="background:rgba(124,111,255,0.08);border:1px solid rgba(124,111,255,0.2);border-radius:20px;padding:4px 10px;font-size:0.78rem">${e.name}</span>`).join('')}
+        ${exercises.length>10?`<span style="color:var(--muted);font-size:0.78rem">+${exercises.length-10} נוספים</span>`:''}
+      </div>
+    </div>` : ''}
+  `;
+}
+
+let _autoSaveTimer = null;
+function autoSaveTrainee() {
+  const status = document.getElementById('autoSaveStatus');
+  if (status) status.textContent = '...שומר';
+  clearTimeout(_autoSaveTimer);
+  _autoSaveTimer = setTimeout(() => {
+    const u = (appDB?.users||[]).find(u => u.id === currentTraineeId);
+    if (!u) return;
+    const name = document.getElementById('te_name')?.value.trim();
+    if (name) u.name = name;
+    u.goal = document.getElementById('te_goal')?.value.trim() || '';
+    const sw = parseFloat(document.getElementById('te_sw')?.value);
+    if (sw) u.startWeight = sw;
+    const tw = parseFloat(document.getElementById('te_tw')?.value);
+    if (tw) u.targetWeight = tw;
+    saveAppDB();
+    if (status) status.textContent = '✓ נשמר אוטומטית';
+    setTimeout(() => { if (status) status.textContent = ''; }, 2000);
+  }, 800);
+}
+
 // ─── Tab switching ─────────────────────────────
-function showTab(name) {
+function showTab(name, fromCard) {
   document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   const tabs = ['overview','coaches','trainees','activity','bugs'];
   const idx = tabs.indexOf(name);
   document.querySelectorAll('.nav-tab')[idx]?.classList.add('active');
-  if (name === 'overview') { setTimeout(renderCharts, 80); }
+  // Show/hide back buttons
+  ['coaches','trainees','activity','bugs'].forEach(t => {
+    const btn = document.getElementById('back-' + t);
+    if (btn) btn.classList.toggle('visible', t === name && !!fromCard);
+  });
+  if (name === 'overview') {
+    editMode = false;
+    const eb = document.getElementById('editModeBtn');
+    if (eb) eb.textContent = '✏️ ערוך';
+    renderStats();
+    setTimeout(renderCharts, 80);
+  }
 }
 
 // ─── Search ───────────────────────────────────
