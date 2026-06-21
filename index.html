@@ -1155,6 +1155,7 @@ input, textarea, select, button { font-family: inherit; }
     <button class="tab-btn has-dot" data-panel="coach-chat" id="coachChatTab" onclick="switchTab(this,'coach')">
       <span class="unread-badge"></span>💬 צ׳אט
     </button>
+    <button class="tab-btn" data-panel="coach-admin" id="adminDashTab" onclick="switchTab(this,'coach');renderAdminDash()" style="display:none">🛡️ Admin</button>
   </div>
 
   <div class="content">
@@ -1449,6 +1450,11 @@ input, textarea, select, button { font-family: inherit; }
           <button class="chat-send-btn" onclick="sendCoachMsg()">➤</button>
         </div>
       </div>
+    </div>
+
+    <!-- ADMIN DASHBOARD -->
+    <div class="tab-panel" id="coach-admin">
+      <div id="adminDashContent"></div>
     </div>
   </div>
 
@@ -2347,6 +2353,36 @@ function saveToFirestore(data) {
   } catch(e) { console.warn('saveToFirestore error:', e); }
 }
 
+function saveWeightLogToFirestore(userId, log) {
+  if (!fsDB) return;
+  try {
+    // Strip photos to keep Firestore docs small
+    const slim = log.map(e => ({ id: e.id, date: e.date, weight: e.weight, timestamp: e.timestamp }));
+    fsDB.collection('weight_logs').doc(userId).set({
+      userId, log: slim, updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(e => console.warn('Weight log Firestore error:', e));
+  } catch(e) { console.warn('saveWeightLogToFirestore error:', e); }
+}
+
+function saveChatStatToFirestore(coachId, traineeId, responseTimeMs) {
+  if (!fsDB) return;
+  try {
+    const docRef = fsDB.collection('chat_stats').doc(coachId + '__' + traineeId);
+    docRef.get().then(snap => {
+      const prev = snap.exists ? snap.data() : { responseCount: 0, totalResponseMs: 0 };
+      const newCount = (prev.responseCount || 0) + 1;
+      const newTotal = (prev.totalResponseMs || 0) + (responseTimeMs || 0);
+      docRef.set({
+        coachId, traineeId,
+        responseCount: newCount,
+        totalResponseMs: newTotal,
+        avgResponseMs: Math.round(newTotal / newCount),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }).catch(e => console.warn('chat_stats read error:', e));
+  } catch(e) { console.warn('saveChatStatToFirestore error:', e); }
+}
+
 // Start Firebase after page loads
 window.addEventListener('load', () => { try { initFirebase(); } catch(e) {} checkFaceIDButton(); });
 let timerInterval = null;
@@ -2588,6 +2624,7 @@ let timerSlideshowStarted = false;
 function enterApp(user) {
   currentUser = user;
   localStorage.setItem('tt_session_uid', user.id); // persist session
+  el('bugReportBtn').style.display = '';
   showScreen(user.role === 'coach' ? 'coachScreen' : 'traineeScreen');
   if (user.role === 'coach') initCoach();
   else {
@@ -2605,8 +2642,175 @@ function doLogout() {
   if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
   workoutStart = null; currentUser = null; editingTraineeId = null; chatTraineeId = null;
   localStorage.removeItem('tt_session_uid');
+  el('bugReportBtn').style.display = 'none';
   resetTimerUI();
   showScreen('authScreen');
+}
+
+// ════════════════════════════════════════════════
+//  BUG REPORTS
+// ════════════════════════════════════════════════
+function openBugReport() { openModal('bugReportModal'); }
+
+function submitBugReport() {
+  const subject = el('bugSubject')?.value?.trim();
+  const details = el('bugDetails')?.value?.trim();
+  if (!subject) { alert('נא להזין נושא'); return; }
+  const report = {
+    id: uid(),
+    userId: currentUser?.id || 'unknown',
+    userName: currentUser?.name || 'unknown',
+    userEmail: currentUser?.email || 'unknown',
+    userRole: currentUser?.role || 'unknown',
+    subject,
+    details,
+    createdAt: new Date().toISOString()
+  };
+  // Save to Firestore
+  if (fsDB) {
+    fsDB.collection('bug_reports').add(report)
+      .then(() => { showSaveFeedback('תודה! הדיווח נשלח ✓'); closeModal('bugReportModal'); el('bugSubject').value=''; el('bugDetails').value=''; })
+      .catch(() => { alert('שגיאה בשליחה — נסה שוב'); });
+  } else {
+    // Fallback: save locally
+    const reports = JSON.parse(localStorage.getItem('bug_reports')||'[]');
+    reports.push(report);
+    localStorage.setItem('bug_reports', JSON.stringify(reports));
+    showSaveFeedback('תודה! הדיווח נשמר ✓');
+    closeModal('bugReportModal');
+    el('bugSubject').value=''; el('bugDetails').value='';
+  }
+}
+
+// ════════════════════════════════════════════════
+//  ADMIN DASHBOARD
+// ════════════════════════════════════════════════
+function renderAdminDash() {
+  const isAdmin = currentUser?.email?.toLowerCase() === 'admin@admin.com';
+  if (!isAdmin) return;
+  const coaches = db.users.filter(u => u.role === 'coach' && u.email !== 'admin@admin.com');
+  const trainees = db.users.filter(u => u.role === 'trainee');
+
+  // Compute trainee stats
+  function traineeStats(t) {
+    const log = JSON.parse(localStorage.getItem('progress_log_' + t.id) || '[]');
+    const workouts = log.length;
+    const totalMin = log.reduce((s, e) => s + (e.duration || 0), 0);
+    const lastWorkout = log.length ? log[log.length - 1].date : null;
+    return { workouts, totalMin, lastWorkout };
+  }
+
+  const coachHTML = coaches.map(c => {
+    const myTrainees = trainees.filter(t => t.coachId === c.id);
+    return `<tr>
+      <td style="padding:8px 12px">${c.name}</td>
+      <td style="padding:8px 12px">${c.email}</td>
+      <td style="padding:8px 12px;text-align:center">${myTrainees.length}</td>
+      <td style="padding:8px 12px;text-align:center">${myTrainees.reduce((s,t)=>s+(traineeStats(t).workouts),0)}</td>
+    </tr>`;
+  }).join('');
+
+  const traineeHTML = trainees.map(t => {
+    const coach = db.users.find(u => u.id === t.coachId);
+    const stats = traineeStats(t);
+    return `<tr>
+      <td style="padding:8px 12px">${t.name}</td>
+      <td style="padding:8px 12px">${coach?.name || '—'}</td>
+      <td style="padding:8px 12px;text-align:center">${stats.workouts}</td>
+      <td style="padding:8px 12px;text-align:center">${Math.round(stats.totalMin)}</td>
+      <td style="padding:8px 12px">${stats.lastWorkout || '—'}</td>
+    </tr>`;
+  }).join('');
+
+  // Load bug reports from Firestore
+  const bugSection = `<div class="card" style="margin-top:16px">
+    <div class="card-header"><span class="card-title">🐛 דיווחי בעיות</span></div>
+    <div id="adminBugList"><div class="empty-state"><p>טוען...</p></div></div>
+  </div>`;
+
+  el('adminDashContent').innerHTML = `
+    <div class="card">
+      <div class="card-header"><span class="card-title">📊 סטטיסטיקות מערכת</span></div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;padding:8px 0">
+        <div style="background:var(--surface2);border-radius:12px;padding:14px 20px;flex:1;min-width:120px;text-align:center">
+          <div style="font-size:1.8rem;font-weight:700;color:var(--primary)">${coaches.length}</div>
+          <div style="font-size:0.8rem;color:var(--text-muted)">מאמנים</div>
+        </div>
+        <div style="background:var(--surface2);border-radius:12px;padding:14px 20px;flex:1;min-width:120px;text-align:center">
+          <div style="font-size:1.8rem;font-weight:700;color:#64E2B7">${trainees.length}</div>
+          <div style="font-size:0.8rem;color:var(--text-muted)">מתאמנים</div>
+        </div>
+        <div style="background:var(--surface2);border-radius:12px;padding:14px 20px;flex:1;min-width:120px;text-align:center">
+          <div style="font-size:1.8rem;font-weight:700;color:#FFB547">${trainees.reduce((s,t)=>s+traineeStats(t).workouts,0)}</div>
+          <div style="font-size:0.8rem;color:var(--text-muted)">אימונים שבוצעו</div>
+        </div>
+        <div style="background:var(--surface2);border-radius:12px;padding:14px 20px;flex:1;min-width:120px;text-align:center">
+          <div style="font-size:1.8rem;font-weight:700;color:#F472B6">${Math.round(trainees.reduce((s,t)=>s+traineeStats(t).totalMin,0))}</div>
+          <div style="font-size:0.8rem;color:var(--text-muted)">דקות אימון סה"כ</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="card-header"><span class="card-title">🧑‍💼 מאמנים</span></div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:0.85rem">
+          <thead><tr style="border-bottom:1px solid var(--border);color:var(--text-muted)">
+            <th style="padding:8px 12px;text-align:right">שם</th>
+            <th style="padding:8px 12px;text-align:right">מייל</th>
+            <th style="padding:8px 12px;text-align:center">מתאמנים</th>
+            <th style="padding:8px 12px;text-align:center">אימונים של מתאמניו</th>
+          </tr></thead>
+          <tbody>${coachHTML || '<tr><td colspan="4" style="padding:16px;text-align:center;color:var(--text-muted)">אין מאמנים</td></tr>'}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="card-header"><span class="card-title">🏃 מתאמנים</span></div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:0.85rem">
+          <thead><tr style="border-bottom:1px solid var(--border);color:var(--text-muted)">
+            <th style="padding:8px 12px;text-align:right">שם</th>
+            <th style="padding:8px 12px;text-align:right">מאמן</th>
+            <th style="padding:8px 12px;text-align:center">אימונים</th>
+            <th style="padding:8px 12px;text-align:center">סה"כ דקות</th>
+            <th style="padding:8px 12px;text-align:right">אימון אחרון</th>
+          </tr></thead>
+          <tbody>${traineeHTML || '<tr><td colspan="5" style="padding:16px;text-align:center;color:var(--text-muted)">אין מתאמנים</td></tr>'}</tbody>
+        </table>
+      </div>
+    </div>
+    ${bugSection}
+  `;
+
+  // Load bug reports from Firestore
+  if (fsDB) {
+    fsDB.collection('bug_reports').orderBy('createdAt', 'desc').limit(50).get()
+      .then(snap => {
+        if (snap.empty) { el('adminBugList').innerHTML = '<div style="padding:12px;color:var(--text-muted);font-size:0.85rem">אין דיווחים</div>'; return; }
+        el('adminBugList').innerHTML = snap.docs.map(d => {
+          const r = d.data();
+          return `<div style="border-bottom:1px solid var(--border);padding:10px 0">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-weight:600">${r.subject}</span>
+              <span style="font-size:0.75rem;color:var(--text-muted)">${r.createdAt?.slice(0,10)||''}</span>
+            </div>
+            <div style="font-size:0.82rem;color:var(--text-muted);margin-top:4px">${r.userName} (${r.userRole}) · ${r.userEmail}</div>
+            ${r.details ? `<div style="font-size:0.85rem;margin-top:6px">${r.details}</div>` : ''}
+          </div>`;
+        }).join('');
+      })
+      .catch(() => { el('adminBugList').innerHTML = '<div style="padding:12px;color:var(--text-muted)">שגיאה בטעינה</div>'; });
+  } else {
+    const reports = JSON.parse(localStorage.getItem('bug_reports')||'[]').reverse();
+    if (!reports.length) { el('adminBugList').innerHTML = '<div style="padding:12px;color:var(--text-muted)">אין דיווחים</div>'; return; }
+    el('adminBugList').innerHTML = reports.map(r => `<div style="border-bottom:1px solid var(--border);padding:10px 0">
+      <div style="display:flex;justify-content:space-between"><span style="font-weight:600">${r.subject}</span><span style="font-size:0.75rem;color:var(--text-muted)">${r.createdAt?.slice(0,10)||''}</span></div>
+      <div style="font-size:0.82rem;color:var(--text-muted)">${r.userName} · ${r.userEmail}</div>
+      ${r.details ? `<div style="font-size:0.85rem;margin-top:4px">${r.details}</div>` : ''}
+    </div>`).join('');
+  }
 }
 
 // Auto-login from persisted session
@@ -2704,6 +2908,10 @@ function initCoach() {
   initCoachChat();
   checkCoachUnread();
   renderExerciseBank();
+  if (currentUser.email.toLowerCase() === 'admin@admin.com') {
+    const adminTab = el('adminDashTab');
+    if (adminTab) adminTab.style.display = '';
+  }
   // Seed exercise bank if empty for this coach
   if (!db.exerciseBank || !db.exerciseBank.some(e => e.coachId === currentUser.id)) {
     const seed = defaultDB();
@@ -3672,6 +3880,7 @@ function saveWeightUpdate() {
   const log = JSON.parse(localStorage.getItem(logKey)||'[]');
   log.push({ id: uid(), date: dateKey(new Date()), weight: w, photo: photoSrc, timestamp: Date.now() });
   localStorage.setItem(logKey, JSON.stringify(log));
+  saveWeightLogToFirestore(currentUser.id, log);
   // Update startWeight on user
   const u = getUser(currentUser.id);
   if (u) { u.startWeight = w; currentUser.startWeight = w; }
@@ -3699,6 +3908,7 @@ function deleteProgressEntry(entryId) {
   const logKey = 'progress_log_' + currentUser.id;
   const log = JSON.parse(localStorage.getItem(logKey)||'[]').filter(e=>e.id!==entryId);
   localStorage.setItem(logKey, JSON.stringify(log));
+  saveWeightLogToFirestore(currentUser.id, log);
   renderProgressLog();
   checkWeeklyReminder();
 }
@@ -4814,10 +5024,22 @@ function getMessages(coachId, traineeId) {
 function pushMessage(coachId, traineeId, from, text, img, video) {
   const key = chatKey(coachId,traineeId);
   if (!db.chats[key]) db.chats[key] = [];
-  const msg = {from, text: text||'', ts: Date.now(), read: false};
+  const now = Date.now();
+  const msg = {from, text: text||'', ts: now, read: false};
   if (img) msg.img = img;
   if (video) msg.video = video;
   db.chats[key].push(msg);
+  // Track coach response time: find last trainee message before this coach reply
+  if (from === 'coach') {
+    const msgs = db.chats[key];
+    let lastTraineeTs = null;
+    for (let i = msgs.length - 2; i >= 0; i--) {
+      if (msgs[i].from === 'trainee') { lastTraineeTs = msgs[i].ts; break; }
+    }
+    if (lastTraineeTs) {
+      saveChatStatToFirestore(coachId, traineeId, now - lastTraineeTs);
+    }
+  }
   saveDB();
 }
 
@@ -5334,5 +5556,24 @@ window.addEventListener('beforeinstallprompt', e => {
   deferredPrompt = e;
 });
 </script>
+
+<!-- FLOATING BUG REPORT BUTTON -->
+<button id="bugReportBtn" onclick="openBugReport()" style="display:none;position:fixed;bottom:90px;left:16px;z-index:7000;width:44px;height:44px;border-radius:50%;background:rgba(255,100,100,0.15);border:1px solid rgba(255,100,100,0.4);color:#ff6464;font-size:1.2rem;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,0.3)" title="דווח על בעיה">🐛</button>
+
+<!-- BUG REPORT MODAL -->
+<div id="bugReportModal" class="modal-overlay" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">🐛 דיווח על בעיה</span>
+      <button class="close-btn" onclick="closeModal('bugReportModal')">×</button>
+    </div>
+    <div class="form-group"><label>נושא</label><input id="bugSubject" placeholder="תיאור קצר של הבעיה"></div>
+    <div class="form-group"><label>פירוט</label><textarea id="bugDetails" rows="4" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px;color:var(--text);font-size:0.9rem;resize:vertical" placeholder="מה קרה? מתי? על איזה מסך?"></textarea></div>
+    <div class="flex-between mt-12 gap-8">
+      <button class="btn btn-ghost" onclick="closeModal('bugReportModal')">ביטול</button>
+      <button class="btn btn-primary" onclick="submitBugReport()">שלח דיווח</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
