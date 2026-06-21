@@ -94,11 +94,26 @@
 :root {
   --primary: #7C6FFF;
   --primary-dark: #5549e8;
-  --primary-glow: rgba(124,111,255,0.35);
+  --primary-glow: rgba(124,111,255,0.2);
   --secondary: #FF6B9D;
-  --success: #3ECFAD;
+  --success: #2CB88A;
   --warning: #FFB547;
   --danger: #FF5B5B;
+  --bg: #F4F4FA;
+  --surface: #FFFFFF;
+  --surface2: #EEEEF8;
+  --surface3: #E4E4F4;
+  --text: #1A1A2E;
+  --text-muted: #6B6B8A;
+  --border: #DDDDF0;
+  --border-light: #E8E8F5;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 4px 20px rgba(0,0,0,0.08);
+  --shadow-glow: 0 0 30px rgba(124,111,255,0.15);
+}
+body.dark {
+  --primary-glow: rgba(124,111,255,0.35);
   --bg: #0A0A14;
   --surface: #13131F;
   --surface2: #1C1C2E;
@@ -107,8 +122,6 @@
   --text-muted: #7878A0;
   --border: #252540;
   --border-light: #2E2E50;
-  --radius: 16px;
-  --radius-sm: 10px;
   --shadow: 0 8px 32px rgba(0,0,0,0.5);
   --shadow-glow: 0 0 40px rgba(124,111,255,0.2);
 }
@@ -1142,6 +1155,7 @@ input, textarea, select, button { font-family: inherit; }
     <div class="topnav-right">
       <span class="topnav-user" id="coachNavName"></span>
       <div class="topnav-avatar" id="coachAvatar"></div>
+      <button class="logout-btn" id="themeToggleCoach" onclick="toggleTheme()" title="עבור למצב לילה/יום" style="font-size:1.1rem;padding:5px 10px">☀️</button>
       <button class="logout-btn" onclick="doLogout()">יציאה</button>
     </div>
   </nav>
@@ -1156,6 +1170,7 @@ input, textarea, select, button { font-family: inherit; }
       <span class="unread-badge"></span>💬 צ׳אט
     </button>
     <button class="tab-btn" data-panel="coach-admin" id="adminDashTab" onclick="switchTab(this,'coach');renderAdminDash()" style="display:none">🛡️ Admin</button>
+    <button class="tab-btn" data-panel="coach-bug" onclick="switchTab(this,'coach')">🐛 דיווח</button>
   </div>
 
   <div class="content">
@@ -1456,6 +1471,11 @@ input, textarea, select, button { font-family: inherit; }
     <div class="tab-panel" id="coach-admin">
       <div id="adminDashContent"></div>
     </div>
+
+    <!-- BUG REPORT TAB (coach) -->
+    <div class="tab-panel" id="coach-bug">
+      <div id="coachBugPanel"></div>
+    </div>
   </div>
 
   <!-- Bottom nav (mobile) -->
@@ -1491,6 +1511,7 @@ input, textarea, select, button { font-family: inherit; }
     <div class="topnav-right">
       <span class="topnav-user" id="traineeNavName"></span>
       <div class="topnav-avatar" id="traineeAvatar"></div>
+      <button class="logout-btn" id="themeToggleTrainee" onclick="toggleTheme()" title="עבור למצב לילה/יום" style="font-size:1.1rem;padding:5px 10px">☀️</button>
       <button class="logout-btn" onclick="doLogout()">יציאה</button>
     </div>
   </nav>
@@ -1504,6 +1525,7 @@ input, textarea, select, button { font-family: inherit; }
     <button class="tab-btn" data-panel="t-history" onclick="switchTab(this,'trainee')">📅 היסטוריה</button>
     <button class="tab-btn" data-panel="t-reminders" onclick="switchTab(this,'trainee');renderReminderSettings()">⏰ תזכורות</button>
     <button class="tab-btn" data-panel="t-achievements" onclick="switchTab(this,'trainee');renderAchievementsTab()">🏆 הישגים</button>
+    <button class="tab-btn" data-panel="t-bug" onclick="switchTab(this,'trainee')">🐛 דיווח</button>
   </div>
 
   <div class="content">
@@ -1701,6 +1723,11 @@ input, textarea, select, button { font-family: inherit; }
     <!-- ACHIEVEMENTS TAB -->
     <div id="t-achievements" class="tab-panel">
       <div id="achievementsTabBody"></div>
+    </div>
+
+    <!-- BUG REPORT TAB (trainee) -->
+    <div class="tab-panel" id="t-bug">
+      <div id="traineeBugPanel"></div>
     </div>
   </div>
 
@@ -2383,6 +2410,20 @@ function saveChatStatToFirestore(coachId, traineeId, responseTimeMs) {
   } catch(e) { console.warn('saveChatStatToFirestore error:', e); }
 }
 
+// ── Theme (light/dark) ──
+function applyTheme(dark) {
+  document.body.classList.toggle('dark', dark);
+  const icon = dark ? '🌙' : '☀️';
+  ['themeToggleCoach','themeToggleTrainee'].forEach(id => { const b = el(id); if(b) b.textContent = icon; });
+}
+function toggleTheme() {
+  const isDark = !document.body.classList.contains('dark');
+  localStorage.setItem('tt_theme', isDark ? 'dark' : 'light');
+  applyTheme(isDark);
+}
+// Apply saved preference immediately
+(function() { applyTheme(localStorage.getItem('tt_theme') === 'dark'); })();
+
 // Start Firebase after page loads
 window.addEventListener('load', () => { try { initFirebase(); } catch(e) {} checkFaceIDButton(); });
 let timerInterval = null;
@@ -2461,11 +2502,48 @@ async function doLogin() {
   const pHash = await sha256(pass);
   const user  = db.users.find(u => u.email.toLowerCase() === email && u.password === pHash);
   if (!user) { showError('loginError','מייל או סיסמא שגויים'); return; }
+  // Admin gets user picker instead of direct app entry
+  if (email === 'admin@admin.com') { showAdminUserPicker(); return; }
   enterApp(user);
-  // Offer Face ID registration after successful login
   if (window.PublicKeyCredential && !localStorage.getItem('faceId_cred_' + user.id)) {
     setTimeout(() => offerFaceIDRegistration(user), 800);
   }
+}
+
+function showAdminUserPicker() {
+  const users = db.users.filter(u => u.email.toLowerCase() !== 'admin@admin.com');
+  const coaches = users.filter(u => u.role === 'coach');
+  const trainees = users.filter(u => u.role === 'trainee');
+  const modal = document.createElement('div');
+  modal.id = 'adminPickerOverlay';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;padding:20px';
+  modal.innerHTML = `
+    <div style="background:var(--surface);border-radius:20px;padding:28px;width:100%;max-width:420px;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow)">
+      <div style="font-size:1.2rem;font-weight:700;margin-bottom:4px">🛡️ Admin — בחר משתמש</div>
+      <div style="font-size:0.83rem;color:var(--text-muted);margin-bottom:20px">בחר משתמש להיכנס בתור</div>
+      ${coaches.length ? `<div style="font-size:0.78rem;color:var(--text-muted);font-weight:600;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em">מאמנים</div>
+      ${coaches.map(u => `<div onclick="adminLoginAs('${u.id}')" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;cursor:pointer;border:1px solid var(--border-light);margin-bottom:8px;transition:background 0.15s" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
+        <div style="width:38px;height:38px;border-radius:50%;background:rgba(124,111,255,0.15);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary);font-size:0.9rem;flex-shrink:0">${(u.name||'?')[0]}</div>
+        <div><div style="font-weight:600;font-size:0.92rem">${u.name}</div><div style="font-size:0.78rem;color:var(--text-muted)">${u.email}</div></div>
+        <div style="margin-right:auto;font-size:0.75rem;background:rgba(124,111,255,0.1);color:var(--primary);padding:2px 8px;border-radius:10px">מאמן</div>
+      </div>`).join('')}` : ''}
+      ${trainees.length ? `<div style="font-size:0.78rem;color:var(--text-muted);font-weight:600;margin-bottom:8px;margin-top:12px;text-transform:uppercase;letter-spacing:0.05em">מתאמנים</div>
+      ${trainees.map(u => `<div onclick="adminLoginAs('${u.id}')" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;cursor:pointer;border:1px solid var(--border-light);margin-bottom:8px;transition:background 0.15s" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
+        <div style="width:38px;height:38px;border-radius:50%;background:rgba(100,226,183,0.15);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--success);font-size:0.9rem;flex-shrink:0">${(u.name||'?')[0]}</div>
+        <div><div style="font-weight:600;font-size:0.92rem">${u.name}</div><div style="font-size:0.78rem;color:var(--text-muted)">${u.email}</div></div>
+        <div style="margin-right:auto;font-size:0.75rem;background:rgba(62,207,173,0.1);color:var(--success);padding:2px 8px;border-radius:10px">מתאמן</div>
+      </div>`).join('')}` : ''}
+      ${!users.length ? '<div style="color:var(--text-muted);text-align:center;padding:20px">אין משתמשים במערכת</div>' : ''}
+      <button onclick="document.getElementById(\'adminPickerOverlay\').remove()" style="width:100%;margin-top:8px;padding:10px;border-radius:10px;border:1px solid var(--border-light);background:none;color:var(--text-muted);cursor:pointer;font-size:0.9rem">ביטול</button>
+    </div>`;
+  document.body.appendChild(modal);
+}
+
+function adminLoginAs(userId) {
+  const overlay = document.getElementById('adminPickerOverlay');
+  if (overlay) overlay.remove();
+  const user = db.users.find(u => u.id === userId);
+  if (user) enterApp(user);
 }
 
 // ════════════ FACE ID / WebAuthn ════════════
@@ -2624,7 +2702,6 @@ let timerSlideshowStarted = false;
 function enterApp(user) {
   currentUser = user;
   localStorage.setItem('tt_session_uid', user.id); // persist session
-  el('bugReportBtn').style.display = '';
   showScreen(user.role === 'coach' ? 'coachScreen' : 'traineeScreen');
   if (user.role === 'coach') initCoach();
   else {
@@ -2642,7 +2719,6 @@ function doLogout() {
   if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
   workoutStart = null; currentUser = null; editingTraineeId = null; chatTraineeId = null;
   localStorage.removeItem('tt_session_uid');
-  el('bugReportBtn').style.display = 'none';
   resetTimerUI();
   showScreen('authScreen');
 }
@@ -2650,8 +2726,107 @@ function doLogout() {
 // ════════════════════════════════════════════════
 //  BUG REPORTS
 // ════════════════════════════════════════════════
-function openBugReport() { openModal('bugReportModal'); }
+function renderBugReportPanel(containerId) {
+  const now = new Date();
+  const localDT = new Date(now.getTime() - now.getTimezoneOffset()*60000).toISOString().slice(0,16);
+  const c = el(containerId);
+  if (!c) return;
+  c.innerHTML = `
+    <div style="max-width:520px;margin:0 auto;padding:8px 0">
+      <div style="font-size:1.1rem;font-weight:700;margin-bottom:4px">🐛 דיווח על בעיה</div>
+      <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:20px">הדיווח יישלח ישירות למנהל המערכת</div>
 
+      <div class="form-group">
+        <label>מתי נתקלת בבעיה?</label>
+        <input type="datetime-local" id="bugWhen" value="${localDT}" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-size:0.9rem">
+      </div>
+
+      <div class="form-group">
+        <label>נושא הבעיה</label>
+        <input id="bugSubject2" placeholder="תיאור קצר של הבעיה" style="width:100%">
+      </div>
+
+      <div class="form-group">
+        <label>פירוט</label>
+        <textarea id="bugDetails2" rows="5" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px;color:var(--text);font-size:0.9rem;resize:vertical" placeholder="מה קרה? על איזה מסך? מה ניסית לעשות?"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>צילום מסך (אופציונלי)</label>
+        <div style="border:1px dashed var(--border);border-radius:10px;padding:16px;text-align:center;cursor:pointer" onclick="el('bugScreenshot').click()">
+          <div id="bugScreenshotPreview" style="display:none;margin-bottom:8px">
+            <img id="bugScreenshotImg" style="max-width:100%;max-height:200px;border-radius:8px">
+          </div>
+          <div id="bugScreenshotPlaceholder" style="color:var(--text-muted);font-size:0.85rem">📎 לחץ להוספת תמונה</div>
+          <input type="file" id="bugScreenshot" accept="image/*" style="display:none" onchange="previewBugScreenshot(this)">
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="btn btn-ghost" style="flex:1" onclick="clearBugForm()">נקה</button>
+        <button class="btn btn-primary" style="flex:2" onclick="submitBugReport2()">📤 שלח דיווח</button>
+      </div>
+      <div id="bugSendStatus" style="margin-top:10px;text-align:center;font-size:0.85rem;min-height:20px"></div>
+    </div>
+  `;
+}
+
+function previewBugScreenshot(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    el('bugScreenshotImg').src = e.target.result;
+    el('bugScreenshotPreview').style.display = '';
+    el('bugScreenshotPlaceholder').textContent = '✓ תמונה נבחרה (לחץ להחלפה)';
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearBugForm() {
+  const s = el('bugSubject2'); if(s) s.value='';
+  const d = el('bugDetails2'); if(d) d.value='';
+  const f = el('bugScreenshot'); if(f) f.value='';
+  const p = el('bugScreenshotPreview'); if(p) p.style.display='none';
+  const ph = el('bugScreenshotPlaceholder'); if(ph) ph.textContent='📎 לחץ להוספת תמונה';
+  const st = el('bugSendStatus'); if(st) st.textContent='';
+}
+
+function submitBugReport2() {
+  const subject = el('bugSubject2')?.value?.trim();
+  const details = el('bugDetails2')?.value?.trim();
+  const when = el('bugWhen')?.value || new Date().toISOString();
+  const screenshotSrc = el('bugScreenshotImg')?.src && el('bugScreenshotPreview')?.style.display !== 'none' ? el('bugScreenshotImg').src : null;
+  if (!subject) { alert('נא להזין נושא'); return; }
+  const status = el('bugSendStatus');
+  if (status) status.textContent = 'שולח...';
+  const report = {
+    subject, details: details||'',
+    when: new Date(when).toISOString(),
+    screenshot: screenshotSrc,
+    userName: currentUser?.name||'',
+    userEmail: currentUser?.email||'',
+    userRole: currentUser?.role||'',
+    createdAt: new Date().toISOString()
+  };
+  if (fsDB) {
+    fsDB.collection('bug_reports').add(report)
+      .then(() => {
+        if (status) status.innerHTML = '<span style="color:var(--success,#4caf50)">✓ הדיווח נשלח! תודה רבה</span>';
+        clearBugForm();
+      })
+      .catch(() => { if (status) status.textContent = 'שגיאה בשליחה — נסה שוב'; });
+  } else {
+    const reports = JSON.parse(localStorage.getItem('bug_reports')||'[]');
+    reports.push(report);
+    localStorage.setItem('bug_reports', JSON.stringify(reports));
+    if (status) status.innerHTML = '<span style="color:var(--success,#4caf50)">✓ נשמר מקומית</span>';
+    clearBugForm();
+  }
+}
+
+// Legacy (keep for admin modal compatibility)
+function openBugReport() { openModal('bugReportModal'); }
 function submitBugReport() {
   const subject = el('bugSubject')?.value?.trim();
   const details = el('bugDetails')?.value?.trim();
@@ -2881,6 +3056,8 @@ function switchTab(btn, role) {
   el(btn.dataset.panel).classList.add('active');
   if (btn.dataset.panel === 'coach-chat') { clearChatBadge('coach'); }
   if (btn.dataset.panel === 't-chat') { clearChatBadge('trainee'); }
+  if (btn.dataset.panel === 'coach-bug') { renderBugReportPanel('coachBugPanel'); }
+  if (btn.dataset.panel === 't-bug') { renderBugReportPanel('traineeBugPanel'); }
 }
 function switchTabMobile(btn, role) {
   const screen = role === 'coach' ? 'coachScreen' : 'traineeScreen';
@@ -2890,6 +3067,8 @@ function switchTabMobile(btn, role) {
   el(btn.dataset.panel).classList.add('active');
   if (btn.dataset.panel === 'coach-chat') { clearChatBadge('coach'); }
   if (btn.dataset.panel === 't-chat') { clearChatBadge('trainee'); }
+  if (btn.dataset.panel === 'coach-bug') { renderBugReportPanel('coachBugPanel'); }
+  if (btn.dataset.panel === 't-bug') { renderBugReportPanel('traineeBugPanel'); }
   // Also sync desktop tabs
   document.querySelectorAll(`#${screen} .tab-btn`).forEach(b => {
     b.classList.toggle('active', b.dataset.panel === btn.dataset.panel);
@@ -5557,23 +5736,5 @@ window.addEventListener('beforeinstallprompt', e => {
 });
 </script>
 
-<!-- FLOATING BUG REPORT BUTTON -->
-<button id="bugReportBtn" onclick="openBugReport()" style="display:none;position:fixed;bottom:90px;left:16px;z-index:7000;width:44px;height:44px;border-radius:50%;background:rgba(255,100,100,0.15);border:1px solid rgba(255,100,100,0.4);color:#ff6464;font-size:1.2rem;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,0.3)" title="דווח על בעיה">🐛</button>
-
-<!-- BUG REPORT MODAL -->
-<div id="bugReportModal" class="modal-overlay" style="display:none">
-  <div class="modal">
-    <div class="modal-header">
-      <span class="modal-title">🐛 דיווח על בעיה</span>
-      <button class="close-btn" onclick="closeModal('bugReportModal')">×</button>
-    </div>
-    <div class="form-group"><label>נושא</label><input id="bugSubject" placeholder="תיאור קצר של הבעיה"></div>
-    <div class="form-group"><label>פירוט</label><textarea id="bugDetails" rows="4" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px;color:var(--text);font-size:0.9rem;resize:vertical" placeholder="מה קרה? מתי? על איזה מסך?"></textarea></div>
-    <div class="flex-between mt-12 gap-8">
-      <button class="btn btn-ghost" onclick="closeModal('bugReportModal')">ביטול</button>
-      <button class="btn btn-primary" onclick="submitBugReport()">שלח דיווח</button>
-    </div>
-  </div>
-</div>
 </body>
 </html>
