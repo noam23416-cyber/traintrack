@@ -1626,11 +1626,11 @@ input, textarea, select, button { font-family: inherit; }
           <span class="cal-eaten" id="calEaten">0</span>
         </div>
         <div class="cal-row mt-4">
-          <span class="text-muted fs-sm">יעד יומי</span>
+          <span class="text-muted fs-sm" data-i18n="יעד יומי">יעד יומי</span>
           <span class="text-muted fs-sm" id="calTarget">0</span>
         </div>
         <div class="cal-row mt-4">
-          <span class="text-muted fs-sm">נותר</span>
+          <span class="text-muted fs-sm" data-i18n="נותר">נותר</span>
           <span id="calRemaining" style="font-size:0.85rem;font-weight:600;color:#64E2B7">0</span>
         </div>
         <div class="progress-bar-bg mt-8">
@@ -1640,7 +1640,7 @@ input, textarea, select, button { font-family: inherit; }
       </div>
       <!-- REMAINING MACROS -->
       <div class="card remaining-card" id="remainingMacrosCard" style="display:none">
-        <div class="card-title" style="margin-bottom:10px">⏳ נותר להשלים היום</div>
+        <div class="card-title" style="margin-bottom:10px" data-i18n="⏳ נותר להשלים היום">⏳ נותר להשלים היום</div>
         <div id="remainingMacrosBody"></div>
       </div>
       <!-- CHEAT DAY REMINDER -->
@@ -1656,7 +1656,7 @@ input, textarea, select, button { font-family: inherit; }
     <div class="tab-panel" id="t-chat">
       <div class="chat-container">
         <div class="chat-target-bar" style="justify-content:center">
-          <span style="color:var(--text-muted);font-size:0.85rem">💬 שיחה עם המאמן שלך</span>
+          <span style="color:var(--text-muted);font-size:0.85rem" data-i18n="💬 שיחה עם המאמן שלך">💬 שיחה עם המאמן שלך</span>
           <span id="traineeCoachName" style="font-weight:600;margin-right:8px"></span>
         </div>
         <div class="chat-messages" id="traineeChatMessages">
@@ -2568,6 +2568,28 @@ const TR = {
   'תמונת התקדמות (אופציונלי)':'Progress Photo (optional)',
   '💾 שמור עדכון':'💾 Save Update',
   'לא הוגדרה שעת אימון':'No workout time set',
+  'אין ארוחות מוגדרות':'No meals set',
+  'אין תוספים מוגדרים':'No supplements set',
+  'יעד יומי':'Daily Goal', 'נותר':'Remaining',
+  'יעד חלבון יומי':'Daily Protein Goal',
+  'משקל יעד:':'Target Weight:',
+  'הכנס משקל לחישוב יעד חלבון':'Enter weight to calculate protein goal',
+  '🥩 חלבון שנאכל':'🥩 Protein Consumed',
+  '⏳ נותר להשלים היום':'⏳ Remaining for Today',
+  'עדיין לא נרשם אוכל להיום':'No food logged today',
+  '💬 שיחה עם המאמן שלך':'💬 Chat with your coach',
+  'שיחה עם:':'Chat with:',
+  // Achievements
+  'התחלה':'Beginner', 'האימון הראשון שלך':'Your first workout',
+  '5 אימונים':'5 Workouts', 'חמישה אימונים הושלמו':'Complete 5 workouts',
+  '10 אימונים':'10 Workouts', 'עשרה אימונים — כל הכבוד!':'10 workouts — well done!',
+  '20 אימונים':'20 Workouts', 'עשרים אימונים — מרשים!':'20 workouts — impressive!',
+  '30 אימונים':'30 Workouts', 'שלושים אימונים — ספורטאי!':'30 workouts — athlete!',
+  '50 אימונים':'50 Workouts', 'חמישים אימונים — מקצוען!':'50 workouts — pro!',
+  '100 אימונים':'100 Workouts', 'מאה אימונים — אגדי!':'100 workouts — legendary!',
+  'שעה שלמה':'Full Hour', 'אימון מעל 60 דקות':'Workout over 60 min',
+  'שעה וחצי':'90 Minutes', 'אימון מעל 90 דקות':'Workout over 90 min',
+  'שעתיים!':'2 Hours!', 'אימון מעל 120 דקות':'Workout over 120 min',
   'שעת אימון נשמרה ✓':'Workout time saved ✓',
   // Chat empty state
   'שלח שאלה למאמן שלך!':'Send your coach a question!',
@@ -4734,7 +4756,7 @@ function renderFoodLog() {
   const totals = el('macroTotals');
   if (!list) return;
   if (!log.length) {
-    list.innerHTML = '<div style="color:var(--text-muted);font-size:0.85rem;padding:6px 0">עדיין לא נרשם אוכל להיום</div>';
+    list.innerHTML = `<div style="color:var(--text-muted);font-size:0.85rem;padding:6px 0">${t('עדיין לא נרשם אוכל להיום')}</div>`;
     if (totals) totals.style.display='none';
     return;
   }
@@ -4879,11 +4901,11 @@ function renderTraineeMenu() {
       const minP = (weight*1.6).toFixed(0);
       const maxP = (weight*2.2).toFixed(0);
       const targetW = currentUser.targetWeight;
-      protBar.innerHTML = `<div style="color:var(--text-muted)">יעד חלבון יומי</div>
-        <div style="font-weight:600;color:#FF6B9D">${minP}–${maxP}g <span style="font-weight:400;font-size:0.78rem;color:var(--text-muted)">(${weight}ק"ג × 1.6–2.2)</span></div>
-        ${targetW ? `<div style="font-size:0.78rem;color:var(--text-muted)">משקל יעד: <b style="color:#64E2B7">${targetW} ק"ג</b></div>` : ''}`;
+      protBar.innerHTML = `<div style="color:var(--text-muted)">${t('יעד חלבון יומי')}</div>
+        <div style="font-weight:600;color:#FF6B9D">${minP}–${maxP}g <span style="font-weight:400;font-size:0.78rem;color:var(--text-muted)">(${weight}${t('ק"ג')} × 1.6–2.2)</span></div>
+        ${targetW ? `<div style="font-size:0.78rem;color:var(--text-muted)">${t('משקל יעד:')} <b style="color:#64E2B7">${targetW} ${t('ק"ג')}</b></div>` : ''}`;
     } else {
-      protBar.innerHTML = `<div style="color:var(--text-muted);font-size:0.8rem">הכנס משקל לחישוב יעד חלבון</div>`;
+      protBar.innerHTML = `<div style="color:var(--text-muted);font-size:0.8rem">${t('הכנס משקל לחישוב יעד חלבון')}</div>`;
     }
   }
 
@@ -4894,7 +4916,7 @@ function renderTraineeMenu() {
     const pct = Math.min(100, (foodLogProtein/minP)*100).toFixed(0);
     protSummary.style.display = '';
     protSummary.innerHTML = `<div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:4px">
-      <span>🥩 חלבון שנאכל</span>
+      <span>${t('🥩 חלבון שנאכל')}</span>
       <span style="font-weight:600;color:#FF6B9D">${foodLogProtein.toFixed(1)}g / ${(weight*1.6).toFixed(0)}–${(weight*2.2).toFixed(0)}g</span>
     </div>
     <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%;background:linear-gradient(90deg,#FF6B9D,#A78BFA)"></div></div>`;
@@ -5535,10 +5557,10 @@ function renderAchievementsTab() {
               <div style="font-size:1.9rem;min-width:36px;text-align:center">${a.earned?a.emoji:'🔒'}</div>
               <div style="flex:1">
                 <div style="display:flex;justify-content:space-between;align-items:baseline">
-                  <div style="font-weight:700;font-size:0.9rem">${a.title}</div>
+                  <div style="font-weight:700;font-size:0.9rem">${t(a.title)}</div>
                   <div style="font-size:0.78rem;font-weight:700;color:${a.earned?'#FFB547':'var(--text-muted)'}">+${a.pts} XP</div>
                 </div>
-                <div style="font-size:0.75rem;color:var(--text-muted)">${a.desc}</div>
+                <div style="font-size:0.75rem;color:var(--text-muted)">${t(a.desc)}</div>
               </div>
             </div>
             ${!a.earned ? `<div>
@@ -6033,9 +6055,9 @@ function sendNotif(title, body) {
 
 function saveWorkoutReminder() {
   const inp = el('workoutTimeInput');
-  const t = inp?.value;
-  if (!t) { showSaveFeedback('⚠️ בחר שעה תחילה'); return; }
-  currentUser.workoutReminder = t;
+  const timeVal = inp?.value;
+  if (!timeVal) { showSaveFeedback('⚠️ בחר שעה תחילה'); return; }
+  currentUser.workoutReminder = timeVal;
   saveDB();
   renderReminderSettings();
   showSaveFeedback(t('שעת אימון נשמרה ✓'));
@@ -6053,7 +6075,9 @@ function renderReminderSettings() {
   const inp = el('workoutTimeInput');
   const status = el('workoutReminderStatus');
   if (inp && currentUser.workoutReminder) inp.value = currentUser.workoutReminder;
-  if (status) status.textContent = currentUser.workoutReminder ? `תזכורת: חצי שעה לפני ובשעה ${currentUser.workoutReminder}` : 'לא הוגדרה שעת אימון';
+  if (status) status.textContent = currentUser.workoutReminder
+    ? (currentLang==='en' ? `Reminder: 30 min before and at ${currentUser.workoutReminder}` : `תזכורת: חצי שעה לפני ובשעה ${currentUser.workoutReminder}`)
+    : t('לא הוגדרה שעת אימון');
   updateNotifPermUI();
   renderMealRemindersList();
   renderSuppRemindersList();
@@ -6067,7 +6091,7 @@ function renderMealRemindersList() {
       <input type="time" value="${m.time||'08:00'}" onchange="updateMealReminder(${i},'time',this.value)" style="padding:6px 10px;background:rgba(255,255,255,0.07);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.85rem">
       <input type="text" value="${m.label||''}" placeholder="שם ארוחה" onchange="updateMealReminder(${i},'label',this.value)" style="padding:6px 10px;background:rgba(255,255,255,0.07);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.85rem;flex:1">
       <button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="removeMealReminder(${i})">✕</button>
-    </div>`).join('') || '<div style="font-size:0.82rem;color:var(--text-muted)">אין ארוחות מוגדרות</div>';
+    </div>`).join('') || `<div style="font-size:0.82rem;color:var(--text-muted)">${t('אין ארוחות מוגדרות')}</div>`;
 }
 
 function addMealReminderRow() {
@@ -6093,7 +6117,7 @@ function renderSuppRemindersList() {
       <input type="time" value="${s.time||'07:00'}" onchange="updateSuppReminder(${i},'time',this.value)" style="padding:6px 10px;background:rgba(255,255,255,0.07);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.85rem">
       <input type="text" value="${s.label||''}" placeholder="שם תוסף" onchange="updateSuppReminder(${i},'label',this.value)" style="padding:6px 10px;background:rgba(255,255,255,0.07);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.85rem;flex:1">
       <button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="removeSuppReminder(${i})">✕</button>
-    </div>`).join('') || '<div style="font-size:0.82rem;color:var(--text-muted)">אין תוספים מוגדרים</div>';
+    </div>`).join('') || `<div style="font-size:0.82rem;color:var(--text-muted)">${t('אין תוספים מוגדרים')}</div>`;
 }
 
 function addSuppReminderRow() {
