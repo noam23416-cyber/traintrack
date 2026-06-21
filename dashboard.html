@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrainTrack — Admin Dashboard</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0F0F1A;
+    --surface: #1A1A2E;
+    --surface2: #22223A;
+    --border: rgba(255,255,255,0.08);
+    --primary: #7C6FFF;
+    --primary2: #64E2B7;
+    --accent: #FFB547;
+    --pink: #F472B6;
+    --red: #FF6464;
+    --text: #E8E8F0;
+    --muted: #888;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+  /* LOGIN */
+  #loginScreen {
+    display: flex; align-items: center; justify-content: center; min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 0%, rgba(124,111,255,0.15) 0%, transparent 70%);
+  }
+  .login-box {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+    padding: 40px; width: 340px; text-align: center;
+  }
+  .login-box h1 { font-size: 1.6rem; margin-bottom: 6px; }
+  .login-box p { color: var(--muted); font-size: 0.85rem; margin-bottom: 28px; }
+  .login-box input {
+    width: 100%; padding: 12px 16px; border-radius: 10px;
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); font-size: 0.95rem; margin-bottom: 12px; direction: ltr;
+  }
+  .btn-login {
+    width: 100%; padding: 13px; border-radius: 10px; border: none;
+    background: var(--primary); color: #fff; font-size: 1rem; font-weight: 700;
+    cursor: pointer; margin-top: 4px; transition: opacity 0.2s;
+  }
+  .btn-login:hover { opacity: 0.85; }
+  .login-err { color: var(--red); font-size: 0.85rem; margin-top: 10px; min-height: 20px; }
+
+  /* HEADER */
+  #appScreen { display: none; }
+  .header {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 0 28px; display: flex; align-items: center; justify-content: space-between;
+    height: 60px; position: sticky; top: 0; z-index: 100;
+  }
+  .header-logo { font-size: 1.1rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+  .header-right { display: flex; align-items: center; gap: 16px; }
+  .search-wrap { position: relative; }
+  .search-input {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 8px 16px 8px 36px; color: var(--text); font-size: 0.88rem; width: 240px; direction: rtl;
+  }
+  .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.9rem; }
+  .logout-btn {
+    background: none; border: 1px solid var(--border); border-radius: 8px;
+    color: var(--muted); padding: 6px 14px; cursor: pointer; font-size: 0.85rem;
+  }
+  .logout-btn:hover { border-color: var(--red); color: var(--red); }
+  .refresh-btn {
+    background: none; border: 1px solid var(--border); border-radius: 8px;
+    color: var(--muted); padding: 6px 14px; cursor: pointer; font-size: 0.85rem;
+  }
+  .refresh-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+  /* NAV TABS */
+  .nav-tabs {
+    display: flex; gap: 4px; padding: 16px 28px 0; background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-tab {
+    padding: 10px 20px; border-radius: 10px 10px 0 0; cursor: pointer;
+    font-size: 0.88rem; font-weight: 600; color: var(--muted);
+    background: none; border: none; border-bottom: 2px solid transparent; transition: all 0.2s;
+  }
+  .nav-tab.active { color: var(--primary); border-bottom-color: var(--primary); background: rgba(124,111,255,0.06); }
+  .nav-tab:hover:not(.active) { color: var(--text); }
+
+  /* MAIN */
+  .main { padding: 28px; max-width: 1400px; margin: 0 auto; }
+  .tab-section { display: none; }
+  .tab-section.active { display: block; }
+
+  /* STAT CARDS */
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 28px; }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px 24px; text-align: center;
+  }
+  .stat-num { font-size: 2.2rem; font-weight: 800; line-height: 1; }
+  .stat-label { color: var(--muted); font-size: 0.8rem; margin-top: 6px; }
+  .stat-icon { font-size: 1.4rem; margin-bottom: 8px; }
+
+  /* CHARTS ROW */
+  .charts-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-bottom: 28px; }
+  .chart-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px;
+  }
+  .chart-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 16px; color: var(--text); }
+  .chart-wrap { position: relative; height: 220px; }
+
+  /* TABLE */
+  .table-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; margin-bottom: 20px;
+  }
+  .table-header-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+  }
+  .table-title { font-size: 0.95rem; font-weight: 700; }
+  .table-count { background: var(--surface2); border-radius: 20px; padding: 3px 10px; font-size: 0.75rem; color: var(--muted); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  thead tr { background: var(--surface2); }
+  th { padding: 10px 16px; text-align: right; color: var(--muted); font-weight: 600; font-size: 0.8rem; white-space: nowrap; }
+  td { padding: 11px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+  .badge {
+    display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;
+  }
+  .badge-coach { background: rgba(124,111,255,0.15); color: var(--primary); }
+  .badge-trainee { background: rgba(100,226,183,0.15); color: var(--primary2); }
+  .badge-active { background: rgba(100,226,183,0.15); color: var(--primary2); }
+  .badge-inactive { background: rgba(255,255,255,0.06); color: var(--muted); }
+
+  /* PROGRESS BAR */
+  .prog-bar { height: 6px; border-radius: 3px; background: var(--surface2); overflow: hidden; min-width: 80px; }
+  .prog-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--primary), var(--primary2)); transition: width 0.4s; }
+
+  /* BUG REPORTS */
+  .bug-item { padding: 14px 20px; border-bottom: 1px solid var(--border); }
+  .bug-item:last-child { border-bottom: none; }
+  .bug-subject { font-weight: 600; margin-bottom: 4px; }
+  .bug-meta { font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; }
+  .bug-details { font-size: 0.85rem; color: rgba(255,255,255,0.7); background: var(--surface2); border-radius: 8px; padding: 8px 12px; }
+
+  /* EMPTY */
+  .empty { text-align: center; padding: 40px; color: var(--muted); font-size: 0.9rem; }
+
+  /* SEARCH HIGHLIGHT */
+  .hl { background: rgba(124,111,255,0.3); border-radius: 3px; padding: 0 2px; }
+
+  /* LOADING */
+  .loading { text-align: center; padding: 60px; color: var(--muted); font-size: 1rem; }
+  .spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ACTIVITY TIMELINE */
+  .timeline-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); align-items: flex-start; }
+  .timeline-item:last-child { border-bottom: none; }
+  .timeline-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); margin-top: 6px; flex-shrink: 0; }
+
+  @media (max-width: 768px) {
+    .main { padding: 16px; }
+    .header { padding: 0 16px; }
+    .search-input { width: 160px; }
+    .nav-tabs { padding: 12px 16px 0; overflow-x: auto; }
+    th, td { padding: 8px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div style="font-size:2.5rem;margin-bottom:8px">🛡️</div>
+    <h1>Admin Dashboard</h1>
+    <p>TrainTrack — גישה למנהל בלבד</p>
+    <input type="email" id="adminEmail" placeholder="מייל" value="admin@admin.com">
+    <input type="password" id="adminPass" placeholder="סיסמא" onkeydown="if(event.key==='Enter')doAdminLogin()">
+    <button class="btn-login" onclick="doAdminLogin()">כניסה</button>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appScreen">
+  <div class="header">
+    <div class="header-logo">🛡️ TrainTrack Admin</div>
+    <div class="header-right">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" id="globalSearch" placeholder="חיפוש שם, מייל..." oninput="onSearch(this.value)">
+      </div>
+      <button class="refresh-btn" onclick="loadData()">🔄 רענן</button>
+      <button class="logout-btn" onclick="doLogout()">יציאה</button>
+    </div>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('overview')">📊 סקירה כללית</button>
+    <button class="nav-tab" onclick="showTab('coaches')">🧑‍💼 מאמנים</button>
+    <button class="nav-tab" onclick="showTab('trainees')">🏃 מתאמנים</button>
+    <button class="nav-tab" onclick="showTab('activity')">📈 פעילות</button>
+    <button class="nav-tab" onclick="showTab('bugs')">🐛 דיווחי בעיות</button>
+  </div>
+
+  <div class="main">
+
+    <!-- OVERVIEW -->
+    <div class="tab-section active" id="tab-overview">
+      <div class="stats-row" id="statsRow"></div>
+      <div class="charts-row">
+        <div class="chart-card">
+          <div class="chart-title">🥧 מתאמנים לפי מאמן</div>
+          <div class="chart-wrap"><canvas id="pieChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">🏋️ אימונים לפי מתאמן (Top 10)</div>
+          <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">⚖️ שינוי משקל מתאמנים (ק"ג)</div>
+          <div class="chart-wrap"><canvas id="weightChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">💬 תגובות מאמנים בצ׳אט</div>
+          <div class="chart-wrap"><canvas id="chatChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">📅 פעילות שבועית (30 יום אחרונים)</div>
+          <div class="chart-wrap"><canvas id="lineChart"></canvas></div>
+        </div>
+      </div>
+      <div id="overviewTables"></div>
+    </div>
+
+    <!-- COACHES -->
+    <div class="tab-section" id="tab-coaches">
+      <div id="coachesContent"></div>
+    </div>
+
+    <!-- TRAINEES -->
+    <div class="tab-section" id="tab-trainees">
+      <div id="traineesContent"></div>
+    </div>
+
+    <!-- ACTIVITY -->
+    <div class="tab-section" id="tab-activity">
+      <div id="activityContent"></div>
+    </div>
+
+    <!-- BUGS -->
+    <div class="tab-section" id="tab-bugs">
+      <div id="bugsContent"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ─── Firebase Config ───────────────────────────
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAe_IMH2qz5WjtNVBQOaHjEvnaAVfcpxyE",
+  authDomain: "traintrack-632df.firebaseapp.com",
+  projectId: "traintrack-632df",
+  storageBucket: "traintrack-632df.firebasestorage.app",
+  messagingSenderId: "134654114539",
+  appId: "1:134654114539:web:7492e9447759f892505cae"
+};
+
+const ADMIN_EMAIL = 'admin@admin.com';
+// SHA-256 of 'Admin@Admin!!'
+const ADMIN_HASH = 'cb310d7bab04769b5627b0ffe12383dbfb3af174a983f104a7c5d462eb3847e6';
+
+let fsDB = null;
+let appDB = null;  // parsed db from Firestore
+let bugReports = [];
+let weightLogs = {};   // userId → { log: [{date,weight,timestamp},...] }
+let chatStats = [];    // [{coachId, traineeId, responseCount, totalResponseMs, avgResponseMs}]
+let charts = {};
+let searchQuery = '';
+
+// ─── SHA-256 ───────────────────────────────────
+async function sha256(msg) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+// ─── Auth ──────────────────────────────────────
+async function doAdminLogin() {
+  const email = document.getElementById('adminEmail').value.trim().toLowerCase();
+  const pass  = document.getElementById('adminPass').value;
+  const err   = document.getElementById('loginErr');
+  err.textContent = '';
+  if (email !== ADMIN_EMAIL) { err.textContent = 'גישה למנהל בלבד'; return; }
+  const hash = await sha256(pass);
+  if (hash !== ADMIN_HASH) { err.textContent = 'סיסמא שגויה'; return; }
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('appScreen').style.display = 'block';
+  initFirebase();
+  loadData();
+}
+
+function doLogout() {
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('appScreen').style.display = 'none';
+}
+
+// ─── Firebase ─────────────────────────────────
+function initFirebase() {
+  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+  fsDB = firebase.firestore();
+}
+
+async function loadData() {
+  showLoading();
+  // Load main DB — separate try/catch so bug_reports failure doesn't wipe appDB
+  try {
+    const snap = await fsDB.collection('traintrack').doc('main').get();
+    if (snap.exists && snap.data().db) {
+      appDB = JSON.parse(snap.data().db);
+    } else {
+      appDB = { users: [], workoutSchedule: {} };
+    }
+  } catch(e) {
+    console.error('Failed to load main DB:', e);
+    appDB = { users: [], workoutSchedule: {} };
+  }
+  // Load bug reports — separate try/catch, no orderBy to avoid index requirement
+  try {
+    const bugSnap = await fsDB.collection('bug_reports').limit(100).get();
+    bugReports = bugSnap.docs.map(d => d.data()).sort((a,b) => (b.createdAt||'').localeCompare(a.createdAt||''));
+  } catch(e) {
+    console.warn('Failed to load bug reports:', e);
+    bugReports = [];
+  }
+  // Load weight logs per trainee
+  try {
+    const wSnap = await fsDB.collection('weight_logs').limit(200).get();
+    weightLogs = {};
+    wSnap.docs.forEach(d => { weightLogs[d.id] = d.data(); });
+  } catch(e) {
+    console.warn('Failed to load weight logs:', e);
+    weightLogs = {};
+  }
+  // Load chat stats (coach response times)
+  try {
+    const csSnap = await fsDB.collection('chat_stats').limit(500).get();
+    chatStats = csSnap.docs.map(d => d.data());
+  } catch(e) {
+    console.warn('Failed to load chat stats:', e);
+    chatStats = [];
+  }
+  renderAll();
+}
+
+function showLoading() {
+  ['statsRow','overviewTables','coachesContent','traineesContent','activityContent','bugsContent'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = `<div class="loading"><div class="spinner"></div><div>טוען...</div></div>`;
+  });
+}
+
+// ─── Helpers ──────────────────────────────────
+function coaches() { return (appDB?.users||[]).filter(u => u.role==='coach' && u.email!==ADMIN_EMAIL); }
+function trainees() { return (appDB?.users||[]).filter(u => u.role==='trainee'); }
+
+function traineeWorkouts(t) {
+  // workoutSchedule keys: traineeId_dateStr
+  const sched = appDB?.workoutSchedule || {};
+  const completed = Object.entries(sched)
+    .filter(([k]) => k.startsWith(t.id + '_'))
+    .filter(([,v]) => v && v.length > 0);
+  return completed.length;
+}
+
+function traineeProgressLog(t) {
+  // progress_log is stored in localStorage of each device — not in Firestore
+  // We approximate from workout schedule completions
+  return [];
+}
+
+function totalWorkoutsForTrainee(t) {
+  const sched = appDB?.workoutSchedule || {};
+  const oneTime = appDB?.workoutOneTime || {};
+  const keys = [...Object.keys(sched), ...Object.keys(oneTime)].filter(k => k.startsWith(t.id + '_'));
+  return new Set(keys).size;
+}
+
+function coachTrainees(c) { return trainees().filter(t => t.coachId === c.id); }
+
+function daysSince(dateStr) {
+  if (!dateStr) return null;
+  const d = new Date(dateStr);
+  const now = new Date();
+  return Math.floor((now - d) / 86400000);
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '—';
+  try { return new Date(dateStr).toLocaleDateString('he-IL'); } catch { return dateStr; }
+}
+
+function hl(text, query) {
+  if (!query || !text) return text || '';
+  const str = String(text);
+  const idx = str.toLowerCase().indexOf(query.toLowerCase());
+  if (idx === -1) return str;
+  return str.slice(0,idx) + `<span class="hl">${str.slice(idx, idx+query.length)}</span>` + str.slice(idx+query.length);
+}
+
+function matchSearch(obj, query) {
+  if (!query) return true;
+  const q = query.toLowerCase();
+  return JSON.stringify(obj).toLowerCase().includes(q);
+}
+
+// ─── Weight log helpers ────────────────────────
+function getWeightLog(userId) {
+  return (weightLogs[userId]?.log || []).sort((a,b) => (a.timestamp||0) - (b.timestamp||0));
+}
+function currentWeight(userId) {
+  const log = getWeightLog(userId);
+  return log.length ? log[log.length-1].weight : null;
+}
+function weightChange(userId, startWeight) {
+  const cw = currentWeight(userId);
+  if (!cw || !startWeight) return null;
+  return +(cw - startWeight).toFixed(1);
+}
+function formatWeightChange(delta, goal) {
+  if (delta === null) return '—';
+  const abs = Math.abs(delta);
+  // Goal: חיטוב = losing is good, מסה = gaining is good
+  const isGoodChange = goal && goal.includes('חיטוב') ? delta < 0 : delta > 0;
+  const color = delta === 0 ? '#888' : (isGoodChange ? 'var(--primary2)' : 'var(--red)');
+  const arrow = delta > 0 ? '▲' : delta < 0 ? '▼' : '→';
+  return `<span style="color:${color};font-weight:700">${arrow} ${abs}ק"ג</span>`;
+}
+function goalBadge(goal) {
+  if (!goal) return '<span style="color:var(--muted)">לא הוגדר</span>';
+  const iscut = goal.includes('חיטוב') || goal.toLowerCase().includes('cut');
+  const isbulk = goal.includes('מסה') || goal.toLowerCase().includes('bulk') || goal.toLowerCase().includes('mass');
+  if (iscut) return `<span style="background:rgba(244,114,182,0.15);color:var(--pink);padding:2px 8px;border-radius:20px;font-size:0.75rem">🔥 חיטוב</span>`;
+  if (isbulk) return `<span style="background:rgba(124,111,255,0.15);color:var(--primary);padding:2px 8px;border-radius:20px;font-size:0.75rem">💪 מסה</span>`;
+  return `<span style="background:rgba(255,255,255,0.06);color:var(--muted);padding:2px 8px;border-radius:20px;font-size:0.75rem">${goal}</span>`;
+}
+
+// ─── Chat stat helpers ─────────────────────────
+function coachChatStats(coachId) {
+  const rows = chatStats.filter(r => r.coachId === coachId);
+  const totalResponses = rows.reduce((s,r) => s + (r.responseCount||0), 0);
+  const totalMs = rows.reduce((s,r) => s + (r.totalResponseMs||0), 0);
+  const avgMs = totalResponses > 0 ? Math.round(totalMs / totalResponses) : null;
+  return { totalResponses, avgMs };
+}
+function formatDuration(ms) {
+  if (!ms) return '—';
+  const m = Math.floor(ms / 60000);
+  if (m < 60) return `${m} דק׳`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h} שע׳`;
+  return `${Math.floor(h/24)} ימים`;
+}
+
+// ─── Charts ───────────────────────────────────
+const CHART_COLORS = ['#7C6FFF','#64E2B7','#FFB547','#F472B6','#60A5FA','#34D399','#FBBF24','#A78BFA','#F87171','#38BDF8'];
+
+function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+function renderPieChart() {
+  destroyChart('pie');
+  const ctx = document.getElementById('pieChart')?.getContext('2d');
+  if (!ctx) return;
+  const cs = coaches();
+  const labels = cs.map(c => c.name);
+  const data = cs.map(c => coachTrainees(c).length);
+  const unassigned = trainees().filter(t => !t.coachId || !coaches().find(c=>c.id===t.coachId)).length;
+  if (unassigned > 0) { labels.push('לא משויך'); data.push(unassigned); }
+  if (!data.some(d => d > 0)) { ctx.canvas.parentElement.innerHTML = '<div class="empty">אין נתונים</div>'; return; }
+  charts['pie'] = new Chart(ctx, {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data, backgroundColor: CHART_COLORS, borderWidth: 0 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#888', font: { size: 11 } } } } }
+  });
+}
+
+function renderBarChart() {
+  destroyChart('bar');
+  const ctx = document.getElementById('barChart')?.getContext('2d');
+  if (!ctx) return;
+  const ts = trainees().map(t => ({ name: t.name, count: totalWorkoutsForTrainee(t) }))
+    .sort((a,b) => b.count - a.count).slice(0, 10);
+  charts['bar'] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ts.map(t => t.name),
+      datasets: [{ data: ts.map(t => t.count), backgroundColor: '#7C6FFF', borderRadius: 6 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#888' } },
+        y: { grid: { display: false }, ticks: { color: '#ccc', font: { size: 11 } } }
+      }
+    }
+  });
+}
+
+function renderWeightChart() {
+  destroyChart('weight');
+  const ctx = document.getElementById('weightChart')?.getContext('2d');
+  if (!ctx) return;
+  const ts = trainees()
+    .map(t => {
+      const log = getWeightLog(t.id);
+      const start = parseFloat(t.startWeight) || (log.length ? log[0].weight : null);
+      const cur = log.length ? log[log.length-1].weight : null;
+      return { name: t.name, delta: (start && cur) ? +(cur - start).toFixed(1) : null };
+    })
+    .filter(t => t.delta !== null)
+    .sort((a,b) => a.delta - b.delta)
+    .slice(0, 12);
+  if (!ts.length) { ctx.canvas.parentElement.innerHTML = '<div class="empty">אין נתוני משקל עדיין</div>'; return; }
+  charts['weight'] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ts.map(t => t.name),
+      datasets: [{
+        data: ts.map(t => t.delta),
+        backgroundColor: ts.map(t => t.delta < 0 ? 'rgba(100,226,183,0.7)' : 'rgba(248,113,113,0.7)'),
+        borderRadius: 5
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => `${ctx.raw > 0 ? '+' : ''}${ctx.raw} ק"ג` } } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#888' } },
+        y: { grid: { display: false }, ticks: { color: '#ccc', font: { size: 11 } } }
+      }
+    }
+  });
+}
+
+function renderChatChart() {
+  destroyChart('chat');
+  const ctx = document.getElementById('chatChart')?.getContext('2d');
+  if (!ctx) return;
+  const cs = coaches().map(c => {
+    const stats = coachChatStats(c.id);
+    return { name: c.name, count: stats.totalResponses };
+  }).filter(c => c.count > 0).sort((a,b) => b.count - a.count);
+  if (!cs.length) { ctx.canvas.parentElement.innerHTML = '<div class="empty">אין נתוני צ׳אט עדיין</div>'; return; }
+  charts['chat'] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: cs.map(c => c.name),
+      datasets: [{ data: cs.map(c => c.count), backgroundColor: '#7C6FFF', borderRadius: 6 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#888' } },
+        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#888', stepSize: 1 } }
+      }
+    }
+  });
+}
+
+function renderLineChart() {
+  destroyChart('line');
+  const ctx = document.getElementById('lineChart')?.getContext('2d');
+  if (!ctx) return;
+  // Count workout schedule entries per date (last 30 days)
+  const today = new Date();
+  const days = [];
+  const counts = [];
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    const key = d.toISOString().split('T')[0];
+    days.push(key.slice(5)); // MM-DD
+    const count = Object.keys(appDB?.workoutSchedule||{}).filter(k => k.endsWith('_'+key)).length;
+    counts.push(count);
+  }
+  charts['line'] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: days,
+      datasets: [{
+        label: 'אימונים', data: counts,
+        borderColor: '#7C6FFF', backgroundColor: 'rgba(124,111,255,0.1)',
+        fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: '#7C6FFF'
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#888', maxTicksLimit: 8 } },
+        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#888', stepSize: 1 } }
+      }
+    }
+  });
+}
+
+// ─── Render ───────────────────────────────────
+function renderAll() {
+  renderStats();
+  renderCharts();
+  renderOverviewTables();
+  renderCoachesTab();
+  renderTraineesTab();
+  renderActivityTab();
+  renderBugsTab();
+}
+
+function renderStats() {
+  const cs = coaches(); const ts = trainees();
+  const totalWorkouts = ts.reduce((s,t) => s + totalWorkoutsForTrainee(t), 0);
+  const totalMeals = ts.reduce((s,t) => s + (t.meals||[]).length, 0);
+  // Weight stats: count trainees who have logged weight
+  const traineesWithWeight = ts.filter(t => getWeightLog(t.id).length > 0).length;
+  // Total kg lost/gained (sum of abs changes for weight-logging trainees)
+  const totalChatResponses = chatStats.reduce((s,r) => s + (r.responseCount||0), 0);
+  const stats = [
+    { icon:'🧑‍💼', num: cs.length, label:'מאמנים', color:'var(--primary)' },
+    { icon:'🏃', num: ts.length, label:'מתאמנים', color:'var(--primary2)' },
+    { icon:'🏋️', num: totalWorkouts, label:'לוחות אימון', color:'var(--accent)' },
+    { icon:'🥗', num: totalMeals, label:'פריטי תפריט', color:'var(--pink)' },
+    { icon:'⚖️', num: traineesWithWeight, label:'מתאמנים עם מעקב משקל', color:'#60A5FA' },
+    { icon:'💬', num: totalChatResponses, label:'תגובות מאמנים בצ׳אט', color:'#34D399' },
+    { icon:'🐛', num: bugReports.length, label:'דיווחי בעיות', color:'var(--red)' },
+  ];
+  document.getElementById('statsRow').innerHTML = stats.map(s => `
+    <div class="stat-card">
+      <div class="stat-icon">${s.icon}</div>
+      <div class="stat-num" style="color:${s.color}">${s.num}</div>
+      <div class="stat-label">${s.label}</div>
+    </div>`).join('');
+}
+
+function renderCharts() {
+  setTimeout(() => {
+    renderPieChart();
+    renderBarChart();
+    renderWeightChart();
+    renderChatChart();
+    renderLineChart();
+  }, 50);
+}
+
+function renderOverviewTables() {
+  const ts = trainees().filter(t => matchSearch(t, searchQuery)).slice(0, 5);
+  const cs = coaches().filter(c => matchSearch(c, searchQuery)).slice(0, 5);
+  document.getElementById('overviewTables').innerHTML = `
+    ${coachTableHTML(cs, 'מאמנים — תצוגה מהירה')}
+    <div style="margin-top:20px"></div>
+    ${traineeTableHTML(ts, 'מתאמנים — תצוגה מהירה')}
+  `;
+}
+
+function coachTableHTML(cs, title) {
+  return `<div class="table-card">
+    <div class="table-header-row">
+      <span class="table-title">🧑‍💼 ${title}</span>
+      <span class="table-count">${cs.length}</span>
+    </div>
+    <div style="overflow-x:auto">
+    <table>
+      <thead><tr>
+        <th>שם</th><th>מייל</th><th>מתאמנים</th><th>תגובות בצ׳אט</th><th>זמן תגובה ממוצע</th><th>תרגילי בנק</th>
+      </tr></thead>
+      <tbody>
+        ${cs.length ? cs.map(c => {
+          const myT = coachTrainees(c);
+          const bankEx = (appDB?.exerciseBank||[]).filter(e=>e.coachId===c.id).length;
+          const chatSt = coachChatStats(c.id);
+          return `<tr>
+            <td><strong>${hl(c.name, searchQuery)}</strong></td>
+            <td style="color:var(--muted);direction:ltr">${hl(c.email, searchQuery)}</td>
+            <td><span class="badge badge-trainee">${myT.length}</span></td>
+            <td><span style="color:var(--primary2);font-weight:700">${chatSt.totalResponses}</span></td>
+            <td>${chatSt.avgMs ? `<span style="color:var(--accent)">${formatDuration(chatSt.avgMs)}</span>` : '<span style="color:var(--muted)">—</span>'}</td>
+            <td>${bankEx}</td>
+          </tr>`;
+        }).join('') : '<tr><td colspan="6" class="empty">אין מאמנים</td></tr>'}
+      </tbody>
+    </table>
+    </div>
+  </div>`;
+}
+
+function traineeTableHTML(ts, title) {
+  return `<div class="table-card">
+    <div class="table-header-row">
+      <span class="table-title">🏃 ${title}</span>
+      <span class="table-count">${ts.length}</span>
+    </div>
+    <div style="overflow-x:auto">
+    <table>
+      <thead><tr>
+        <th>שם</th><th>מאמן</th><th>מטרה</th><th>משקל התחלה</th><th>משקל נוכחי</th><th>שינוי</th><th>יעד</th><th>ארוחות</th><th>תרגילים</th><th>סטטוס</th>
+      </tr></thead>
+      <tbody>
+        ${ts.length ? ts.map(t => {
+          const coach = (appDB?.users||[]).find(u=>u.id===t.coachId);
+          const workouts = totalWorkoutsForTrainee(t);
+          const hasMeals = (t.meals||[]).length > 0;
+          const hasEx = (t.exercises||[]).length > 0;
+          const active = hasMeals || hasEx || workouts > 0;
+          const sw = parseFloat(t.startWeight)||null;
+          const tw = t.targetWeight || '—';
+          const cw = currentWeight(t.id);
+          const delta = weightChange(t.id, sw);
+          return `<tr>
+            <td><strong>${hl(t.name, searchQuery)}</strong></td>
+            <td>${hl(coach?.name||'לא משויך', searchQuery)}</td>
+            <td>${goalBadge(t.goal)}</td>
+            <td>${sw ? sw+'ק"ג' : '—'}</td>
+            <td>${cw ? `<strong>${cw}ק"ג</strong>` : '—'}</td>
+            <td>${formatWeightChange(delta, t.goal)}</td>
+            <td>${tw!=='—'?tw+'ק"ג':tw}</td>
+            <td>${(t.meals||[]).length}</td>
+            <td>${(t.exercises||[]).length}</td>
+            <td><span class="badge ${active?'badge-active':'badge-inactive'}">${active?'פעיל':'לא פעיל'}</span></td>
+          </tr>`;
+        }).join('') : '<tr><td colspan="10" class="empty">אין מתאמנים</td></tr>'}
+      </tbody>
+    </table>
+    </div>
+  </div>`;
+}
+
+function renderCoachesTab() {
+  const cs = coaches().filter(c => matchSearch(c, searchQuery));
+  let html = coachTableHTML(cs, 'כל המאמנים');
+  // Per-coach detail cards
+  html += cs.map(c => {
+    const myT = coachTrainees(c);
+    const cst = coachChatStats(c.id);
+    // Per-trainee chat breakdown
+    const perTraineeChatRows = chatStats.filter(r => r.coachId === c.id).map(r => {
+      const t = (appDB?.users||[]).find(u => u.id === r.traineeId);
+      return { traineeName: t?.name||r.traineeId, responseCount: r.responseCount, avgMs: r.avgResponseMs };
+    });
+    return `<div class="table-card" style="margin-top:20px">
+      <div class="table-header-row">
+        <span class="table-title">🧑‍💼 ${c.name} <span style="color:var(--muted);font-size:0.8rem">${c.email}</span></span>
+        <span class="table-count">${myT.length} מתאמנים</span>
+      </div>
+      <div style="padding:16px;display:flex;gap:16px;flex-wrap:wrap">
+        <div style="background:var(--surface2);border-radius:10px;padding:14px 20px;text-align:center;min-width:110px">
+          <div style="font-size:1.8rem;font-weight:800;color:var(--primary)">${myT.length}</div>
+          <div style="font-size:0.78rem;color:var(--muted)">מתאמנים</div>
+        </div>
+        <div style="background:var(--surface2);border-radius:10px;padding:14px 20px;text-align:center;min-width:110px">
+          <div style="font-size:1.8rem;font-weight:800;color:var(--primary2)">${cst.totalResponses}</div>
+          <div style="font-size:0.78rem;color:var(--muted)">תגובות בצ׳אט</div>
+        </div>
+        <div style="background:var(--surface2);border-radius:10px;padding:14px 20px;text-align:center;min-width:110px">
+          <div style="font-size:1.8rem;font-weight:800;color:var(--accent)">${formatDuration(cst.avgMs)}</div>
+          <div style="font-size:0.78rem;color:var(--muted)">זמן תגובה ממוצע</div>
+        </div>
+      </div>
+      ${myT.length ? `<div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>מתאמן</th><th>מטרה</th><th>משקל נוכחי</th><th>שינוי משקל</th><th>ארוחות</th><th>תרגילים</th><th>תגובות לצ׳אט</th><th>זמן תגובה</th></tr></thead>
+          <tbody>${myT.map(t=>{
+            const cw = currentWeight(t.id);
+            const sw = parseFloat(t.startWeight)||null;
+            const delta = weightChange(t.id, sw);
+            const tcRaw = chatStats.find(r=>r.coachId===c.id && r.traineeId===t.id);
+            const tc = tcRaw ? { responseCount: tcRaw.responseCount, avgMs: tcRaw.avgResponseMs } : null;
+            return `<tr>
+              <td>${hl(t.name,searchQuery)}</td>
+              <td>${goalBadge(t.goal)}</td>
+              <td>${cw ? cw+'ק"ג' : '—'}</td>
+              <td>${formatWeightChange(delta, t.goal)}</td>
+              <td>${(t.meals||[]).length}</td>
+              <td>${(t.exercises||[]).length}</td>
+              <td>${tc?.responseCount||0}</td>
+              <td>${tc ? formatDuration(tc.avgMs) : '—'}</td>
+            </tr>`;
+          }).join('')}</tbody>
+        </table></div>` : '<div class="empty">אין מתאמנים</div>'}
+    </div>`;
+  }).join('');
+  document.getElementById('coachesContent').innerHTML = html || '<div class="empty">אין מאמנים</div>';
+}
+
+function renderTraineesTab() {
+  const ts = trainees().filter(t => matchSearch(t, searchQuery));
+  let html = traineeTableHTML(ts, 'כל המתאמנים');
+  // Detailed progress per trainee
+  html += '<div style="margin-top:20px"></div>';
+  html += ts.map(t => {
+    const coach = (appDB?.users||[]).find(u=>u.id===t.coachId);
+    const meals = t.meals||[];
+    const exercises = t.exercises||[];
+    const workouts = totalWorkoutsForTrainee(t);
+    const sw = parseFloat(t.startWeight)||0;
+    const tw = parseFloat(t.targetWeight)||0;
+    const diff = sw && tw ? Math.abs(sw-tw) : 0;
+    return `<div class="table-card" style="margin-top:16px">
+      <div class="table-header-row">
+        <span class="table-title">🏃 ${hl(t.name,searchQuery)}</span>
+        <span style="color:var(--muted);font-size:0.82rem">${coach?'מאמן: '+coach.name:'לא משויך'}</span>
+      </div>
+      <div style="padding:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px">
+        <div style="background:var(--surface2);border-radius:10px;padding:14px;text-align:center">
+          <div style="font-size:1.6rem;font-weight:700;color:var(--primary)">${workouts}</div>
+          <div style="font-size:0.78rem;color:var(--muted)">לוחות אימון</div>
+        </div>
+        <div style="background:var(--surface2);border-radius:10px;padding:14px;text-align:center">
+          <div style="font-size:1.6rem;font-weight:700;color:var(--primary2)">${meals.length}</div>
+          <div style="font-size:0.78rem;color:var(--muted)">ארוחות בתפריט</div>
+        </div>
+        <div style="background:var(--surface2);border-radius:10px;padding:14px;text-align:center">
+          <div style="font-size:1.6rem;font-weight:700;color:var(--accent)">${exercises.length}</div>
+          <div style="font-size:0.78rem;color:var(--muted)">תרגילים</div>
+        </div>
+          ${(() => {
+          const cw = currentWeight(t.id);
+          const delta = weightChange(t.id, sw);
+          return cw ? `<div style="background:var(--surface2);border-radius:10px;padding:14px;text-align:center">
+            <div style="font-size:1.6rem;font-weight:700;color:var(--primary2)">${cw}ק"ג</div>
+            <div style="font-size:0.78rem;color:var(--muted)">משקל נוכחי</div>
+            ${delta !== null ? `<div style="margin-top:4px">${formatWeightChange(delta, t.goal)}</div>` : ''}
+          </div>` : '';
+        })()}
+        ${sw&&tw?`<div style="background:var(--surface2);border-radius:10px;padding:14px;text-align:center">
+          <div style="font-size:1.6rem;font-weight:700;color:var(--pink)">${diff.toFixed(1)}</div>
+          <div style="font-size:0.78rem;color:var(--muted)">ק"ג ליעד</div>
+        </div>`:''}
+      </div>
+      ${(() => {
+        const wlog = getWeightLog(t.id);
+        if (!wlog.length) return '';
+        return `<div style="padding:0 16px 16px">
+          <div style="font-size:0.8rem;color:var(--muted);margin-bottom:8px">היסטוריית משקל:</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            ${wlog.slice(-8).map((e,i,arr) => {
+              const prev = i > 0 ? arr[i-1].weight : null;
+              const d = prev ? +(e.weight - prev).toFixed(1) : null;
+              const arrow = d === null ? '' : d > 0 ? ' <span style="color:var(--red)">▲</span>' : d < 0 ? ' <span style="color:var(--primary2)">▼</span>' : '';
+              return `<span style="background:rgba(124,111,255,0.08);border:1px solid rgba(124,111,255,0.15);border-radius:20px;padding:3px 10px;font-size:0.78rem">${e.date}: ${e.weight}ק"ג${arrow}</span>`;
+            }).join('')}
+          </div>
+        </div>`;
+      })()}
+      ${meals.length?`<div style="padding:0 16px 16px">
+        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:8px">תפריט:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          ${meals.slice(0,10).map(m=>`<span style="background:rgba(100,226,183,0.1);border:1px solid rgba(100,226,183,0.2);border-radius:20px;padding:3px 10px;font-size:0.78rem">${m.name} — ${m.cal}קל׳</span>`).join('')}
+          ${meals.length>10?`<span style="color:var(--muted);font-size:0.78rem">+${meals.length-10} נוספים</span>`:''}
+        </div>
+      </div>`:''}
+      ${exercises.length?`<div style="padding:0 16px 16px">
+        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:8px">תרגילים:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          ${exercises.slice(0,8).map(e=>`<span style="background:rgba(124,111,255,0.1);border:1px solid rgba(124,111,255,0.2);border-radius:20px;padding:3px 10px;font-size:0.78rem">${e.name}</span>`).join('')}
+          ${exercises.length>8?`<span style="color:var(--muted);font-size:0.78rem">+${exercises.length-8} נוספים</span>`:''}
+        </div>
+      </div>`:''}
+    </div>`;
+  }).join('');
+  document.getElementById('traineesContent').innerHTML = html;
+}
+
+function renderActivityTab() {
+  const sched = appDB?.workoutSchedule || {};
+  const oneTime = appDB?.workoutOneTime || {};
+  const allEntries = [...Object.entries(sched), ...Object.entries(oneTime)]
+    .filter(([,v]) => v && v.length > 0)
+    .map(([k,v]) => {
+      const [uid, date] = k.split('_');
+      const user = (appDB?.users||[]).find(u=>u.id===uid);
+      return { uid, date, user, exercises: v };
+    })
+    .filter(e => e.user && matchSearch(e, searchQuery))
+    .sort((a,b) => (b.date||'').localeCompare(a.date||''));
+
+  document.getElementById('activityContent').innerHTML = `
+    <div class="table-card">
+      <div class="table-header-row">
+        <span class="table-title">📅 לוחות אימון מוגדרים</span>
+        <span class="table-count">${allEntries.length}</span>
+      </div>
+      <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>תאריך</th><th>מתאמן</th><th>מאמן</th><th>תרגילים</th><th>פרטים</th></tr></thead>
+        <tbody>
+          ${allEntries.length ? allEntries.slice(0,100).map(e => {
+            const coach = (appDB?.users||[]).find(u=>u.id===e.user?.coachId);
+            return `<tr>
+              <td style="direction:ltr;color:var(--muted)">${e.date||'—'}</td>
+              <td><strong>${hl(e.user?.name||'—',searchQuery)}</strong></td>
+              <td style="color:var(--muted)">${coach?.name||'—'}</td>
+              <td>${e.exercises?.length||0}</td>
+              <td style="font-size:0.78rem;color:var(--muted)">${(e.exercises||[]).slice(0,3).map(ex=>ex.name||'').join(', ')}${(e.exercises||[]).length>3?'...':''}</td>
+            </tr>`;
+          }).join('') : '<tr><td colspan="5" class="empty">אין פעילות</td></tr>'}
+        </tbody>
+      </table>
+      </div>
+    </div>
+  `;
+}
+
+function renderBugsTab() {
+  const filtered = bugReports.filter(r => matchSearch(r, searchQuery));
+  document.getElementById('bugsContent').innerHTML = `
+    <div class="table-card">
+      <div class="table-header-row">
+        <span class="table-title">🐛 דיווחי בעיות</span>
+        <span class="table-count">${filtered.length}</span>
+      </div>
+      ${filtered.length ? filtered.map(r => `
+        <div class="bug-item">
+          <div class="bug-subject">${hl(r.subject||'ללא נושא', searchQuery)}</div>
+          <div class="bug-meta">
+            👤 ${hl(r.userName||'—', searchQuery)} (${r.userRole||'—'}) · 📧 ${hl(r.userEmail||'—', searchQuery)} · 📅 ${formatDate(r.createdAt)}
+          </div>
+          ${r.details ? `<div class="bug-details">${hl(r.details, searchQuery)}</div>` : ''}
+        </div>`).join('') : '<div class="empty">אין דיווחים 🎉</div>'}
+    </div>
+  `;
+}
+
+// ─── Tab switching ─────────────────────────────
+function showTab(name) {
+  document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  const tabs = ['overview','coaches','trainees','activity','bugs'];
+  const idx = tabs.indexOf(name);
+  document.querySelectorAll('.nav-tab')[idx]?.classList.add('active');
+  if (name === 'overview') { setTimeout(renderCharts, 80); }
+}
+
+// ─── Search ───────────────────────────────────
+let searchTimer = null;
+function onSearch(q) {
+  searchQuery = q;
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    renderOverviewTables();
+    renderCoachesTab();
+    renderTraineesTab();
+    renderActivityTab();
+    renderBugsTab();
+  }, 250);
+}
+
+// Auto-login check
+document.getElementById('adminPass').addEventListener('keydown', e => { if(e.key==='Enter') doAdminLogin(); });
+</script>
+</body>
+</html>
