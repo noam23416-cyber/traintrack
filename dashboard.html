@@ -348,9 +348,9 @@
       </div>
       <input type="hidden" id="cardEditorColor" value="#7C6FFF">
     </div>
-    <div style="margin-bottom:20px">
+    <div style="margin-bottom:12px">
       <label style="font-size:0.8rem;color:var(--muted);display:block;margin-bottom:4px">קישור לטאב</label>
-      <input id="cardEditorTab" list="tabOptions" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:0.9rem" placeholder="הקלד או בחר מהרשימה">
+      <input id="cardEditorTab" list="tabOptions" oninput="onTabInputChange()" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:0.9rem" placeholder="בחר קיים או הקלד שם חדש">
       <datalist id="tabOptions">
         <option value="overview">סקירה כללית</option>
         <option value="coaches">מאמנים</option>
@@ -358,6 +358,21 @@
         <option value="activity">פעילות</option>
         <option value="bugs">דיווחי בעיות</option>
       </datalist>
+    </div>
+
+    <!-- Data source picker — shown only for new tabs -->
+    <div id="dataSourceWrap" style="display:none;margin-bottom:20px;background:rgba(124,111,255,0.06);border:1px solid rgba(124,111,255,0.2);border-radius:10px;padding:12px">
+      <div style="font-size:0.8rem;font-weight:700;color:var(--primary);margin-bottom:8px">📊 מה להציג בטאב החדש?</div>
+      <select id="cardEditorDataSource" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:0.88rem">
+        <option value="trainees_all">כל המתאמנים + פרטים</option>
+        <option value="trainees_cut">מתאמנים בחיטוב בלבד</option>
+        <option value="trainees_bulk">מתאמנים במסה בלבד</option>
+        <option value="weight_progress">התקדמות משקל — כולם</option>
+        <option value="coaches_stats">סטטיסטיקות מאמנים</option>
+        <option value="recent_activity">פעילות אחרונה (30 יום)</option>
+        <option value="bugs_list">דיווחי בעיות</option>
+        <option value="no_coach">מתאמנים ללא מאמן</option>
+      </select>
     </div>
     <div style="display:flex;gap:8px">
       <button onclick="closeCardEditor()" style="flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer">ביטול</button>
@@ -389,6 +404,11 @@ let chatStats = [];
 let charts = {};
 let searchQuery = '';
 let editMode = false;
+
+const BUILTIN_TABS = ['overview','coaches','trainees','activity','bugs'];
+let customTabs = JSON.parse(localStorage.getItem('dash_custom_tabs')||'{}'); // id → {label, dataSource}
+
+function saveCustomTabs() { localStorage.setItem('dash_custom_tabs', JSON.stringify(customTabs)); }
 
 const DEFAULT_CARDS = [
   { id:'coaches',  icon:'🧑‍💼', label:'מאמנים',                   color:'var(--primary)',  tab:'coaches'  },
@@ -423,6 +443,7 @@ async function doAdminLogin() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('appScreen').style.display = 'block';
   initFirebase();
+  restoreCustomTabs();
   loadData();
 }
 
@@ -811,8 +832,16 @@ function openEditCard(idx) {
   document.getElementById('cardEditorIcon').value = c.icon;
   document.getElementById('cardEditorLabel').value = c.label;
   document.getElementById('cardEditorTab').value = c.tab;
+  if (c.dataSource) document.getElementById('cardEditorDataSource').value = c.dataSource;
   selectCardColor(c.color.startsWith('#') ? c.color : '#7C6FFF');
+  onTabInputChange();
   document.getElementById('cardEditorOverlay').style.display = 'flex';
+}
+
+function onTabInputChange() {
+  const val = document.getElementById('cardEditorTab').value.trim();
+  const isNew = val && !BUILTIN_TABS.includes(val);
+  document.getElementById('dataSourceWrap').style.display = isNew ? 'block' : 'none';
 }
 
 function selectCardColor(hex) {
@@ -831,16 +860,93 @@ function saveCardEditor() {
   const icon  = document.getElementById('cardEditorIcon').value.trim() || '📌';
   const label = document.getElementById('cardEditorLabel').value.trim() || 'קוביה';
   const color = document.getElementById('cardEditorColor').value || '#7C6FFF';
-  const tab   = document.getElementById('cardEditorTab').value;
+  const tab   = document.getElementById('cardEditorTab').value.trim() || 'overview';
+  const isNew = !BUILTIN_TABS.includes(tab);
+  const dataSource = isNew ? document.getElementById('cardEditorDataSource').value : null;
   const cards = loadCardConfig();
+
+  // Auto-create custom tab if needed
+  if (isNew && !customTabs[tab]) {
+    customTabs[tab] = { label, dataSource };
+    saveCustomTabs();
+    addCustomTabToDOM(tab, label, dataSource);
+  } else if (isNew && dataSource) {
+    customTabs[tab].dataSource = dataSource;
+    saveCustomTabs();
+  }
+
   if (idx === -1) {
-    cards.push({ id: 'custom_' + Date.now(), icon, label, color, tab });
+    cards.push({ id: 'custom_' + Date.now(), icon, label, color, tab, dataSource });
   } else {
-    cards[idx] = { ...cards[idx], icon, label, color, tab };
+    cards[idx] = { ...cards[idx], icon, label, color, tab, dataSource };
   }
   saveCardConfig(cards);
   closeCardEditor();
   renderStats();
+}
+
+function addCustomTabToDOM(tabId, label, dataSource) {
+  // Add nav tab button
+  const navTabs = document.querySelector('.nav-tabs');
+  if (navTabs && !document.getElementById('nav-tab-'+tabId)) {
+    const btn = document.createElement('button');
+    btn.className = 'nav-tab';
+    btn.id = 'nav-tab-' + tabId;
+    btn.textContent = label;
+    btn.onclick = () => showTab(tabId);
+    navTabs.appendChild(btn);
+  }
+  // Add tab section
+  const main = document.querySelector('.main');
+  if (main && !document.getElementById('tab-'+tabId)) {
+    const sec = document.createElement('div');
+    sec.className = 'tab-section';
+    sec.id = 'tab-' + tabId;
+    sec.innerHTML = `<button class="back-btn" id="back-${tabId}" onclick="showTab('overview')">← חזרה לסקירה</button><div id="custom-content-${tabId}"></div>`;
+    main.appendChild(sec);
+  }
+}
+
+function renderCustomTab(tabId) {
+  const cfg = customTabs[tabId];
+  if (!cfg) return;
+  const container = document.getElementById('custom-content-' + tabId);
+  if (!container) return;
+  const ds = cfg.dataSource;
+  let ts = trainees();
+  if (ds === 'trainees_cut') ts = ts.filter(t => t.goal && (t.goal.includes('חיטוב') || t.goal.toLowerCase().includes('cut')));
+  else if (ds === 'trainees_bulk') ts = ts.filter(t => t.goal && (t.goal.includes('מסה') || t.goal.toLowerCase().includes('bulk') || t.goal.toLowerCase().includes('mass')));
+  else if (ds === 'no_coach') ts = ts.filter(t => !t.coachId || !coaches().find(c=>c.id===t.coachId));
+  else if (ds === 'coaches_stats') { container.innerHTML = coachTableHTML(coaches(), 'סטטיסטיקות מאמנים'); return; }
+  else if (ds === 'bugs_list') { renderBugsTab(); return; }
+  else if (ds === 'recent_activity') { renderActivityTab(); return; }
+  else if (ds === 'weight_progress') {
+    container.innerHTML = `<div class="table-card"><div class="table-header-row"><span class="table-title">⚖️ התקדמות משקל</span></div><div style="overflow-x:auto"><table><thead><tr><th>שם</th><th>משקל התחלה</th><th>משקל נוכחי</th><th>שינוי</th><th>יעד</th></tr></thead><tbody>${
+      ts.filter(t=>getWeightLog(t.id).length>0||t.startWeight).map(t=>{
+        const sw=parseFloat(t.startWeight)||null; const cw=currentWeight(t.id); const delta=weightChange(t.id,sw);
+        return `<tr><td><strong style="cursor:pointer;color:var(--primary)" onclick="openTraineeModal('${t.id}')">${t.name}</strong></td><td>${sw?sw+'kg':'—'}</td><td>${cw?cw+'kg':'—'}</td><td>${formatWeightChange(delta,t.goal)}</td><td>${goalBadge(t.goal)}</td></tr>`;
+      }).join('') || '<tr><td colspan="5" class="empty">אין נתוני משקל</td></tr>'
+    }</tbody></table></div></div>`;
+    return;
+  }
+  container.innerHTML = traineeTableHTML(ts, cfg.label || 'מתאמנים');
+}
+
+// Restore custom tabs from localStorage on load
+function restoreCustomTabs() {
+  customTabs = JSON.parse(localStorage.getItem('dash_custom_tabs')||'{}');
+  Object.entries(customTabs).forEach(([id, cfg]) => addCustomTabToDOM(id, cfg.label, cfg.dataSource));
+}
+
+// Override showTab to handle custom tabs
+const _origShowTab = showTab;
+function showTab(name, fromCard) {
+  _origShowTab(name, fromCard);
+  if (customTabs[name]) {
+    renderCustomTab(name);
+    const btn = document.getElementById('back-' + name);
+    if (btn && fromCard) btn.classList.add('visible');
+  }
 }
 
 function renderCharts() {
