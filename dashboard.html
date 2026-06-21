@@ -290,6 +290,9 @@
     <!-- COACHES -->
     <div class="tab-section" id="tab-coaches">
       <button class="back-btn" id="back-coaches" onclick="showTab('overview')">← חזרה לסקירה</button>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+        <button onclick="openAddCoachModal()" style="background:var(--primary);color:#fff;border:none;border-radius:10px;padding:9px 20px;font-size:0.88rem;font-weight:700;cursor:pointer">+ הוסף מאמן</button>
+      </div>
       <div id="coachesContent"></div>
     </div>
 
@@ -311,6 +314,34 @@
       <div id="bugsContent"></div>
     </div>
 
+  </div>
+</div>
+
+<!-- ADD COACH MODAL -->
+<div id="addCoachModal" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.5);align-items:center;justify-content:center">
+  <div style="background:var(--surface);border-radius:20px;padding:32px;width:100%;max-width:420px;box-shadow:0 8px 40px rgba(0,0,0,0.3)">
+    <div style="font-size:1.1rem;font-weight:700;margin-bottom:20px">🧑‍💼 הוסף מאמן חדש</div>
+    <div id="addCoachError" style="color:var(--red);font-size:0.85rem;margin-bottom:10px;min-height:18px"></div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:0.8rem;color:var(--muted);display:block;margin-bottom:4px">שם מלא</label>
+      <input id="newCoachName" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:0.9rem" placeholder="ישראל ישראלי">
+    </div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:0.8rem;color:var(--muted);display:block;margin-bottom:4px">מייל</label>
+      <input id="newCoachEmail" type="email" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:0.9rem;direction:ltr" placeholder="coach@example.com">
+    </div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:0.8rem;color:var(--muted);display:block;margin-bottom:4px">סיסמא (8+ תווים, אות גדולה, מספר)</label>
+      <input id="newCoachPass" type="password" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:0.9rem;direction:ltr" placeholder="••••••••">
+    </div>
+    <div style="margin-bottom:20px">
+      <label style="font-size:0.8rem;color:var(--muted);display:block;margin-bottom:4px">שם באנגלית (אופציונלי)</label>
+      <input id="newCoachEngName" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:0.9rem;direction:ltr" placeholder="Israel Israelov">
+    </div>
+    <div style="display:flex;gap:8px">
+      <button onclick="closeAddCoachModal()" style="flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer">ביטול</button>
+      <button onclick="saveNewCoach()" style="flex:2;padding:10px;border-radius:8px;border:none;background:var(--primary);color:#fff;font-weight:700;cursor:pointer">➕ הוסף מאמן</button>
+    </div>
   </div>
 </div>
 
@@ -433,6 +464,53 @@ function saveCardConfig(cards) { localStorage.setItem('dash_cards', JSON.stringi
 async function sha256(msg) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function uid() { return Math.random().toString(36).slice(2) + Date.now().toString(36); }
+
+// ─── Add Coach ─────────────────────────────────
+function openAddCoachModal() {
+  document.getElementById('addCoachModal').style.display = 'flex';
+  document.getElementById('addCoachError').textContent = '';
+  ['newCoachName','newCoachEmail','newCoachPass','newCoachEngName'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+}
+function closeAddCoachModal() {
+  document.getElementById('addCoachModal').style.display = 'none';
+}
+async function saveNewCoach() {
+  const name  = document.getElementById('newCoachName').value.trim();
+  const email = document.getElementById('newCoachEmail').value.trim().toLowerCase();
+  const pass  = document.getElementById('newCoachPass').value;
+  const eng   = document.getElementById('newCoachEngName').value.trim();
+  const err   = document.getElementById('addCoachError');
+
+  if (!name) { err.textContent = 'נא להזין שם'; return; }
+  if (!email || !email.includes('@')) { err.textContent = 'מייל לא תקין'; return; }
+  if (pass.length < 8 || !/[A-Z]/.test(pass) || !/[0-9]/.test(pass)) {
+    err.textContent = 'סיסמא: 8+ תווים, אות גדולה, מספר'; return;
+  }
+  if ((appDB?.users||[]).find(u => u.email.toLowerCase() === email)) {
+    err.textContent = 'מייל זה כבר קיים במערכת'; return;
+  }
+
+  const pHash = await sha256(pass);
+  const newCoach = {
+    id: uid(), role: 'coach',
+    email, password: pHash,
+    name, exercises: {}, meals: {},
+    ...(eng ? { engName: eng } : {})
+  };
+
+  if (!appDB.users) appDB.users = [];
+  appDB.users.push(newCoach);
+  saveAppDB();
+  closeAddCoachModal();
+  renderCoachesTab();
+  renderStats();
+  const toast = document.getElementById('dashSaveToast');
+  if (toast) { toast.textContent = `✓ מאמן "${name}" נוסף בהצלחה`; toast.style.opacity='1'; setTimeout(()=>toast.style.opacity='0',3000); }
 }
 
 // ─── Auth ──────────────────────────────────────
