@@ -1453,7 +1453,7 @@ input, textarea, select, button { font-family: inherit; }
     <div class="tab-panel" id="coach-chat">
       <div class="chat-container">
         <div class="chat-target-bar">
-          <span style="color:var(--text-muted);font-size:0.85rem;flex-shrink:0">שיחה עם:</span>
+          <span style="color:var(--text-muted);font-size:0.85rem;flex-shrink:0" data-i18n="שיחה עם:">שיחה עם:</span>
           <select id="chatTraineeSelect" onchange="loadCoachChat()">
             <option value="">— בחר מתאמן —</option>
           </select>
@@ -1585,7 +1585,7 @@ input, textarea, select, button { font-family: inherit; }
       </div>
       <!-- MACRO CALCULATOR -->
       <div class="card macro-calc-card" style="margin-bottom:16px">
-        <div class="card-title" style="margin-bottom:12px">🧮 מחשבון מאקרו</div>
+        <div class="card-title" style="margin-bottom:12px" data-i18n="🧮 מחשבון מאקרו">🧮 מחשבון מאקרו</div>
         <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;align-items:flex-end">
           <div style="flex:2;min-width:140px;position:relative">
             <input id="macroSearchInput" placeholder="🔍 חפש מזון..." style="width:100%;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.85rem;box-sizing:border-box" oninput="renderMacroFoodList()" onfocus="renderMacroFoodList()" onblur="setTimeout(()=>{const d=el('macroDropdown');if(d)d.style.display='none'},200)">
@@ -1594,7 +1594,7 @@ input, textarea, select, button { font-family: inherit; }
             </div>
           </div>
           <div style="width:80px">
-            <input id="macroGrams" type="number" placeholder="גרם" min="1" max="2000" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.85rem;box-sizing:border-box" oninput="calcMacroPreview()">
+            <input id="macroGrams" type="number" placeholder="גרם" data-i18n-ph="גרם" min="1" max="2000" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.85rem;box-sizing:border-box" oninput="calcMacroPreview()">
           </div>
           <button class="btn btn-primary btn-sm" onclick="addToFoodLog()" style="white-space:nowrap;display:none" id="macroAddBtn">+ הוסף</button>
         </div>
@@ -1604,10 +1604,10 @@ input, textarea, select, button { font-family: inherit; }
       <!-- TODAY'S FOOD LOG -->
       <div class="card" style="margin-bottom:16px">
         <div class="flex-between" style="margin-bottom:10px">
-          <span class="card-title">📋 יומן אכילה היום</span>
+          <span class="card-title" data-i18n="📋 יומן אכילה היום">📋 יומן אכילה היום</span>
           <div style="display:flex;gap:6px">
-            <button class="btn btn-ghost btn-sm" style="color:#A78BFA" onclick="openCheatDayModal()">📅 יום צ'יט</button>
-            <button class="btn btn-ghost btn-sm" onclick="clearFoodLog()">נקה</button>
+            <button class="btn btn-ghost btn-sm" style="color:#A78BFA" onclick="openCheatDayModal()" data-i18n="📅 יום צ'יט">📅 יום צ'יט</button>
+            <button class="btn btn-ghost btn-sm" onclick="clearFoodLog()" data-i18n="נקה">נקה</button>
           </div>
         </div>
         <div id="foodLogList"></div>
@@ -1616,13 +1616,13 @@ input, textarea, select, button { font-family: inherit; }
 
       <!-- COACH MEAL PLAN -->
       <div class="flex-between" style="margin-bottom:12px">
-        <span class="card-title">🥗 תפריט מהמאמן</span>
+        <span class="card-title" data-i18n="🥗 תפריט מהמאמן">🥗 תפריט מהמאמן</span>
         <button class="btn btn-ghost btn-sm" onclick="resetMealsToday()" id="resetMealsBtnTrainee" style="display:none">איפוס</button>
       </div>
       <div id="traineeMealList"></div>
       <div class="cal-summary" id="calSummary">
         <div class="cal-row">
-          <span>קלוריות שנאכלו (סה"כ)</span>
+          <span data-i18n='קלוריות שנאכלו (סה"כ)'>קלוריות שנאכלו (סה"כ)</span>
           <span class="cal-eaten" id="calEaten">0</span>
         </div>
         <div class="cal-row mt-4">
@@ -2577,6 +2577,13 @@ const TR = {
   '🥩 חלבון שנאכל':'🥩 Protein Consumed',
   '⏳ נותר להשלים היום':'⏳ Remaining for Today',
   'עדיין לא נרשם אוכל להיום':'No food logged today',
+  '🧮 מחשבון מאקרו':'🧮 Macro Calculator',
+  '📋 יומן אכילה היום':'📋 Today\'s Food Log',
+  '📅 יום צ\'יט':'📅 Cheat Day',
+  '🥗 תפריט מהמאמן':'🥗 Coach\'s Meal Plan',
+  'קלוריות שנאכלו (סה"כ)':'Calories Eaten (Total)',
+  'שיחה עם:':'Chat with:',
+  'שלח שאלה למאמן שלך!':'Send your coach a question!',
   '💬 שיחה עם המאמן שלך':'💬 Chat with your coach',
   'שיחה עם:':'Chat with:',
   // Achievements
@@ -3329,10 +3336,12 @@ function formatDur(ms) {
   return `${pad(Math.floor(s/3600))}:${pad(Math.floor((s%3600)/60))}:${pad(s%60)}`;
 }
 function formatDate(ts) {
-  return new Date(ts).toLocaleDateString('he-IL',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+  const loc = currentLang === 'en' ? 'en-US' : 'he-IL';
+  return new Date(ts).toLocaleDateString(loc,{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
 }
 function formatTime(ts) {
-  return new Date(ts).toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
+  const loc = currentLang === 'en' ? 'en-US' : 'he-IL';
+  return new Date(ts).toLocaleTimeString(loc,{hour:'2-digit',minute:'2-digit'});
 }
 function formatDay(ts) {
   return new Date(ts).toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'});
@@ -5714,7 +5723,7 @@ function renderTraineeChatMessages() {
   const msgs = getMessages(currentUser.coachId, currentUser.id);
   const wrap = el('traineeChatMessages');
   if (!msgs.length) {
-    wrap.innerHTML = '<div class="chat-empty"><div class="ce-icon">💬</div><div>שלח שאלה למאמן שלך!</div></div>';
+    wrap.innerHTML = `<div class="chat-empty"><div class="ce-icon">💬</div><div>${t('שלח שאלה למאמן שלך!')}</div></div>`;
     return;
   }
   wrap.innerHTML = renderMessages(msgs, 'trainee');
