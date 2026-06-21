@@ -9,18 +9,30 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   :root {
+    --bg: #F4F4FA;
+    --surface: #FFFFFF;
+    --surface2: #EEEEF8;
+    --border: rgba(0,0,0,0.08);
+    --primary: #7C6FFF;
+    --primary2: #0F9E72;
+    --accent: #D4830A;
+    --pink: #D4548A;
+    --red: #E53E3E;
+    --text: #1A1A2E;
+    --muted: #6B6B8A;
+    --radius: 14px;
+  }
+  body.dark {
     --bg: #0F0F1A;
     --surface: #1A1A2E;
     --surface2: #22223A;
     --border: rgba(255,255,255,0.08);
-    --primary: #7C6FFF;
     --primary2: #64E2B7;
     --accent: #FFB547;
     --pink: #F472B6;
     --red: #FF6464;
     --text: #E8E8F0;
     --muted: #888;
-    --radius: 14px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
@@ -197,6 +209,7 @@
         <input class="search-input" id="globalSearch" placeholder="חיפוש שם, מייל..." oninput="onSearch(this.value)">
       </div>
       <button class="refresh-btn" onclick="loadData()">🔄 רענן</button>
+      <button class="refresh-btn" id="dashThemeToggle" onclick="toggleDashTheme()" title="מצב לילה/יום" style="font-size:1.1rem;padding:5px 10px">☀️</button>
       <button class="logout-btn" onclick="doLogout()">יציאה</button>
     </div>
   </div>
@@ -631,16 +644,16 @@ function renderStats() {
   // Total kg lost/gained (sum of abs changes for weight-logging trainees)
   const totalChatResponses = chatStats.reduce((s,r) => s + (r.responseCount||0), 0);
   const stats = [
-    { icon:'🧑‍💼', num: cs.length, label:'מאמנים', color:'var(--primary)' },
-    { icon:'🏃', num: ts.length, label:'מתאמנים', color:'var(--primary2)' },
-    { icon:'🏋️', num: totalWorkouts, label:'לוחות אימון', color:'var(--accent)' },
-    { icon:'🥗', num: totalMeals, label:'פריטי תפריט', color:'var(--pink)' },
-    { icon:'⚖️', num: traineesWithWeight, label:'מתאמנים עם מעקב משקל', color:'#60A5FA' },
-    { icon:'💬', num: totalChatResponses, label:'תגובות מאמנים בצ׳אט', color:'#34D399' },
-    { icon:'🐛', num: bugReports.length, label:'דיווחי בעיות', color:'var(--red)' },
+    { icon:'🧑‍💼', num: cs.length, label:'מאמנים', color:'var(--primary)', tab:'coaches' },
+    { icon:'🏃', num: ts.length, label:'מתאמנים', color:'var(--primary2)', tab:'trainees' },
+    { icon:'🏋️', num: totalWorkouts, label:'לוחות אימון', color:'var(--accent)', tab:'activity' },
+    { icon:'🥗', num: totalMeals, label:'פריטי תפריט', color:'var(--pink)', tab:'trainees' },
+    { icon:'⚖️', num: traineesWithWeight, label:'מתאמנים עם מעקב משקל', color:'#60A5FA', tab:'trainees' },
+    { icon:'💬', num: totalChatResponses, label:'תגובות מאמנים בצ׳אט', color:'#34D399', tab:'coaches' },
+    { icon:'🐛', num: bugReports.length, label:'דיווחי בעיות', color:'var(--red)', tab:'bugs' },
   ];
   document.getElementById('statsRow').innerHTML = stats.map(s => `
-    <div class="stat-card">
+    <div class="stat-card" onclick="showTab('${s.tab}')" style="cursor:pointer;transition:transform 0.15s,border-color 0.15s" onmouseover="this.style.transform='translateY(-3px)';this.style.borderColor='rgba(124,111,255,0.4)'" onmouseout="this.style.transform='';this.style.borderColor=''">
       <div class="stat-icon">${s.icon}</div>
       <div class="stat-num" style="color:${s.color}">${s.num}</div>
       <div class="stat-label">${s.label}</div>
@@ -927,9 +940,10 @@ function renderBugsTab() {
         <div class="bug-item">
           <div class="bug-subject">${hl(r.subject||'ללא נושא', searchQuery)}</div>
           <div class="bug-meta">
-            👤 ${hl(r.userName||'—', searchQuery)} (${r.userRole||'—'}) · 📧 ${hl(r.userEmail||'—', searchQuery)} · 📅 ${formatDate(r.createdAt)}
+            👤 ${hl(r.userName||'—', searchQuery)} (${r.userRole||'—'}) · 📧 ${hl(r.userEmail||'—', searchQuery)} · 📅 ${r.when ? formatDate(r.when) : formatDate(r.createdAt)}
           </div>
           ${r.details ? `<div class="bug-details">${hl(r.details, searchQuery)}</div>` : ''}
+          ${r.screenshot ? `<div style="margin-top:8px"><img src="${r.screenshot}" style="max-width:100%;max-height:280px;border-radius:8px;border:1px solid var(--border)"></div>` : ''}
         </div>`).join('') : '<div class="empty">אין דיווחים 🎉</div>'}
     </div>
   `;
@@ -959,6 +973,19 @@ function onSearch(q) {
     renderBugsTab();
   }, 250);
 }
+
+// ── Theme ──
+function applyDashTheme(dark) {
+  document.body.classList.toggle('dark', dark);
+  const btn = document.getElementById('dashThemeToggle');
+  if (btn) btn.textContent = dark ? '🌙' : '☀️';
+}
+function toggleDashTheme() {
+  const isDark = !document.body.classList.contains('dark');
+  localStorage.setItem('tt_theme', isDark ? 'dark' : 'light');
+  applyDashTheme(isDark);
+}
+(function() { applyDashTheme(localStorage.getItem('tt_theme') === 'dark'); })();
 
 // Auto-login check
 document.getElementById('adminPass').addEventListener('keydown', e => { if(e.key==='Enter') doAdminLogin(); });
