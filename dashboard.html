@@ -256,7 +256,10 @@
     <div class="tab-section active" id="tab-overview">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
         <div style="font-size:0.9rem;color:var(--muted)">לחץ על קוביה לצפייה בפרטים</div>
-        <button onclick="toggleEditMode()" id="editModeBtn" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 14px;cursor:pointer;color:var(--muted);font-size:0.82rem" title="ערוך קוביות">✏️ ערוך</button>
+        <div style="display:flex;gap:8px">
+          <button onclick="restoreDefaults()" id="restoreDefaultsBtn" style="display:none;background:none;border:1px solid var(--border);border-radius:8px;padding:6px 14px;cursor:pointer;color:var(--muted);font-size:0.82rem">↩️ שחזר ברירת מחדל</button>
+          <button onclick="toggleEditMode()" id="editModeBtn" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 14px;cursor:pointer;color:var(--muted);font-size:0.82rem" title="ערוך קוביות">✏️ ערוך</button>
+        </div>
       </div>
       <div class="stats-row" id="statsRow"></div>
       <div class="charts-row">
@@ -367,6 +370,7 @@
         <option value="trainees_all">כל המתאמנים + פרטים</option>
         <option value="trainees_cut">מתאמנים בחיטוב בלבד</option>
         <option value="trainees_bulk">מתאמנים במסה בלבד</option>
+        <option value="meal_analysis">ניתוח תפריטים + המלצות</option>
         <option value="weight_progress">התקדמות משקל — כולם</option>
         <option value="coaches_stats">סטטיסטיקות מאמנים</option>
         <option value="recent_activity">פעילות אחרונה (30 יום)</option>
@@ -803,6 +807,14 @@ function toggleEditMode() {
   editMode = !editMode;
   const btn = document.getElementById('editModeBtn');
   if (btn) btn.textContent = editMode ? '✓ סיים עריכה' : '✏️ ערוך';
+  const restoreBtn = document.getElementById('restoreDefaultsBtn');
+  if (restoreBtn) restoreBtn.style.display = editMode ? 'inline-block' : 'none';
+  renderStats();
+}
+
+function restoreDefaults() {
+  if (!confirm('לשחזר את כל הקוביות המקוריות?')) return;
+  saveCardConfig(DEFAULT_CARDS.map(c=>({...c})));
   renderStats();
 }
 
@@ -814,13 +826,31 @@ function deleteCard(idx) {
   renderStats();
 }
 
+function refreshTabDatalist() {
+  const dl = document.getElementById('tabOptions');
+  if (!dl) return;
+  const builtins = [
+    {value:'overview', label:'סקירה כללית'},
+    {value:'coaches',  label:'מאמנים'},
+    {value:'trainees', label:'מתאמנים'},
+    {value:'activity', label:'פעילות'},
+    {value:'bugs',     label:'דיווחי בעיות'},
+  ];
+  const customs = Object.entries(customTabs).map(([id,cfg]) => ({value:id, label:cfg.label||id}));
+  dl.innerHTML = [...builtins, ...customs]
+    .map(o => `<option value="${o.value}">${o.label}</option>`).join('');
+}
+
 function openAddCard() {
   document.getElementById('cardEditorTitle').textContent = '+ הוסף קוביה';
   document.getElementById('cardEditorIdx').value = '-1';
   document.getElementById('cardEditorIcon').value = '📌';
   document.getElementById('cardEditorLabel').value = '';
   document.getElementById('cardEditorTab').value = 'overview';
+  document.getElementById('cardEditorDataSource').value = 'trainees_all';
   selectCardColor('#7C6FFF');
+  refreshTabDatalist();
+  onTabInputChange();
   document.getElementById('cardEditorOverlay').style.display = 'flex';
 }
 
@@ -834,6 +864,7 @@ function openEditCard(idx) {
   document.getElementById('cardEditorTab').value = c.tab;
   if (c.dataSource) document.getElementById('cardEditorDataSource').value = c.dataSource;
   selectCardColor(c.color.startsWith('#') ? c.color : '#7C6FFF');
+  refreshTabDatalist();
   onTabInputChange();
   document.getElementById('cardEditorOverlay').style.display = 'flex';
 }
@@ -907,6 +938,78 @@ function addCustomTabToDOM(tabId, label, dataSource) {
   }
 }
 
+function isWeightStagnant(userId) {
+  const log = getWeightLog(userId);
+  if (log.length < 2) return false;
+  const twoWeeksAgo = Date.now() - 14 * 24 * 60 * 60 * 1000;
+  const recent = log.filter(e => (e.timestamp || 0) >= twoWeeksAgo);
+  if (recent.length < 2) return false;
+  const weights = recent.map(e => e.weight);
+  return Math.max(...weights) - Math.min(...weights) <= 0.5;
+}
+
+function mealPlanAge(meals) {
+  if (!meals || !meals.length) return null;
+  const timestamps = meals.map(m => m.addedAt).filter(Boolean);
+  if (!timestamps.length) return null;
+  const oldest = Math.min(...timestamps);
+  const days = Math.floor((Date.now() - oldest) / 86400000);
+  return days;
+}
+
+function renderMealAnalysisTab(container, ts) {
+  const stagnant = ts.filter(t => isWeightStagnant(t.id));
+  const html = `
+    ${stagnant.length ? `<div style="background:rgba(255,180,71,0.1);border:1px solid rgba(255,180,71,0.4);border-radius:14px;padding:16px;margin-bottom:24px">
+      <div style="font-size:0.95rem;font-weight:700;color:var(--accent);margin-bottom:10px">⚠️ ${stagnant.length} מתאמן${stagnant.length>1?'ים':''} עם משקל תקוע — מומלץ לשנות תפריט</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        ${stagnant.map(t=>`<span onclick="openTraineeModal('${t.id}')" style="cursor:pointer;background:rgba(255,180,71,0.15);border:1px solid rgba(255,180,71,0.4);border-radius:20px;padding:4px 12px;font-size:0.82rem;color:var(--accent)">${t.name}</span>`).join('')}
+      </div>
+    </div>` : `<div style="background:rgba(100,226,183,0.08);border:1px solid rgba(100,226,183,0.3);border-radius:14px;padding:12px 16px;margin-bottom:24px;font-size:0.88rem;color:var(--primary2)">✓ אין מתאמנים עם משקל תקוע — כל התפריטים עובדים!</div>`}
+
+    ${ts.filter(t=>(t.meals||[]).length>0).map(t => {
+      const meals = t.meals || [];
+      const coach = (appDB?.users||[]).find(u=>u.id===t.coachId);
+      const totalCal = meals.reduce((s,m)=>s+(m.cal||0),0);
+      const totalProt = meals.reduce((s,m)=>s+(m.protein||0),0);
+      const totalCarbs = meals.reduce((s,m)=>s+(m.carbs||0),0);
+      const totalFat = meals.reduce((s,m)=>s+(m.fat||0),0);
+      const agedays = mealPlanAge(meals);
+      const stag = isWeightStagnant(t.id);
+      const grouped = {};
+      meals.forEach(m=>{ grouped[m.type]=grouped[m.type]||[]; grouped[m.type].push(m); });
+      const mealOrder = ['בוקר','צהריים','חטיף','ערב'];
+      return `<div class="table-card" style="margin-bottom:16px${stag?';border:1px solid rgba(255,180,71,0.5)':''}">
+        <div class="table-header-row">
+          <div>
+            <span class="table-title" style="cursor:pointer;color:var(--primary)" onclick="openTraineeModal('${t.id}')">${t.name} ↗</span>
+            <span style="font-size:0.78rem;color:var(--muted);margin-right:8px">${coach?'מאמן: '+coach.name:''}</span>
+            ${stag?`<span style="background:rgba(255,180,71,0.15);color:var(--accent);font-size:0.75rem;padding:2px 8px;border-radius:20px;font-weight:700">⚠️ משקל תקוע — שנה תפריט</span>`:''}
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            ${agedays!==null?`<span style="font-size:0.78rem;color:var(--muted)">⏱ ${agedays} ימים על התפריט</span>`:''}
+            <span class="table-count">${meals.length} פריטים</span>
+          </div>
+        </div>
+        <div style="padding:12px 16px;display:flex;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--border)">
+          <div style="text-align:center"><div style="font-size:1.2rem;font-weight:800;color:var(--pink)">${totalCal}</div><div style="font-size:0.72rem;color:var(--muted)">קל׳/יום</div></div>
+          <div style="text-align:center"><div style="font-size:1.2rem;font-weight:800;color:var(--primary2)">${totalProt}g</div><div style="font-size:0.72rem;color:var(--muted)">חלבון</div></div>
+          <div style="text-align:center"><div style="font-size:1.2rem;font-weight:800;color:var(--accent)">${totalCarbs}g</div><div style="font-size:0.72rem;color:var(--muted)">פחמימות</div></div>
+          <div style="text-align:center"><div style="font-size:1.2rem;font-weight:800;color:var(--muted)">${totalFat}g</div><div style="font-size:0.72rem;color:var(--muted)">שומן</div></div>
+        </div>
+        <div style="padding:12px 16px;display:flex;flex-wrap:wrap;gap:6px">
+          ${Object.entries(grouped).sort(([a],[b])=>(mealOrder.indexOf(a)||99)-(mealOrder.indexOf(b)||99)).map(([type,items])=>`
+            <div style="min-width:120px">
+              <div style="font-size:0.72rem;font-weight:700;color:var(--muted);margin-bottom:4px">${type}</div>
+              ${items.map(m=>`<div style="font-size:0.8rem;padding:2px 0">${m.name} <span style="color:var(--muted)">${m.cal}קל׳</span></div>`).join('')}
+            </div>`).join('')}
+        </div>
+      </div>`;
+    }).join('') || '<div class="empty">אין מתאמנים עם תפריט מוגדר</div>'}
+  `;
+  container.innerHTML = html;
+}
+
 function renderCustomTab(tabId) {
   const cfg = customTabs[tabId];
   if (!cfg) return;
@@ -920,6 +1023,7 @@ function renderCustomTab(tabId) {
   else if (ds === 'coaches_stats') { container.innerHTML = coachTableHTML(coaches(), 'סטטיסטיקות מאמנים'); return; }
   else if (ds === 'bugs_list') { renderBugsTab(); return; }
   else if (ds === 'recent_activity') { renderActivityTab(); return; }
+  else if (ds === 'meal_analysis') { renderMealAnalysisTab(container, ts); return; }
   else if (ds === 'weight_progress') {
     container.innerHTML = `<div class="table-card"><div class="table-header-row"><span class="table-title">⚖️ התקדמות משקל</span></div><div style="overflow-x:auto"><table><thead><tr><th>שם</th><th>משקל התחלה</th><th>משקל נוכחי</th><th>שינוי</th><th>יעד</th></tr></thead><tbody>${
       ts.filter(t=>getWeightLog(t.id).length>0||t.startWeight).map(t=>{
