@@ -1113,7 +1113,7 @@ input, textarea, select, button { font-family: inherit; }
         <input type="email" id="regEmail" placeholder="me@example.com" autocomplete="email">
       </div>
       <div class="form-group">
-        <label data-i18n="סיסמא (לפחות 6 תווים)">סיסמא (לפחות 6 תווים)</label>
+        <label data-i18n="סיסמא (לפחות 6 תווים)">סיסמא (8+ תווים, אות גדולה, מספר)</label>
         <input type="password" id="regPassword" placeholder="••••••••" autocomplete="new-password">
       </div>
       <div id="traineeFields">
@@ -1408,8 +1408,8 @@ input, textarea, select, button { font-family: inherit; }
               <label style="font-size:0.78rem;color:var(--text-muted);display:block;margin-bottom:4px">🍎 בחר מבנק המזון (אופציונלי)</label>
               <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
                 <div style="flex:2;min-width:140px;position:relative">
-                  <input id="mealBankSearch" placeholder="חפש מזון..." style="width:100%;padding:7px 10px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.85rem;box-sizing:border-box" oninput="renderMealBankList()" onfocus="renderMealBankList()" onblur="setTimeout(()=>{const d=el('mealBankDropdown');if(d)d.style.display='none'},200)">
-                  <div id="mealBankDropdown" style="display:none;position:absolute;top:100%;right:0;left:0;background:#1A1A2E;border:1px solid var(--border);border-radius:8px;max-height:160px;overflow-y:auto;z-index:100">
+                  <input id="mealBankSearch" placeholder="חפש מזון..." style="width:100%;padding:7px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.85rem;box-sizing:border-box" oninput="renderMealBankList()" onfocus="renderMealBankList()" onblur="setTimeout(()=>{const d=el('mealBankDropdown');if(d)d.style.display='none'},200)">
+                  <div id="mealBankDropdown" style="display:none;position:absolute;top:100%;right:0;left:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;max-height:160px;overflow-y:auto;z-index:100;box-shadow:0 4px 16px rgba(0,0,0,0.12)">
                     <div id="mealBankList"></div>
                   </div>
                 </div>
@@ -1588,15 +1588,15 @@ input, textarea, select, button { font-family: inherit; }
         <div class="card-title" style="margin-bottom:12px">🧮 מחשבון מאקרו</div>
         <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;align-items:flex-end">
           <div style="flex:2;min-width:140px;position:relative">
-            <input id="macroSearchInput" placeholder="🔍 חפש מזון..." style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.85rem;box-sizing:border-box" oninput="renderMacroFoodList()" onfocus="renderMacroFoodList()" onblur="setTimeout(()=>{const d=el('macroDropdown');if(d)d.style.display='none'},200)">
-            <div id="macroDropdown" style="display:none;position:absolute;top:100%;right:0;left:0;background:#1A1A2E;border:1px solid var(--border);border-radius:8px;max-height:180px;overflow-y:auto;z-index:100">
+            <input id="macroSearchInput" placeholder="🔍 חפש מזון..." style="width:100%;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.85rem;box-sizing:border-box" oninput="renderMacroFoodList()" onfocus="renderMacroFoodList()" onblur="setTimeout(()=>{const d=el('macroDropdown');if(d)d.style.display='none'},200)">
+            <div id="macroDropdown" style="display:none;position:absolute;top:100%;right:0;left:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;max-height:180px;overflow-y:auto;z-index:100;box-shadow:0 4px 16px rgba(0,0,0,0.12)">
               <div id="macroFoodList"></div>
             </div>
           </div>
           <div style="width:80px">
             <input id="macroGrams" type="number" placeholder="גרם" min="1" max="2000" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.85rem;box-sizing:border-box" oninput="calcMacroPreview()">
           </div>
-          <button class="btn btn-primary btn-sm" onclick="addToFoodLog()" style="white-space:nowrap">+ הוסף</button>
+          <button class="btn btn-primary btn-sm" onclick="addToFoodLog()" style="white-space:nowrap;display:none" id="macroAddBtn">+ הוסף</button>
         </div>
         <div id="macroPreview" style="display:none;background:rgba(255,255,255,0.04);border-radius:8px;padding:10px;font-size:0.82rem;gap:12px;flex-wrap:wrap"></div>
       </div>
@@ -1617,7 +1617,7 @@ input, textarea, select, button { font-family: inherit; }
       <!-- COACH MEAL PLAN -->
       <div class="flex-between" style="margin-bottom:12px">
         <span class="card-title">🥗 תפריט מהמאמן</span>
-        <button class="btn btn-ghost btn-sm" onclick="resetMealsToday()">איפוס</button>
+        <button class="btn btn-ghost btn-sm" onclick="resetMealsToday()" id="resetMealsBtnTrainee" style="display:none">איפוס</button>
       </div>
       <div id="traineeMealList"></div>
       <div class="cal-summary" id="calSummary">
@@ -1678,20 +1678,20 @@ input, textarea, select, button { font-family: inherit; }
       <div id="weeklyReminderBanner" style="display:none" class="weekly-reminder-banner" onclick="showWeightUpdateModal()">
         <div class="wr-icon">📸</div>
         <div class="wr-text">
-          <div class="wr-title">זמן לעדכון שבועי!</div>
-          <div class="wr-sub">עדכן משקל והעלה תמונת התקדמות</div>
+          <div class="wr-title" data-i18n="זמן לעדכון שבועי!">זמן לעדכון שבועי!</div>
+          <div class="wr-sub" data-i18n="עדכן משקל והעלה תמונת התקדמות">עדכן משקל והעלה תמונת התקדמות</div>
         </div>
-        <button class="btn btn-primary btn-sm" style="flex-shrink:0">עדכן עכשיו</button>
+        <button class="btn btn-primary btn-sm" style="flex-shrink:0" data-i18n="עדכן עכשיו">עדכן עכשיו</button>
       </div>
       <div class="card" style="margin-bottom:12px">
         <div class="card-header">
-          <span class="card-title">📸 מעקב התקדמות</span>
-          <button class="btn btn-ghost btn-sm" onclick="showWeightUpdateModal()">+ עדכון</button>
+          <span class="card-title" data-i18n="📸 מעקב התקדמות">📸 מעקב התקדמות</span>
+          <button class="btn btn-ghost btn-sm" onclick="showWeightUpdateModal()" data-i18n="+ עדכון">+ עדכון</button>
         </div>
         <div id="progressLogList"></div>
       </div>
       <div class="card">
-        <div class="card-header"><span class="card-title">📅 האימונים שלי</span></div>
+        <div class="card-header"><span class="card-title" data-i18n="📅 האימונים שלי">📅 האימונים שלי</span></div>
         <div id="traineeHistory"></div>
       </div>
     </div>
@@ -1700,28 +1700,28 @@ input, textarea, select, button { font-family: inherit; }
     <div id="t-reminders" class="tab-panel">
       <div class="card" style="margin-bottom:12px">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-          <div><div class="card-title">🔔 התרעות</div><div id="notifPermStatus" style="font-size:0.78rem;color:var(--text-muted);margin-top:2px"></div></div>
-          <button class="btn btn-primary btn-sm" id="notifPermBtn" onclick="requestNotifPerm()">הפעל התרעות</button>
+          <div><div class="card-title" data-i18n="🔔 התרעות">🔔 התרעות</div><div id="notifPermStatus" style="font-size:0.78rem;color:var(--text-muted);margin-top:2px"></div></div>
+          <button class="btn btn-primary btn-sm" id="notifPermBtn" onclick="requestNotifPerm()" data-i18n="הפעל התרעות">הפעל התרעות</button>
         </div>
       </div>
       <div class="card" style="margin-bottom:12px">
-        <div class="card-title" style="margin-bottom:10px">🏋️ שעת אימון</div>
+        <div class="card-title" style="margin-bottom:10px" data-i18n="🏋️ שעת אימון">🏋️ שעת אימון</div>
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
           <input type="time" id="workoutTimeInput" style="padding:8px 12px;background:rgba(255,255,255,0.07);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.9rem;flex:1">
-          <button class="btn btn-primary btn-sm" onclick="saveWorkoutReminder()">שמור</button>
-          <button class="btn btn-ghost btn-sm" onclick="clearWorkoutReminder()">נקה</button>
+          <button class="btn btn-primary btn-sm" onclick="saveWorkoutReminder()" data-i18n="שמור">שמור</button>
+          <button class="btn btn-ghost btn-sm" onclick="clearWorkoutReminder()" data-i18n="נקה">נקה</button>
         </div>
         <div id="workoutReminderStatus" style="font-size:0.78rem;color:var(--text-muted);margin-top:6px"></div>
       </div>
       <div class="card" style="margin-bottom:12px">
-        <div class="card-title" style="margin-bottom:8px">🍽️ ארוחות</div>
+        <div class="card-title" style="margin-bottom:8px" data-i18n="🍽️ ארוחות">🍽️ ארוחות</div>
         <div id="mealRemindersList"></div>
-        <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="addMealReminderRow()">+ הוסף ארוחה</button>
+        <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="addMealReminderRow()" data-i18n="+ הוסף ארוחה">+ הוסף ארוחה</button>
       </div>
       <div class="card" style="margin-bottom:12px">
-        <div class="card-title" style="margin-bottom:8px">💊 תוספים</div>
+        <div class="card-title" style="margin-bottom:8px" data-i18n="💊 תוספים">💊 תוספים</div>
         <div id="suppRemindersList"></div>
-        <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="addSuppReminderRow()">+ הוסף תוסף</button>
+        <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="addSuppReminderRow()" data-i18n="+ הוסף תוסף">+ הוסף תוסף</button>
       </div>
     </div>
 
@@ -1760,23 +1760,23 @@ input, textarea, select, button { font-family: inherit; }
 <div id="weightUpdateModal" class="modal-overlay">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title">📸 עדכון שבועי</span>
+      <span class="modal-title" data-i18n="📸 עדכון שבועי">📸 עדכון שבועי</span>
       <button class="close-btn" onclick="closeModal('weightUpdateModal')">×</button>
     </div>
     <div class="form-group">
-      <label>משקל נוכחי (ק"ג)</label>
+      <label data-i18n="משקל נוכחי (ק&quot;ג)">משקל נוכחי (ק"ג)</label>
       <input id="updateWeightInput" type="number" placeholder="75" step="0.1" style="font-size:1.2rem;font-weight:700">
     </div>
     <div class="form-group">
-      <label>תמונת התקדמות (אופציונלי)</label>
+      <label data-i18n="תמונת התקדמות (אופציונלי)">תמונת התקדמות (אופציונלי)</label>
       <input type="file" id="progressPhotoInput" accept="image/*" style="color:var(--text);background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:8px;width:100%;box-sizing:border-box">
     </div>
     <div id="photoPreviewWrap" style="display:none;margin-bottom:12px;text-align:center">
       <img id="photoPreview" style="max-width:100%;max-height:200px;border-radius:10px;border:1px solid var(--border)">
     </div>
     <div class="flex-between mt-12 gap-8">
-      <button class="btn btn-ghost" onclick="closeModal('weightUpdateModal')">ביטול</button>
-      <button class="btn btn-primary" onclick="saveWeightUpdate()">💾 שמור עדכון</button>
+      <button class="btn btn-ghost" onclick="closeModal('weightUpdateModal')" data-i18n="ביטול">ביטול</button>
+      <button class="btn btn-primary" onclick="saveWeightUpdate()" data-i18n="💾 שמור עדכון">💾 שמור עדכון</button>
     </div>
   </div>
 </div>
@@ -2517,13 +2517,65 @@ const TR = {
   // History/activity
   'אין פעילות':'No activity yet',
   'לוחות אימון':'Workout Schedules',
+  // Workout dynamic
+  'אין אימון מתוכנן ליום זה':'No workout scheduled for today',
+  'האימון הועבר':'Workout Rescheduled',
+  'אימון פעיל ⚡':'Active Workout ⚡',
+  'סטים':'sets','חזרות':'reps',
+  '😣 לא יכול':'😣 Can\'t do','❌ לא יכול':'❌ Can\'t do',
+  'תרגיל':'Exercise',
+  'הקלט סרטון':'Record Video',
+  // History
+  'מתוך':'of','תרגילים':'exercises',
+  'עדיין לא סיימת אימון':'No completed workouts yet',
+  '📅 האימונים שלי':'📅 My Workouts',
+  // Progress
+  '📸 מעקב התקדמות':'📸 Progress Tracking',
+  'זמן לעדכון שבועי!':'Time for your weekly update!',
+  'עדכן משקל והעלה תמונת התקדמות':'Update weight & upload a progress photo',
+  'עדכן עכשיו':'Update Now',
+  '+ עדכון':'+ Update',
+  'שמור עדכון':'Save Update',
+  'בחר תמונה':'Choose Photo',
+  // Weight modal
+  'עדכן משקל':'Update Weight',
   // Achievements
   'הישגים שלי':'My Achievements',
   'עוד לא השגת הישגים — התחל לאמן!':'No achievements yet — start training!',
+  '⚡ נקודות XP':'⚡ XP Points',
+  'סיכום אימונים':'Workout Summary',
+  'אימונים':'Workouts','ממוצע (דקות)':'Avg (min)',
+  'התקדמות':'Progress','הושג!':'Achieved!',
+  'דקות':'min','סה"כ שעות':'Total Hours',
+  '% מסך כל ההישגים':'% of all achievements',
+  'הישגי כמות':'Workout Count','הישגי זמן':'Workout Duration',
   // Reminders
   'שעת אימון':'Workout Time',
   'הגדר תזכורת':'Set Reminder',
   'תוספי תזונה':'Supplements',
+  'שם התוסף':'Supplement Name',
+  'שעת נטילה':'Time to Take',
+  '+ הוסף תוסף':'+ Add Supplement',
+  '🔔 התרעות':'🔔 Notifications',
+  'הפעל התרעות':'Enable Notifications',
+  '🏋️ שעת אימון':'🏋️ Workout Time',
+  '🍽️ ארוחות':'🍽️ Meals',
+  '💊 תוספים':'💊 Supplements',
+  '+ הוסף ארוחה':'+ Add Meal',
+  'שמור':'Save', 'נקה':'Clear',
+  '📸 עדכון שבועי':'📸 Weekly Update',
+  'משקל נוכחי (ק"ג)':'Current Weight (kg)',
+  'תמונת התקדמות (אופציונלי)':'Progress Photo (optional)',
+  '💾 שמור עדכון':'💾 Save Update',
+  'לא הוגדרה שעת אימון':'No workout time set',
+  'שעת אימון נשמרה ✓':'Workout time saved ✓',
+  // Chat empty state
+  'שלח שאלה למאמן שלך!':'Send your coach a question!',
+  // Weekly reminder banner
+  '📅 האימונים שלי':'📅 My Workouts',
+  // Modal buttons
+  'ביצוע':'Done','הבא':'Next','סגור':'Close',
+  'כן, סיים':'Yes, Finish','המשך אימון':'Continue Workout',
   // Hero
   'הפלטפורמה החכמה לניהול אימונים בין מאמן למתאמן':'The smart platform for managing training between coach and trainee',
   'תוכניות אישיות':'Personal Plans',
@@ -2558,14 +2610,47 @@ function setLang(lang) {
   document.querySelectorAll('.lang-toggle-btn').forEach(b => {
     b.textContent = isEn ? '🇮🇱 עברית' : '🌐 English';
   });
-  // Re-render trainee dynamic content if logged in
+  // Re-render ALL trainee content
   if (currentUser && currentUser.role === 'trainee') {
     try { renderTraineeDayNav(); } catch(e) {}
+    try { renderTraineeWorkoutForDay(traineeSelectedDate || dateKey(new Date())); } catch(e) {}
     try { renderTraineeMenu(); } catch(e) {}
+    try { renderProgressLog(); } catch(e) {}
+    try { renderTraineeHistory(); } catch(e) {}
+    try { renderAchievementsTab(); } catch(e) {}
+    try { renderReminderSettings(); } catch(e) {}
     try { renderMusicTab(); } catch(e) {}
     try { renderBugReportPanel('traineeBugPanel'); } catch(e) {}
+    try { checkWeeklyReminder(); } catch(e) {}
+    try { updateNotifPermUI(); } catch(e) {}
   }
 }
+
+// Browser back button → return to login screen
+window.addEventListener('popstate', function() {
+  if (currentUser) { doLogout(); history.pushState(null, ''); }
+});
+
+// ── Session timeout (30 min inactivity) ────────
+const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
+let _sessionTimer = null;
+
+function resetSessionTimer() {
+  clearTimeout(_sessionTimer);
+  if (!currentUser) return;
+  _sessionTimer = setTimeout(() => {
+    if (currentUser) {
+      alert(currentLang==='en'
+        ? 'You have been logged out due to inactivity.'
+        : 'יצאת מהמערכת עקב חוסר פעילות.');
+      doLogout();
+    }
+  }, SESSION_TIMEOUT_MS);
+}
+
+['click','keydown','touchstart','scroll'].forEach(evt =>
+  document.addEventListener(evt, () => { if (currentUser) resetSessionTimer(); }, { passive: true })
+);
 
 // Apply saved lang on load (runs after DOM ready)
 window.addEventListener('DOMContentLoaded', function() {
@@ -2659,12 +2744,45 @@ function refreshCoachesSelect() {
     coaches.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
 }
 
+// ── Rate limiting ──────────────────────────────
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOCKOUT_MS = 15 * 60 * 1000; // 15 minutes
+
+function checkRateLimit(email) {
+  const key = 'tt_login_' + email;
+  const data = JSON.parse(localStorage.getItem(key) || '{"count":0,"ts":0}');
+  if (data.count >= MAX_LOGIN_ATTEMPTS && Date.now() - data.ts < LOCKOUT_MS) {
+    const left = Math.ceil((LOCKOUT_MS - (Date.now() - data.ts)) / 60000);
+    return `יותר מדי ניסיונות כושלים. נסה שוב בעוד ${left} דקות`;
+  }
+  return null;
+}
+function recordFailedLogin(email) {
+  const key = 'tt_login_' + email;
+  const data = JSON.parse(localStorage.getItem(key) || '{"count":0,"ts":0}');
+  if (Date.now() - data.ts > LOCKOUT_MS) data.count = 0;
+  data.count++;
+  data.ts = Date.now();
+  localStorage.setItem(key, JSON.stringify(data));
+}
+function clearRateLimit(email) { localStorage.removeItem('tt_login_' + email); }
+
 async function doLogin() {
   const email = v('loginEmail').trim().toLowerCase();
   const pass  = v('loginPassword');
+  // Rate limit check
+  const lockMsg = checkRateLimit(email);
+  if (lockMsg) { showError('loginError', lockMsg); return; }
   const pHash = await sha256(pass);
   const user  = db.users.find(u => u.email.toLowerCase() === email && u.password === pHash);
-  if (!user) { showError('loginError','מייל או סיסמא שגויים'); return; }
+  if (!user) {
+    recordFailedLogin(email);
+    const data = JSON.parse(localStorage.getItem('tt_login_' + email) || '{"count":0}');
+    const left = MAX_LOGIN_ATTEMPTS - data.count;
+    showError('loginError', left > 0 ? `מייל או סיסמא שגויים (${left} ניסיונות נותרו)` : 'החשבון ננעל ל-15 דקות');
+    return;
+  }
+  clearRateLimit(email);
   // Admin gets user picker instead of direct app entry
   if (email === 'admin@admin.com') { showAdminUserPicker(); return; }
   enterApp(user);
@@ -2798,10 +2916,10 @@ async function doRegister() {
   if (!first || !last) { showError('registerError','נא למלא שם מלא'); return; }
   if (first.length < 2 || last.length < 2) { showError('registerError','שם חייב להכיל לפחות 2 תווים'); return; }
   if (!validEmail(email)) { showError('registerError','כתובת מייל לא תקינה'); return; }
-  if (pass.length < 6) { showError('registerError','סיסמא חייבת להכיל לפחות 6 תווים'); return; }
-  if (!/[A-Za-z]/.test(pass) || !/[0-9]/.test(pass)) {
-    showError('registerError','הסיסמא חייבת לכלול אותיות ומספרים'); return;
-  }
+  if (pass.length < 8) { showError('registerError','סיסמא חייבת להכיל לפחות 8 תווים'); return; }
+  if (!/[A-Z]/.test(pass)) { showError('registerError','סיסמא חייבת לכלול לפחות אות גדולה אחת (A-Z)'); return; }
+  if (!/[0-9]/.test(pass)) { showError('registerError','סיסמא חייבת לכלול לפחות ספרה אחת'); return; }
+  if (!/[a-z]/.test(pass)) { showError('registerError','סיסמא חייבת לכלול לפחות אות קטנה אחת (a-z)'); return; }
   if (!coachId) { showError('registerError','נא לבחור מאמן'); return; }
   if (db.users.find(u => u.email.toLowerCase() === email)) { showError('registerError','מייל זה כבר רשום במערכת'); return; }
 
@@ -2864,7 +2982,9 @@ async function addCoachByCoach() {
 let timerSlideshowStarted = false;
 function enterApp(user) {
   currentUser = user;
-  localStorage.setItem('tt_session_uid', user.id); // persist session
+  localStorage.setItem('tt_session_uid', user.id);
+  history.pushState({ inApp: true }, '');
+  resetSessionTimer();
   showScreen(user.role === 'coach' ? 'coachScreen' : 'traineeScreen');
   if (user.role === 'coach') initCoach();
   else {
@@ -2879,6 +2999,7 @@ function enterApp(user) {
 }
 
 function doLogout() {
+  clearTimeout(_sessionTimer);
   if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
   workoutStart = null; currentUser = null; editingTraineeId = null; chatTraineeId = null;
   localStorage.removeItem('tt_session_uid');
@@ -3809,7 +3930,7 @@ function addMeal() {
   if (!name) { alert('נא להזין שם'); return; }
   const t = getUser(editingTraineeId);
   if (!t.meals) t.meals = [];
-  const mealItem = {id:uid(),name,grams,cal,protein,carbs,fat,type};
+  const mealItem = {id:uid(),name,grams,cal,protein,carbs,fat,type,addedAt:Date.now()};
   if (selectedMealBankFood?.wholeUnit) {
     mealItem.wholeUnit  = selectedMealBankFood.wholeUnit;
     mealItem.wholeGrams = selectedMealBankFood.wholeGrams;
@@ -4007,6 +4128,8 @@ function initTrainee() {
   checkWeeklyReminder();
   renderProgressLog();
   initReminders();
+  // Re-apply language after all content is rendered
+  if (currentLang !== 'he') setTimeout(() => setLang(currentLang), 50);
 }
 
 // ═══ TRAINEE DAY NAV ═══
@@ -4030,7 +4153,7 @@ function renderTraineeDayNav() {
     const hasSched = getScheduleForDay(currentUser.id, dStr).length > 0;
     const isToday = dStr === todayStr;
     const rawLabel = isToday ? 'היום' : d.toLocaleDateString('he-IL',{weekday:'short'});
-    const label = t(rawLabel);
+    const label = isToday ? t('היום') : (currentLang==='en' ? d.toLocaleDateString('en-US',{weekday:'short'}) : rawLabel);
     return `<div class="day-chip ${traineeSelectedDate===dStr?'active':''} ${hasSched&&traineeSelectedDate!==dStr?'has-workout':''}"
       onclick="selectTraineeDay('${dStr}')">
       <div class="day-chip-name">${label}</div>
@@ -4058,7 +4181,7 @@ function renderTraineeWorkoutForDay(dateStr) {
     if (reschedBtn) reschedBtn.style.display = 'none';
     el('traineeExList').innerHTML = `<div class="card" style="text-align:center;padding:24px">
       <div style="font-size:2.5rem;margin-bottom:8px">📅</div>
-      <div style="font-weight:700;font-size:1.05rem;margin-bottom:6px">האימון הועבר</div>
+      <div style="font-weight:700;font-size:1.05rem;margin-bottom:6px">${t('האימון הועבר')}</div>
       <div style="font-size:0.9rem;color:var(--text-muted)">ל-${formatDateHe(rescheduledTo)}</div>
     </div>`;
     el('workoutProgress').style.display = 'none'; return;
@@ -4073,7 +4196,7 @@ function renderTraineeWorkoutForDay(dateStr) {
     const gen = currentUser.exercises || [];
     if (reschedBtn) reschedBtn.style.display = 'none';
     if (!gen.length) {
-      el('traineeExList').innerHTML = '<div class="empty-state"><div class="es-icon">🏃</div><p>אין אימון מתוכנן ליום זה</p></div>';
+      el('traineeExList').innerHTML = `<div class="empty-state"><div class="es-icon">🏃</div><p>${t('אין אימון מתוכנן ליום זה')}</p></div>`;
       el('workoutProgress').style.display = 'none'; return;
     }
     exs = gen.map(e => ({id:e.id, customName:e.name, sets:e.sets, reps:e.reps, note:e.notes, bankExId:null}));
@@ -4103,13 +4226,13 @@ function renderTraineeWorkoutForDay(dateStr) {
       <div style="flex:1">
         <div class="exercise-name">${name}</div>
         <div class="exercise-details mt-4">
-          <span class="ex-chip">📦 ${sets} סטים</span>
-          <span class="ex-chip">🔁 ${reps} חזרות</span>
+          <span class="ex-chip">📦 ${sets} ${t('סטים')}</span>
+          <span class="ex-chip">🔁 ${reps} ${t('חזרות')}</span>
         </div>
         ${note?`<div class="exercise-note">💬 ${note}</div>`:''}
       </div>
       <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
-        <button class="cannot-btn ${isCannot?'active':''}" onclick="toggleCannotDo('${item.id}','${dateStr}')">${isCannot?'❌ לא יכול':'😣 לא יכול'}</button>
+        <button class="cannot-btn ${isCannot?'active':''}" onclick="toggleCannotDo('${item.id}','${dateStr}')">${isCannot?t('❌ לא יכול'):t('😣 לא יכול')}</button>
         <button class="btn btn-ghost btn-sm" style="padding:3px 8px;font-size:0.78rem;color:#A78BFA" onclick="openExerciseVideoModal('${name.replace(/'/g,"\\'")}')" title="הקלט סרטון">📹</button>
       </div>
     </div>`;
@@ -4154,14 +4277,14 @@ function renderProgressLog() {
   if (!list) return;
   const log = JSON.parse(localStorage.getItem('progress_log_' + currentUser.id)||'[]').reverse();
   if (!log.length) {
-    list.innerHTML = '<div style="color:var(--text-muted);font-size:0.85rem;padding:10px 0">אין עדכונים עדיין — לחץ "+ עדכון" להוספה</div>';
+    list.innerHTML = `<div style="color:var(--text-muted);font-size:0.85rem;padding:10px 0">${t('אין עדכונים עדיין — לחץ "+ עדכון" להוספה')}</div>`;
     return;
   }
   list.innerHTML = log.map((item, idx) => {
     const prev = log[idx+1];
     const diff = prev ? (item.weight - prev.weight) : null;
     const diffStr = diff !== null
-      ? `<span style="color:${diff<0?'#64E2B7':diff>0?'#FF6B9D':'var(--text-muted)'}">${diff>0?'+':''}${diff.toFixed(1)} ק"ג</span>`
+      ? `<span style="color:${diff<0?'#64E2B7':diff>0?'#FF6B9D':'var(--text-muted)'}">${diff>0?'+':''}${diff.toFixed(1)} ${t('ק"ג')}</span>`
       : '';
     const [y,m,d] = item.date.split('-');
     return `<div class="progress-log-item">
@@ -4171,7 +4294,7 @@ function renderProgressLog() {
       }
       <div class="progress-log-info">
         <div class="progress-log-date">${d}/${m}/${y}</div>
-        <div class="progress-log-weight">${item.weight} ק"ג</div>
+        <div class="progress-log-weight">${item.weight} ${t('ק"ג')}</div>
         <div class="progress-log-diff">${diffStr}</div>
       </div>
       <button onclick="deleteProgressEntry('${item.id}')" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:1rem;padding:4px">🗑</button>
@@ -4781,14 +4904,27 @@ function renderTraineeMenu() {
   const cheatDay = currentUser.cheatDay;
   const cdReminder = el('cheatDayReminder');
   if (cdReminder) {
-    if (cheatDay) {
-      const today = dateKey(new Date());
+    const today = dateKey(new Date());
+    if (cheatDay && cheatDay >= today) {
       const isToday = cheatDay === today;
       cdReminder.style.display = '';
       cdReminder.innerHTML = isToday
-        ? `<div style="background:rgba(255,181,71,0.12);border:1px solid rgba(255,181,71,0.4);border-radius:10px;padding:10px 14px;font-size:0.85rem;color:var(--warning)">🍕 היום הוא יום הצ'יט שלך! תהנה 🎉</div>`
-        : `<div style="font-size:0.8rem;color:var(--text-muted);padding:4px 0">📅 יום הצ'יט הבא: <b style="color:#A78BFA">${formatDateHe(cheatDay)}</b></div>`;
-    } else { cdReminder.style.display = 'none'; }
+        ? `<div style="background:rgba(255,181,71,0.12);border:1px solid rgba(255,181,71,0.4);border-radius:10px;padding:10px 14px;font-size:0.85rem;color:var(--warning);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+            <span>🍕 ${currentLang==='en'?"Today is your cheat day! Enjoy 🎉":"היום הוא יום הצ'יט שלך! תהנה 🎉"}</span>
+            <button class="btn btn-ghost btn-sm" onclick="openCheatDayModal()" style="font-size:0.75rem">${currentLang==='en'?'Reschedule':'הזז תאריך'}</button>
+          </div>`
+        : `<div style="font-size:0.8rem;color:var(--text-muted);padding:4px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
+            <span>📅 ${currentLang==='en'?'Next cheat day:':'יום הצ\'יט הבא:'} <b style="color:#A78BFA">${formatDateHe(cheatDay)}</b></span>
+            <button class="btn btn-ghost btn-sm" onclick="openCheatDayModal()" style="font-size:0.75rem">${currentLang==='en'?'Reschedule':'הזז תאריך'}</button>
+          </div>`;
+    } else {
+      // Past date or no cheat day — clear it and show nothing / empty state
+      if (cheatDay && cheatDay < today) {
+        currentUser.cheatDay = null;
+        saveDB();
+      }
+      cdReminder.style.display = 'none';
+    }
   }
 
   // Render per-meal remainders
@@ -5080,7 +5216,7 @@ function openCheatDayModal() {
       : `<div style="font-size:0.82rem;color:var(--text-muted)">טרם נקבע יום צ'יט</div>`;
   }
   const inp = el('cheatDayInput');
-  if (inp) inp.value = cheatDay || '';
+  if (inp) { inp.value = cheatDay || ''; inp.min = dateKey(new Date()); }
   renderCheatDayFoods();
   const picker = el('cheatDayFoodBankPicker');
   const items = db.cheatBank || [];
@@ -5095,9 +5231,30 @@ function openCheatDayModal() {
   openModal('cheatDayModal');
 }
 
+function getWeekStart(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  d.setDate(d.getDate() - d.getDay()); // Sunday = 0
+  return dateKey(d);
+}
+
 function confirmCheatDay() {
   const date = v('cheatDayInput');
-  if (!date) { alert('נא לבחור תאריך'); return; }
+  if (!date) { alert(currentLang==='en'?'Please select a date':'נא לבחור תאריך'); return; }
+  // Block past dates
+  if (date < dateKey(new Date())) {
+    alert(currentLang==='en'?'Cannot set a cheat day in the past':'לא ניתן לקבוע יום צ\'יט בעבר');
+    return;
+  }
+  // Enforce once per week — but allow moving an existing future cheat day
+  const existing = currentUser.cheatDay;
+  const today = dateKey(new Date());
+  const isMovingExisting = existing && existing >= today && existing !== date;
+  if (!isMovingExisting && existing && existing !== date && getWeekStart(existing) === getWeekStart(date)) {
+    const msg = currentLang==='en'
+      ? `You already have a cheat day this week (${existing}). Only one cheat day per week is allowed.`
+      : `כבר קבעת יום צ'יט השבוע (${formatDateHe(existing)}).\nניתן לקבוע רק יום צ'יט אחד בשבוע.`;
+    alert(msg); return;
+  }
   currentUser.cheatDay = date;
   currentUser.cheatDayFoods = [...cheatDayFoods];
   saveDB();
@@ -5169,11 +5326,11 @@ function renderTraineeHistory() {
     ? sessions.map(s=>`<div class="history-item">
         <div>
           <div class="fw-700 fs-sm">${formatDate(s.start)}</div>
-          <div class="history-date">${s.exDone||0} מתוך ${s.exTotal||0} תרגילים</div>
+          <div class="history-date">${s.exDone||0} ${t('מתוך')} ${s.exTotal||0} ${t('תרגילים')}</div>
         </div>
         <div class="history-dur">⏱ ${formatDur(s.duration)}</div>
       </div>`).join('')
-    : '<div class="text-muted fs-sm" style="text-align:center;padding:16px">עדיין לא סיימת אימון</div>';
+    : `<div class="text-muted fs-sm" style="text-align:center;padding:16px">${t('עדיין לא סיימת אימון')}</div>`;
 }
 
 // ════════════════════════════════════════════════
@@ -5197,7 +5354,7 @@ function startWorkout() {
   el('startBtn').style.display='none';
   el('stopBtn').style.display='inline-flex';
   el('activeBanner').style.display='flex';
-  el('timerLabel').textContent = 'אימון פעיל ⚡';
+  el('timerLabel').textContent = t('אימון פעיל ⚡');
   timerInterval = setInterval(()=>{
     el('timerDisplay').textContent = formatDur(Date.now()-workoutStart);
   }, 1000);
@@ -5341,22 +5498,22 @@ function renderAchievementsTab() {
   const xpPct = maxPts > 0 ? Math.round((totalPts/maxPts)*100) : 0;
   const xpBar = `<div class="card" style="margin-bottom:16px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-      <div style="font-weight:700;font-size:1rem">⚡ נקודות XP</div>
+      <div style="font-weight:700;font-size:1rem">${t('⚡ נקודות XP')}</div>
       <div style="font-size:1.4rem;font-weight:800;color:#FFB547">${totalPts.toLocaleString()} <span style="font-size:0.75rem;color:var(--text-muted);font-weight:400">/ ${maxPts.toLocaleString()}</span></div>
     </div>
     <div style="background:rgba(255,255,255,0.08);border-radius:99px;height:10px;overflow:hidden">
       <div style="width:${xpPct}%;height:100%;background:linear-gradient(90deg,#FFB547,#FF6B9D);border-radius:99px;transition:width 0.5s"></div>
     </div>
-    <div style="font-size:0.72rem;color:var(--text-muted);margin-top:6px;text-align:left">${xpPct}% מסך כל ההישגים</div>
+    <div style="font-size:0.72rem;color:var(--text-muted);margin-top:6px;text-align:left">${xpPct}${t('% מסך כל ההישגים')}</div>
   </div>`;
 
   // Summary stats
   const summary = `<div class="card" style="margin-bottom:16px">
-    <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:12px;text-align:center">סיכום אימונים</div>
+    <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:12px;text-align:center">${t('סיכום אימונים')}</div>
     <div style="display:flex;justify-content:space-around;gap:8px;flex-wrap:wrap;text-align:center">
-      <div><div style="font-size:1.5rem;font-weight:800;color:var(--primary)">${count}</div><div style="font-size:0.72rem;color:var(--text-muted)">אימונים</div></div>
-      <div><div style="font-size:1.5rem;font-weight:800;color:#FFB547">${totalHrs}:${String(totalMin%60).padStart(2,'0')}</div><div style="font-size:0.72rem;color:var(--text-muted)">סה"כ שעות</div></div>
-      <div><div style="font-size:1.5rem;font-weight:800;color:#64E2B7">${avgMin}</div><div style="font-size:0.72rem;color:var(--text-muted)">ממוצע (דקות)</div></div>
+      <div><div style="font-size:1.5rem;font-weight:800;color:var(--primary)">${count}</div><div style="font-size:0.72rem;color:var(--text-muted)">${t('אימונים')}</div></div>
+      <div><div style="font-size:1.5rem;font-weight:800;color:#FFB547">${totalHrs}:${String(totalMin%60).padStart(2,'0')}</div><div style="font-size:0.72rem;color:var(--text-muted)">${t('סה"כ שעות')}</div></div>
+      <div><div style="font-size:1.5rem;font-weight:800;color:#64E2B7">${avgMin}</div><div style="font-size:0.72rem;color:var(--text-muted)">${t('ממוצע (דקות)')}</div></div>
     </div>
   </div>`;
 
@@ -5386,12 +5543,12 @@ function renderAchievementsTab() {
             </div>
             ${!a.earned ? `<div>
               <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text-muted);margin-bottom:4px">
-                <span>התקדמות</span><span>${pctDisplay}</span>
+                <span>${t('התקדמות')}</span><span>${currentLang==='en'?pctDisplay.replace('דקות','min'):pctDisplay}</span>
               </div>
               <div style="background:rgba(255,255,255,0.08);border-radius:99px;height:6px;overflow:hidden">
                 <div style="width:${a.pct}%;height:100%;background:${barColor};border-radius:99px;transition:width 0.4s"></div>
               </div>
-            </div>` : `<div style="font-size:0.72rem;color:${a.color};font-weight:600;margin-top:6px">✓ הושג!</div>`}
+            </div>` : `<div style="font-size:0.72rem;color:${a.color};font-weight:600;margin-top:6px">✓ ${t('הושג!')}</div>`}
           </div>`;
         }).join('')}
       </div>
@@ -5399,8 +5556,8 @@ function renderAchievementsTab() {
   }
 
   body.innerHTML = xpBar + summary +
-    renderGroup('🏋️ מספר אימונים', countAchs) +
-    renderGroup('⏱️ משך אימון', durAchs);
+    renderGroup(currentLang==='en'?'🏋️ Workout Count':'🏋️ מספר אימונים', countAchs) +
+    renderGroup(currentLang==='en'?'⏱️ Workout Duration':'⏱️ משך אימון', durAchs);
 }
 
 function startConfetti() {
@@ -5863,9 +6020,9 @@ function updateNotifPermUI() {
   const status = el('notifPermStatus');
   if (!btn||!status) return;
   const p = ('Notification' in window) ? Notification.permission : 'default';
-  if (p==='granted') { btn.textContent='✓ מופעל'; btn.disabled=true; status.textContent='התרעות פועלות ✓'; status.style.color='#64E2B7'; }
-  else if (p==='denied') { btn.textContent='חסום'; btn.disabled=true; status.textContent='חסום — שנה בהגדרות הדפדפן'; status.style.color='var(--danger)'; }
-  else { btn.disabled=false; btn.textContent='הפעל התרעות'; status.textContent=''; }
+  if (p==='granted') { btn.textContent=currentLang==='en'?'✓ Enabled':'✓ מופעל'; btn.disabled=true; status.textContent=currentLang==='en'?'Notifications active ✓':'התרעות פועלות ✓'; status.style.color='#64E2B7'; }
+  else if (p==='denied') { btn.textContent=currentLang==='en'?'Blocked':'חסום'; btn.disabled=true; status.textContent=currentLang==='en'?'Blocked — change in browser settings':'חסום — שנה בהגדרות הדפדפן'; status.style.color='var(--danger)'; }
+  else { btn.disabled=false; btn.textContent=t('הפעל התרעות'); status.textContent=''; }
 }
 
 function sendNotif(title, body) {
@@ -5881,7 +6038,7 @@ function saveWorkoutReminder() {
   currentUser.workoutReminder = t;
   saveDB();
   renderReminderSettings();
-  showSaveFeedback('שעת אימון נשמרה ✓');
+  showSaveFeedback(t('שעת אימון נשמרה ✓'));
 }
 
 function clearWorkoutReminder() {
