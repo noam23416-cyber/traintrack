@@ -8,6 +8,8 @@
 <meta name="apple-mobile-web-app-title" content="TrainTrack">
 <meta name="theme-color" content="#0F0F1A">
 <title>TrainTrack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="manifest" href="data:application/json,{%22name%22:%22TrainTrack%22,%22short_name%22:%22TrainTrack%22,%22display%22:%22standalone%22,%22background_color%22:%22%230F0F1A%22,%22theme_color%22:%22%236C63FF%22}">
 <!-- ① הגדרת הקולבק חייבת להיות לפני ה-script של גוגל -->
 <script>
@@ -88,63 +90,360 @@
 .captcha-fallback-box input { width:100%; padding:10px 14px; background:var(--surface,#13131F); border:1px solid var(--border-light,#2E2E50); border-radius:8px; color:var(--text,#F0F0FF); font-size:1rem; direction:ltr; }
 </style>
 <style>
-/* ══════════════════════════════════════════
-   ROOT & RESET
-══════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   DESIGN SYSTEM — Premium Fitness (Teal Dark)
+   Clean single source of truth, no patches
+═══════════════════════════════════════════ */
+
+/* Light mode defaults */
+/* ═══════════════════════════════════════
+   PulseGrid Design System — exact match
+   Source: HTML provided by user
+═══════════════════════════════════════ */
 :root {
-  /* High-Energy Fitness — Light Mode */
-  --primary: #5C9900;
-  --primary-dark: #4A7A00;
-  --primary-glow: rgba(92,153,0,0.2);
-  --secondary: #0099BB;
-  --success: #0099BB;
-  --warning: #FF5722;
-  --danger: #FF5722;
-  --nutrition: #0099BB;
-  --calories: #FF5722;
-  --workout: #5C9900;
-  --bg: #F5F5F5;
-  --surface: #FFFFFF;
-  --surface2: #F0F0F0;
-  --surface3: #E8E8E8;
-  --text: #111111;
-  --text-muted: #666666;
-  --border: #E0E0E0;
-  --border-light: #EBEBEB;
-  --radius: 16px;
-  --radius-sm: 10px;
-  --shadow: 0 4px 20px rgba(0,0,0,0.08);
-  --shadow-glow: 0 0 20px rgba(92,153,0,0.15);
-  --glow-blue: 0 0 16px rgba(0,153,187,0.15);
-  --glow-orange: 0 0 16px rgba(255,87,34,0.15);
-  --glow-lime: 0 0 16px rgba(92,153,0,0.15);
+  /* Light mode — professional minimal */
+  --primary:      #0077A8;
+  --primary-dark: #005F8D;
+  --primary-glow: rgba(0,119,168,0.2);
+  --secondary:    #0097A7;
+  --success:      #1A7A40;
+  --warning:      #D4580A;
+  --danger:       #C53030;
+  --nutrition:    #0097A7;
+  --calories:     #D4580A;
+  --accent-lime:  #2D8C00;
+  --accent-pink:  #B02050;
+  --bg:           #F5F7FA;
+  --surface:      #FFFFFF;
+  --surface2:     #F0F2F5;
+  --surface3:     #E4E8EC;
+  --text:         #0D1117;
+  --text-muted:   #6A737D;
+  --border:       #D0D7DE;
+  --border-light: #E8EAED;
+  --radius:       20px;
+  --radius-sm:    12px;
+  --shadow:       0 2px 12px rgba(0,0,0,0.07);
+  --shadow-glow:  0 0 18px rgba(0,119,168,0.15);
 }
+
+/* ═══════════════════════════════════════
+   PulseGrid Dark Mode — exact from HTML
+═══════════════════════════════════════ */
+@media (prefers-color-scheme: dark) { body:not(.light) {
+  --primary:      #00F0FF;
+  --primary-dark: #00C8D8;
+  --primary-glow: rgba(0,240,255,0.45);
+  --secondary:    #39FF14;
+  --success:      #39FF14;
+  --warning:      #FF3B6B;
+  --danger:       #FF3B6B;
+  --nutrition:    #00F0FF;
+  --calories:     #FF3B6B;
+  --accent-lime:  #39FF14;
+  --accent-pink:  #FF3B6B;
+  --bg:           #0A0E12;
+  --surface:      #121820;
+  --surface2:     #161E28;
+  --surface3:     #1F2A33;
+  --text:         #E6F1F5;
+  --text-muted:   #7C8B94;
+  --border:       #1F2A33;
+  --border-light: #1A2230;
+  --shadow:       0 4px 24px rgba(0,0,0,0.7);
+  --shadow-glow:  0 0 18px rgba(0,240,255,0.4);
+}}
+
 body.dark {
-  /* Premium Dark / High-Energy theme */
-  --primary: #CCFF00;
-  --primary-dark: #AADD00;
-  --primary-glow: rgba(204,255,0,0.25);
-  --secondary: #00E5FF;
-  --success: #00E5FF;
-  --warning: #FF5722;
-  --danger: #FF5722;
-  --nutrition: #00E5FF;
-  --calories: #FF5722;
-  --workout: #CCFF00;
-  --bg: #121212;
-  --surface: #1E1E1E;
-  --surface2: #252525;
-  --surface3: #2C2C2C;
-  --text: #F5F5F5;
-  --text-muted: #888888;
-  --border: #2C2C2C;
-  --border-light: #333333;
-  --shadow: 0 8px 32px rgba(0,0,0,0.6);
-  --shadow-glow: 0 0 24px rgba(204,255,0,0.15);
-  --glow-blue: 0 0 24px rgba(0,229,255,0.2);
-  --glow-orange: 0 0 24px rgba(255,87,34,0.2);
-  --glow-lime: 0 0 24px rgba(204,255,0,0.2);
+  --primary:      #00F0FF;
+  --primary-dark: #00C8D8;
+  --primary-glow: rgba(0,240,255,0.45);
+  --secondary:    #39FF14;
+  --success:      #39FF14;
+  --warning:      #FF3B6B;
+  --danger:       #FF3B6B;
+  --nutrition:    #00F0FF;
+  --calories:     #FF3B6B;
+  --accent-lime:  #39FF14;
+  --accent-pink:  #FF3B6B;
+  --bg:           #0A0E12;
+  --surface:      #121820;
+  --surface2:     #161E28;
+  --surface3:     #1F2A33;
+  --text:         #E6F1F5;
+  --text-muted:   #7C8B94;
+  --border:       #1F2A33;
+  --border-light: #1A2230;
+  --shadow:       0 4px 24px rgba(0,0,0,0.7);
+  --shadow-glow:  0 0 18px rgba(0,240,255,0.4);
 }
+
+/* ─── DARK OVERRIDES — PulseGrid exact ─── */
+
+/* Kill blobs */
+body.dark .card::before, body.dark .card::after,
+body.dark .stat-card::before, body.dark .timer-bg { display: none !important; }
+
+/* Tabs */
+body.dark .tabs {
+  background: #0D1117;
+  border-bottom: 1px solid rgba(0,240,255,0.15);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+  padding: 8px 16px 0;
+}
+body.dark .tab-btn {
+  color: #7C8B94;
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+}
+body.dark .tab-btn:hover { color: #E6F1F5; background: rgba(255,255,255,0.04); }
+body.dark .tab-btn.active {
+  background: #00F0FF;
+  color: #0A0E12;
+  font-weight: 800;
+}
+
+/* Cards */
+body.dark .card { background:#121820; border:1px solid #1F2A33; border-radius:20px; box-shadow:none; }
+body.dark .card:hover { border-color:#2A3A47; }
+
+/* Nav */
+body.dark .topnav     { background:rgba(10,14,18,0.95); border-bottom:1px solid #1F2A33; backdrop-filter:blur(12px); }
+
+body.dark .bottom-nav { background:rgba(10,14,18,0.95); border-top:1px solid #1F2A33; backdrop-filter:blur(12px); }
+body.dark .tab-btn     { color:#7C8B94; }
+body.dark .tab-btn:hover { color:#E6F1F5; }
+body.dark .bnav-btn   { color:#7C8B94; }
+
+/* Auth */
+body.dark .auth-panel   { background:#121820; border:1px solid #1F2A33; border-radius:20px; }
+body.dark .auth-tab-row { background:#161E28; border-radius:12px; }
+body.dark .auth-tab     { color:#7C8B94; border-radius:8px; }
+body.dark .auth-tab.active { background:#00F0FF; color:#06181B; font-weight:700; }
+
+/* Inputs */
+body.dark input, body.dark textarea, body.dark select {
+  background:#161E28; border-color:#1F2A33; color:#E6F1F5; border-radius:10px;
+}
+body.dark input::placeholder, body.dark textarea::placeholder { color:#3A4A54; }
+
+/* Timer */
+body.dark .timer-card { background:#121820; border:1px solid #1F2A33; border-radius:20px; }
+body.dark .timer-time { color:#00F0FF; text-shadow:0 0 30px rgba(0,240,255,0.4); }
+
+/* Stat cards */
+body.dark .stat-card { background:#121820; border:1px solid #1F2A33; border-radius:12px; transition:border-color .15s,transform .15s; }
+body.dark .stat-card:hover { border-color:#00F0FF; transform:translateY(-2px); }
+body.dark .stat-card:nth-child(1) .stat-value { color:#FF3B6B; }
+body.dark .stat-card:nth-child(2) .stat-value { color:#00F0FF; }
+body.dark .stat-card:nth-child(3) .stat-value { color:#00F0FF; }
+body.dark .stat-value { font-size:2rem; font-weight:800; letter-spacing:-0.03em; text-shadow:none; }
+body.dark .stat-label { font-size:0.7rem; color:#7C8B94; }
+
+/* v0 stat cards */
+body.dark .v0-stat-card { background:#121820; border-color:#1F2A33; border-radius:12px; }
+body.dark .v0-stat-card:hover { border-color:#00F0FF; }
+body.dark .v0-stat-num { text-shadow:0 0 14px rgba(57,255,20,0.3); }
+
+/* Exercises */
+body.dark .ex-check-item { background:#161E28; border:1px solid #1F2A33; border-radius:12px; border-right:3px solid #00F0FF; }
+body.dark .ex-check-item.done   { border-right-color:#2A3A47; opacity:0.55; }
+body.dark .ex-check-item.cannot { border-right-color:#FF3B6B; }
+body.dark .ex-set-row.set-done  { background:rgba(0,240,255,0.05); border-top-color:rgba(0,240,255,0.08); }
+body.dark .set-check-circle.checked { box-shadow:0 0 10px rgba(0,240,255,0.4); }
+
+/* Workout cards */
+body.dark .ex-workout-card { background:#121820; border-color:#1F2A33; }
+body.dark .ex-num-badge    { background:#161E28; border-color:#1F2A33; color:#7C8B94; }
+body.dark .ex-sets-table   { border-color:#1F2A33; }
+body.dark .ex-sets-header  { background:#161E28; }
+body.dark .ex-set-row      { border-top-color:#1F2A33; }
+body.dark .workout-stat-chip { background:#121820; border-color:#1F2A33; }
+body.dark .workout-progress-bar { background:#121820; border-color:#1F2A33; }
+body.dark .workout-progress-track { background:#1F2A33; }
+
+/* Misc */
+body.dark .topnav-logo   { color:#00F0FF; letter-spacing:0.1em; }
+body.dark .topnav-avatar { background:rgba(0,240,255,0.08); color:#00F0FF; border:1px solid rgba(0,240,255,0.2); }
+body.dark .meal-group-title { color:#00F0FF; font-weight:600; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; }
+body.dark .progress-log-weight { color:#00F0FF; font-weight:700; }
+body.dark .history-dur  { color:#00F0FF; font-weight:600; }
+body.dark #calEaten     { color:#FF3B6B !important; font-size:1.5rem; font-weight:800; }
+body.dark #calRemaining { color:#00F0FF; }
+body.dark .sub-tab.active { background:rgba(0,240,255,0.08); color:#00F0FF; border-color:rgba(0,240,255,0.25); }
+body.dark .remaining-card { border:1px solid #1F2A33; border-radius:16px; }
+
+/* ─── UNIVERSAL STYLES (all modes) ─── */
+
+/* Primary button — v0 neon style */
+.btn-primary {
+  background: var(--primary) !important;
+  color: #06181B !important;
+  font-weight: 700 !important;
+  font-size: 0.85rem !important;
+  letter-spacing: 0.04em !important;
+  box-shadow: var(--shadow-glow) !important;
+  transition: transform 0.15s, box-shadow 0.15s !important;
+}
+.btn-primary:hover { transform: translateY(-1px) !important; box-shadow: 0 0 28px var(--primary-glow) !important; }
+.btn-primary:active { transform: scale(0.98) !important; }
+
+.btn-success { background: var(--primary) !important; color: #06181B !important; box-shadow: var(--shadow-glow) !important; }
+
+/* Tab — clean text, no heavy background */
+.tab-btn.active {
+  background: var(--primary) !important;
+  color: #06181B !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
+}
+
+.bnav-btn.active { color: var(--primary) !important; }
+
+/* Checkboxes */
+.check-box.checked { background: var(--primary) !important; border-color: var(--primary) !important; }
+.set-check-circle.checked { background: var(--primary); border-color: var(--primary); color: #06181B; font-size: 0.7rem; }
+
+/* Progress bars */
+.progress-bar-fill    { background: var(--primary) !important; }
+.workout-progress-fill { background: var(--primary) !important; }
+
+/* Color tokens */
+.cal-eaten      { color: var(--calories) !important; }
+.meal-group-title { color: var(--primary) !important; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
+.history-dur    { color: var(--primary) !important; }
+.badge-dot      { background: var(--primary) !important; }
+.timer-time     { color: var(--primary); font-weight: 800; }
+
+/* Logo */
+.topnav-logo { color: var(--primary); font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.9rem; }
+
+/* Exercise items */
+.ex-check-item { border-radius: 12px; border-right: 3px solid var(--primary); transition: all 0.15s; }
+.ex-check-item.done   { border-right-color: var(--border); opacity: 0.65; }
+.ex-check-item.cannot { border-right-color: var(--danger); }
+
+/* Focus rings */
+input:focus, textarea:focus, select:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(0,240,255,0.1) !important;
+  outline: none;
+}
+
+/* Section headers (v0 style: uppercase + neon) */
+.section-label {
+  font-size: 0.7rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.18em;
+  color: var(--primary); margin-bottom: 12px;
+}
+
+/* Workout bottom buttons — v0 style */
+.workout-btn-primary {
+  background: var(--primary) !important; color: #06181B !important;
+  box-shadow: var(--shadow-glow) !important;
+}
+.workout-btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* ══ Premium Workout Card Design ══════════════ */
+.workout-stats-bar {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 14px;
+}
+.workout-stat-chip {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 12px 14px;
+}
+.workout-stat-val { font-size: 1.3rem; font-weight: 800; color: var(--text); line-height: 1; }
+.workout-stat-lbl { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+
+.workout-progress-bar {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 14px 16px; margin-bottom: 14px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.workout-progress-label { font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; }
+.workout-progress-pct { font-size: 1rem; font-weight: 800; color: var(--primary); }
+.workout-progress-track { flex: 1; height: 4px; background: var(--surface3); border-radius: 2px; }
+.workout-progress-fill { height: 100%; border-radius: 2px; background: var(--primary); transition: width 0.4s; }
+
+.ex-workout-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 18px; padding: 16px; margin-bottom: 12px; overflow: hidden;
+}
+.ex-workout-header {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+}
+.ex-num-badge {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--surface2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.72rem; font-weight: 700; color: var(--text-muted); flex-shrink: 0;
+}
+.ex-workout-category { font-size: 0.75rem; color: var(--text-muted); flex: 1; }
+.ex-workout-progress { font-size: 0.78rem; color: var(--primary); font-weight: 700; }
+.ex-workout-name {
+  font-size: 1.05rem; font-weight: 700; color: var(--text);
+  margin-bottom: 6px; line-height: 1.3;
+}
+.ex-workout-note {
+  font-size: 0.78rem; color: var(--text-muted); background: var(--surface2);
+  border-radius: 8px; padding: 6px 10px; margin-bottom: 12px; display: flex; gap: 6px; align-items: flex-start;
+}
+.ex-sets-table { border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+.ex-sets-header {
+  display: grid; grid-template-columns: 36px 1fr 1fr 44px;
+  padding: 7px 12px; background: var(--surface2);
+  font-size: 0.65rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;
+}
+.ex-set-row {
+  display: grid; grid-template-columns: 36px 1fr 1fr 44px;
+  padding: 10px 12px; border-top: 1px solid var(--border);
+  font-size: 0.88rem; align-items: center; cursor: pointer; transition: background 0.15s;
+}
+.ex-set-row:hover { background: var(--surface2); }
+.ex-set-row.set-done { background: rgba(0,229,195,0.06); }
+body.dark .ex-set-row.set-done { background: rgba(0,229,195,0.08); border-top-color: rgba(0,229,195,0.15); }
+.ex-set-num { font-size: 0.82rem; color: var(--text-muted); font-weight: 600; }
+.ex-set-weight { font-weight: 600; color: var(--text); }
+.ex-set-reps { color: var(--text-muted); }
+.set-check-circle {
+  width: 26px; height: 26px; border-radius: 50%;
+  border: 2px solid var(--border); background: var(--surface2);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.2s; justify-self: center;
+}
+.set-check-circle.checked {
+  background: var(--primary); border-color: var(--primary);
+  color: #0D1117; font-size: 0.75rem;
+}
+body.dark .set-check-circle.checked { box-shadow: 0 0 8px rgba(0,229,195,0.4); }
+
+.workout-bottom-bar {
+  display: flex; gap: 10px; padding: 12px 0 4px; position: sticky; bottom: 0;
+  background: linear-gradient(transparent, var(--bg) 30%); padding-top: 20px; margin-top: 8px;
+}
+.workout-btn-secondary {
+  flex: 1; padding: 14px; border-radius: 14px; font-weight: 700; font-size: 0.95rem;
+  background: var(--surface2); border: 1px solid var(--border); color: var(--text); cursor: pointer;
+}
+.workout-btn-primary {
+  flex: 2; padding: 14px; border-radius: 14px; font-weight: 800; font-size: 0.95rem;
+  background: var(--primary); border: none; color: #0D1117; cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+.workout-btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+body.dark .workout-btn-primary { color: #0D1117; }
+
+/* ══ Premium Workout Card Design — Light Mode ══════ */
+.ex-check-item {
+  border-radius: 12px;
+  border-right: 4px solid var(--primary);
+  transition: all 0.2s;
+}
+.ex-check-item.done { border-right-color: #aaa; opacity: 0.7; }
+.ex-check-item.cannot { border-right-color: var(--danger); }
+.timer-time { color: var(--primary); font-weight: 800; }
+.topnav-logo { color: var(--primary); font-weight: 700; }
+
 /* ── High-Energy Fitness theme — both modes ── */
 .btn-primary {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
@@ -179,20 +478,49 @@ input:focus, textarea:focus, select:focus {
   outline: none;
 }
 
-/* Dark mode extras */
-body.dark .topnav { background: rgba(18,18,18,0.97); border-bottom: 1px solid #2C2C2C; }
-body.dark .tabs { background: #1A1A1A; border-bottom: 1px solid #2C2C2C; }
-body.dark .bottom-nav { background: rgba(18,18,18,0.97); border-top: 1px solid #2C2C2C; }
-body.dark .btn-primary { color: #121212 !important; }
-body.dark .btn-success { color: #121212 !important; }
-body.dark .tab-btn.active { color: #121212 !important; }
-body.dark .auth-tab.active { background: #CCFF00; color: #121212; font-weight: 700; }
-body.dark .timer-card { box-shadow: 0 0 40px rgba(204,255,0,0.06), inset 0 0 60px rgba(0,0,0,0.3); }
-body.dark .topnav-avatar { background: rgba(204,255,0,0.1); color: #CCFF00; border: 1px solid rgba(204,255,0,0.25); }
+/* ── Timer card — clean dark ── */
+body.dark .timer-card {
+  background: #161B22;
+  border: 1px solid #21262D;
+  border-radius: 18px;
+}
+body.dark .timer-bg { opacity: 0 !important; display: none; }
+
+/* ── Stat cards — clean premium, no blobs ── */
+body.dark .stat-card {
+  background: #161B22;
+  border: 1px solid #21262D;
+  border-radius: 16px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+body.dark .stat-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+body.dark .stat-card::before { display: none !important; }
+body.dark .stat-value { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.02em; }
+body.dark .stat-card:nth-child(1) .stat-value { color: #FF6B35; }
+body.dark .stat-card:nth-child(2) .stat-value { color: #00E5C3; }
+body.dark .stat-card:nth-child(3) .stat-value { color: #00E5FF; }
+
+/* ── Cards — remove blobs everywhere ── */
+body.dark .card::before { display: none !important; }
+body.dark .card::after  { display: none !important; }
+
+/* ── Dark mode extras ── */
+body.dark .topnav { background: rgba(13,17,23,0.98); border-bottom: 1px solid #21262D; }
+
+body.dark .bottom-nav { background: rgba(13,17,23,0.98); border-top: 1px solid #21262D; }
+body.dark .btn-primary { color: #0D1117 !important; }
+body.dark .btn-success { color: #0D1117 !important; }
+body.dark .tab-btn.active { color: #0D1117 !important; }
+body.dark .auth-tab.active { background: #00E5C3; color: #0D1117; font-weight: 700; }
+body.dark .timer-card { box-shadow: 0 0 60px rgba(0,229,195,0.08), inset 0 0 80px rgba(0,0,0,0.4); }
+body.dark .topnav-avatar { background: rgba(0,229,195,0.12); color: #00E5C3; border: 1px solid rgba(0,229,195,0.3); }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html { scroll-behavior: smooth; }
 body {
-  font-family: -apple-system, 'Segoe UI', 'Arial Hebrew', Arial, sans-serif;
+  font-family: 'Rubik', -apple-system, 'Segoe UI', 'Arial Hebrew', Arial, sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -491,14 +819,18 @@ input, textarea, select, button { font-family: inherit; }
 .tabs {
   display: flex; gap: 4px; background: var(--surface2);
   padding: 5px; border-radius: 14px; margin: 16px 20px 0;
+  overflow-x: auto; scrollbar-width: none;
 }
+.tabs::-webkit-scrollbar { display: none; }
 .tab-btn {
   flex: 1; padding: 9px 6px; border: none; border-radius: 10px;
   background: none; color: var(--text-muted);
-  cursor: pointer; font-size: 0.85rem; transition: all 0.2s;
-  position: relative; white-space: nowrap;
+  cursor: pointer; font-size: 0.95rem; font-weight: 700;
+  letter-spacing: 0.01em;
+  transition: all 0.2s; position: relative; white-space: nowrap;
 }
-.tab-btn.active { background: var(--primary); color: white; font-weight: 600; }
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { background: var(--primary); color: #0A0E12; font-weight: 900; font-size: 1rem; }
 .tab-btn .unread-badge {
   position: absolute; top: 4px; right: 6px;
   width: 7px; height: 7px; border-radius: 50%;
@@ -1033,6 +1365,131 @@ input, textarea, select, button { font-family: inherit; }
 .notif-title { font-weight: 700; font-size: 0.9rem; }
 .notif-msg { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
 .notif-close { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 1.1rem; flex-shrink: 0; }
+
+/* Professional UI */
+.tab-btn { font-size: 0.95rem !important; font-weight: 700 !important; letter-spacing: 0.01em; }
+.tab-btn.active { font-weight: 900 !important; font-size: 1rem !important; }
+.topnav-logo { font-size: 0.95rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.bicon { display: none; }
+
+/* v0 bottom nav — icon + label */
+.bnav-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 6px 10px; border: none; background: none;
+  color: var(--text-muted); cursor: pointer;
+  border-radius: 10px; transition: color 0.15s; min-width: 52px;
+}
+.bnav-btn svg { stroke: currentColor; flex-shrink: 0; }
+.bnav-btn span { font-size: 0.58rem; letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; line-height: 1; }
+.bnav-btn.active { color: var(--primary); }
+
+/* v0 section label style */
+.v0-label {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--primary); margin-bottom: 12px; display: block;
+}
+
+/* ── v0 Hero Workout Card ── */
+.v0-hero-card {
+  border-radius: 20px; overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  margin-bottom: 16px;
+}
+.v0-hero-img {
+  position: relative; height: 180px; width: 100%;
+  background: linear-gradient(to top,#121820 12%,rgba(18,24,32,.15)), radial-gradient(circle at 70% 30%,rgba(0,240,255,.25),transparent 60%),#1a242e;
+  overflow: hidden;
+}
+.v0-hero-img img {
+  width: 100%; height: 100%; object-fit: cover; opacity: 0.75;
+}
+.v0-hero-img-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, var(--surface) 0%, rgba(13,18,32,0.15) 60%);
+}
+.v0-hero-pill {
+  position: absolute; top: 14px; right: 14px;
+  background: var(--primary); color: #06181B;
+  font-size: 0.72rem; font-weight: 800; letter-spacing: 0.04em;
+  padding: 5px 12px; border-radius: 999px;
+}
+.v0-hero-body { padding: 16px 20px 20px; }
+.v0-hero-name { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 4px; }
+.v0-hero-meta { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px; }
+.v0-start-btn {
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 15px; border-radius: 14px; border: none; cursor: pointer;
+  background: var(--primary); color: #06181B;
+  font-size: 0.9rem; font-weight: 800; letter-spacing: 0.04em;
+  box-shadow: var(--shadow-glow);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.v0-start-btn:hover { transform: translateY(-1px); box-shadow: 0 0 32px var(--primary-glow); }
+.v0-start-btn:active { transform: scale(0.98); }
+.v0-play-icon {
+  width: 0; height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 12px solid #06181B;
+  flex-shrink: 0;
+}
+
+/* ── v0 Stats Grid ── */
+.v0-stats-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;
+}
+.v0-stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 18px 20px;
+  transition: border-color 0.15s;
+}
+.v0-stat-card:hover { border-color: var(--primary); }
+.v0-stat-num {
+  font-size: 1.9rem; font-weight: 800; letter-spacing: -0.03em;
+  line-height: 1.1; margin-bottom: 5px;
+}
+.v0-stat-sub { font-size: 0.75rem; color: var(--text-muted); }
+
+/* ── Hide top tabs on narrow screens, show only bottom nav ── */
+@media (max-width: 640px) {
+  .tabs { display: none !important; }
+  .content { padding-bottom: 90px !important; }
+}
+
+/* ── Workout home section separator ── */
+.v0-section-gap { margin-bottom: 24px; }
+
+/* Bold headings */
+.card-title { font-weight: 800 !important; font-size: 0.95rem; letter-spacing: -0.01em; }
+.card-title-sm { font-weight: 700 !important; }
+.modal-title { font-weight: 800 !important; font-size: 1rem; }
+h1, h2, h3 { font-weight: 800; }
+.section-header { font-weight: 800 !important; }
+
+/* ── Neon glow — uses currentColor so always matches the element's own color ── */
+@keyframes neon-glow {
+  0%, 100% { filter: drop-shadow(0 0 1px currentColor); opacity: 0.95; }
+  50%       { filter: drop-shadow(0 0 4px currentColor); opacity: 1; }
+}
+@keyframes neon-box {
+  0%, 100% { box-shadow: 0 0 8px rgba(0,240,255,0.3), 0 0 20px rgba(0,240,255,0.1); }
+  50%       { box-shadow: 0 0 20px rgba(0,240,255,0.7), 0 0 44px rgba(0,240,255,0.28); }
+}
+
+/* Apply on dark mode — text/number elements */
+body.dark #calRemaining,
+body.dark #calEaten,
+body.dark .timer-time,
+body.dark .v0-stat-num,
+body.dark .workout-progress-pct,
+body.dark .stat-value,
+body.dark .progress-log-weight { animation: neon-glow 3s ease-in-out infinite; }
+
+/* Box glow on buttons and active tab */
+body.dark .v0-start-btn,
+body.dark .btn-primary,
+body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
 </style>
 </head>
 <body>
@@ -1078,13 +1535,6 @@ input, textarea, select, button { font-family: inherit; }
     <div class="hero-grid"></div>
 
     <!-- Floating decorative cards -->
-    <div class="float-card float-card-1">🏋️ סקוואט · 4 × 12</div>
-    <div class="float-card float-card-2">✅ 3 מתוך 5 תרגילים</div>
-    <div class="float-card float-card-3">⏱ 00:47:23</div>
-    <div class="float-card float-card-4">💪 שום דבר מלבד בוטן</div>
-    <div class="float-card float-card-5">🔥 משקל בהיר תינוק</div>
-    <div class="float-card float-card-6">⛵ מי יסחב את הסירות</div>
-    <div class="float-card float-card-7">🪵 מי יסחב את בולי העץ</div>
 
     <div class="hero-content">
       <div class="hero-logo">💪</div>
@@ -1101,7 +1551,7 @@ input, textarea, select, button { font-family: inherit; }
           <div class="ftext"><strong>מעקב אימון חי</strong>טיימר ועדכונים בזמן אמת</div>
         </div>
         <div class="hero-feature">
-          <div class="ficon" style="background:rgba(255,107,157,0.15)">💬</div>
+          <div class="ficon" style="background:rgba(255,107,157,0.15)"></div>
           <div class="ftext"><strong>צ׳אט ישיר</strong>תקשורת מידית בין מאמן למתאמן</div>
         </div>
       </div>
@@ -1218,7 +1668,7 @@ input, textarea, select, button { font-family: inherit; }
 ════════════════════════════════════════════ -->
 <div id="coachScreen" class="screen">
   <nav class="topnav">
-    <span class="topnav-logo">💪 TrainTrack <span class="dot"></span></span>
+    <span class="topnav-logo">TrainTrack <span class="dot"></span></span>
     <div class="topnav-right">
       <span class="topnav-user" id="coachNavName"></span>
       <div class="topnav-avatar" id="coachAvatar" onclick="openEngNameModal()" style="cursor:pointer" title="Set English name"></div>
@@ -1229,15 +1679,15 @@ input, textarea, select, button { font-family: inherit; }
 
   <!-- Desktop tabs -->
   <div class="tabs">
-    <button class="tab-btn active" data-panel="coach-overview" onclick="switchTab(this,'coach')">📊 סקירה</button>
-    <button class="tab-btn" data-panel="coach-trainees" onclick="switchTab(this,'coach')">👥 מתאמנים</button>
-    <button class="tab-btn" data-panel="coach-schedule" onclick="switchTab(this,'coach')">📅 לוח</button>
-    <button class="tab-btn" data-panel="coach-plans" onclick="switchTab(this,'coach')">🏋️ תוכניות</button>
+    <button class="tab-btn active" data-panel="coach-overview" onclick="switchTab(this,'coach')">סקירה</button>
+    <button class="tab-btn" data-panel="coach-trainees" onclick="switchTab(this,'coach')">מתאמנים</button>
+    <button class="tab-btn" data-panel="coach-schedule" onclick="switchTab(this,'coach')">לוח</button>
+    <button class="tab-btn" data-panel="coach-plans" onclick="switchTab(this,'coach')">תוכניות</button>
     <button class="tab-btn has-dot" data-panel="coach-chat" id="coachChatTab" onclick="switchTab(this,'coach')">
-      <span class="unread-badge"></span>💬 צ׳אט
+      <span class="unread-badge"></span>צ׳אט
     </button>
     <button class="tab-btn" data-panel="coach-admin" id="adminDashTab" onclick="switchTab(this,'coach');renderAdminDash()" style="display:none">🛡️ Admin</button>
-    <button class="tab-btn" data-panel="coach-bug" onclick="switchTab(this,'coach')">🐛 דיווח</button>
+    <button class="tab-btn" data-panel="coach-bug" onclick="switchTab(this,'coach')">דיווח</button>
   </div>
 
   <div class="content">
@@ -1245,11 +1695,11 @@ input, textarea, select, button { font-family: inherit; }
     <div class="tab-panel active" id="coach-overview">
       <div class="stats-grid" id="coachStats"></div>
       <div class="card">
-        <div class="card-header"><span class="card-title">🔥 מתאמנים פעילים עכשיו</span></div>
+        <div class="card-header"><span class="card-title">מתאמנים פעילים עכשיו</span></div>
         <div id="activeNow"></div>
       </div>
       <div class="card">
-        <div class="card-header"><span class="card-title">📅 היסטוריה אחרונה</span></div>
+        <div class="card-header"><span class="card-title">היסטוריה אחרונה</span></div>
         <div id="coachHistoryList"></div>
       </div>
     </div>
@@ -1274,16 +1724,16 @@ input, textarea, select, button { font-family: inherit; }
     <!-- SCHEDULE + BANK -->
     <div class="tab-panel" id="coach-schedule">
       <div class="sub-tabs">
-        <button class="sub-tab active" onclick="switchSubTab(this,'bankPanel','schedulePanel','foodBankPanel','cheatBankPanel')">📚 בנק תרגילים</button>
-        <button class="sub-tab" onclick="switchSubTab(this,'schedulePanel','bankPanel','foodBankPanel','cheatBankPanel')">📅 לוח אימונים</button>
-        <button class="sub-tab" onclick="switchSubTab(this,'foodBankPanel','bankPanel','schedulePanel','cheatBankPanel')">🍎 בנק אוכל</button>
-        <button class="sub-tab" onclick="switchSubTab(this,'cheatBankPanel','bankPanel','schedulePanel','foodBankPanel');renderCheatBank()">🍕 בנק צ'יטים</button>
+        <button class="sub-tab active" onclick="switchSubTab(this,'bankPanel','schedulePanel','foodBankPanel','cheatBankPanel')">בנק תרגילים</button>
+        <button class="sub-tab" onclick="switchSubTab(this,'schedulePanel','bankPanel','foodBankPanel','cheatBankPanel')">לוח אימונים</button>
+        <button class="sub-tab" onclick="switchSubTab(this,'foodBankPanel','bankPanel','schedulePanel','cheatBankPanel')">בנק אוכל</button>
+        <button class="sub-tab" onclick="switchSubTab(this,'cheatBankPanel','bankPanel','schedulePanel','foodBankPanel');renderCheatBank()">בנק צ'יטים</button>
       </div>
 
       <!-- BANK -->
       <div id="bankPanel">
         <div class="flex-between" style="margin-bottom:12px">
-          <span class="card-title">📚 בנק התרגילים</span>
+          <span class="card-title">בנק התרגילים</span>
           <button class="btn btn-ghost btn-sm" onclick="toggleForm('bankExAddForm')">+ הוסף תרגיל</button>
         </div>
         <div class="add-form" id="bankExAddForm">
@@ -1365,7 +1815,7 @@ input, textarea, select, button { font-family: inherit; }
       <!-- CHEAT BANK PANEL -->
       <div id="cheatBankPanel" style="display:none">
         <div class="flex-between" style="margin-bottom:12px">
-          <span class="card-title">🍕 בנק צ'יטים</span>
+          <span class="card-title">בנק צ'יטים</span>
           <button class="btn btn-ghost btn-sm" onclick="toggleForm('cheatBankAddForm')">+ הוסף</button>
         </div>
         <div class="add-form" id="cheatBankAddForm">
@@ -1417,7 +1867,7 @@ input, textarea, select, button { font-family: inherit; }
             <div class="form-group" style="margin:0">
               <label>מטרת אימון</label>
               <div style="display:flex;gap:6px;flex-wrap:wrap">
-                <button id="goalBtn_חיטוב" class="btn btn-ghost btn-sm" onclick="setTraineeGoal('חיטוב')" style="border-radius:20px">🔥 חיטוב</button>
+                <button id="goalBtn_חיטוב" class="btn btn-ghost btn-sm" onclick="setTraineeGoal('חיטוב')" style="border-radius:20px">חיטוב</button>
                 <button id="goalBtn_מסה" class="btn btn-ghost btn-sm" onclick="setTraineeGoal('מסה')" style="border-radius:20px">💪 מסה</button>
                 <button id="goalBtn_נטרלי" class="btn btn-ghost btn-sm" onclick="setTraineeGoal('נטרלי')" style="border-radius:20px">⚖️ נטרלי</button>
               </div>
@@ -1428,7 +1878,7 @@ input, textarea, select, button { font-family: inherit; }
         <!-- Workout plan -->
         <div class="card">
           <div class="card-header">
-            <span class="card-title">🏋️ תרגילים</span>
+            <span class="card-title">תרגילים</span>
             <button class="btn btn-ghost btn-sm" onclick="toggleForm('exAddForm')">+ הוסף תרגיל</button>
           </div>
           <div class="add-form" id="exAddForm">
@@ -1531,7 +1981,7 @@ input, textarea, select, button { font-family: inherit; }
           </select>
         </div>
         <div class="chat-messages" id="coachChatMessages">
-          <div class="chat-empty"><div class="ce-icon">💬</div><div>בחר מתאמן להתחלת שיחה</div></div>
+          <div class="chat-empty"><div class="ce-icon"></div><div>בחר מתאמן להתחלת שיחה</div></div>
         </div>
         <div class="chat-input-row">
           <input type="file" id="coachPhotoInput" accept="image/*" style="display:none" onchange="sendChatPhoto('coach')">
@@ -1553,15 +2003,29 @@ input, textarea, select, button { font-family: inherit; }
     </div>
   </div>
 
-  <!-- Bottom nav (mobile) -->
+  <!-- Bottom nav (mobile) — coach -->
   <div class="bottom-nav">
     <div class="bottom-nav-inner">
-      <button class="bnav-btn active" data-panel="coach-overview" onclick="switchTabMobile(this,'coach')"><span class="bicon">📊</span>סקירה</button>
-      <button class="bnav-btn" data-panel="coach-trainees" onclick="switchTabMobile(this,'coach')"><span class="bicon">👥</span>מתאמנים</button>
-      <button class="bnav-btn" data-panel="coach-schedule" onclick="switchTabMobile(this,'coach')"><span class="bicon">📅</span>לוח</button>
-      <button class="bnav-btn" data-panel="coach-plans" onclick="switchTabMobile(this,'coach')"><span class="bicon">🏋️</span>תוכניות</button>
+      <button class="bnav-btn active" data-panel="coach-overview" onclick="switchTabMobile(this,'coach')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>סקירה</span>
+      </button>
+      <button class="bnav-btn" data-panel="coach-trainees" onclick="switchTabMobile(this,'coach')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>מתאמנים</span>
+      </button>
+      <button class="bnav-btn" data-panel="coach-schedule" onclick="switchTabMobile(this,'coach')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span>לוח</span>
+      </button>
+      <button class="bnav-btn" data-panel="coach-plans" onclick="switchTabMobile(this,'coach')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span>תוכניות</span>
+      </button>
       <button class="bnav-btn has-dot" data-panel="coach-chat" id="coachChatBnav" onclick="switchTabMobile(this,'coach')">
-        <span class="badge-dot"></span><span class="bicon">💬</span>צ׳אט
+        <span class="badge-dot"></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span>צ׳אט</span>
       </button>
     </div>
   </div>
@@ -1582,7 +2046,7 @@ input, textarea, select, button { font-family: inherit; }
 ════════════════════════════════════════════ -->
 <div id="traineeScreen" class="screen">
   <nav class="topnav">
-    <span class="topnav-logo">💪 TrainTrack</span>
+    <span class="topnav-logo">TrainTrack</span>
     <div class="topnav-right">
       <span class="topnav-user" id="traineeNavName"></span>
       <div class="topnav-avatar" id="traineeAvatar" onclick="openEngNameModal()" style="cursor:pointer" title="Set English name"></div>
@@ -1593,21 +2057,26 @@ input, textarea, select, button { font-family: inherit; }
   </nav>
 
   <div class="tabs">
-    <button class="tab-btn active" data-panel="t-workout" onclick="switchTab(this,'trainee')" data-i18n="🏋️ אימון">🏋️ אימון</button>
-    <button class="tab-btn" data-panel="t-menu" onclick="switchTab(this,'trainee')" data-i18n="🥗 תפריט">🥗 תפריט</button>
-    <button class="tab-btn has-dot" data-panel="t-chat" id="traineeChatTab" onclick="switchTab(this,'trainee')" data-i18n="💬 צ׳אט">
-      <span class="unread-badge"></span>💬 צ׳אט
+    <button class="tab-btn active" data-panel="t-workout" onclick="switchTab(this,'trainee')" data-i18n="אימון">אימון</button>
+    <button class="tab-btn" data-panel="t-menu" onclick="switchTab(this,'trainee')" data-i18n="תפריט">תפריט</button>
+    <button class="tab-btn has-dot" data-panel="t-chat" id="traineeChatTab" onclick="switchTab(this,'trainee')" data-i18n="צ׳אט">
+      <span class="unread-badge"></span>צ׳אט
     </button>
-    <button class="tab-btn" data-panel="t-history" onclick="switchTab(this,'trainee')" data-i18n="📅 היסטוריה">📅 היסטוריה</button>
-    <button class="tab-btn" data-panel="t-reminders" onclick="switchTab(this,'trainee');renderReminderSettings()" data-i18n="⏰ תזכורות">⏰ תזכורות</button>
-    <button class="tab-btn" data-panel="t-achievements" onclick="switchTab(this,'trainee');renderAchievementsTab()" data-i18n="🏆 הישגים">🏆 הישגים</button>
-    <button class="tab-btn" data-panel="t-music" onclick="switchTab(this,'trainee');renderMusicTab()" data-i18n="🎵 מוזיקה">🎵 מוזיקה</button>
-    <button class="tab-btn" data-panel="t-bug" onclick="switchTab(this,'trainee')" data-i18n="🐛 דיווח">🐛 דיווח</button>
+    <button class="tab-btn" data-panel="t-history" onclick="switchTab(this,'trainee')" data-i18n="היסטוריה">היסטוריה</button>
+    <button class="tab-btn" data-panel="t-reminders" onclick="switchTab(this,'trainee');renderReminderSettings()" data-i18n="תזכורות">תזכורות</button>
+    <button class="tab-btn" data-panel="t-achievements" onclick="switchTab(this,'trainee');renderAchievementsTab()" data-i18n="הישגים">הישגים</button>
+    <button class="tab-btn" data-panel="t-music" onclick="switchTab(this,'trainee');renderMusicTab()" data-i18n="מוזיקה">מוזיקה</button>
+    <button class="tab-btn" data-panel="t-bug" onclick="switchTab(this,'trainee')" data-i18n="דיווח">דיווח</button>
   </div>
 
   <div class="content">
     <!-- WORKOUT -->
     <div class="tab-panel active" id="t-workout">
+      <!-- v0 greeting header -->
+      <div id="traineeGreetingWrap"></div>
+      <!-- v0 hero section -->
+      <div id="v0HeroWrap"></div>
+      <!-- Day navigation -->
       <div style="display:flex;align-items:center;gap:6px">
         <button onclick="traineeNavWeek(-1)" style="background:rgba(255,255,255,0.07);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:6px 11px;cursor:pointer;font-size:1.1rem;flex-shrink:0">‹</button>
         <div class="day-nav" id="traineeDayNav" style="flex:1;overflow-x:auto;justify-content:flex-start"></div>
@@ -1620,8 +2089,8 @@ input, textarea, select, button { font-family: inherit; }
         <div class="timer-time" id="timerDisplay">00:00:00</div>
         <div class="timer-label" id="timerLabel" data-i18n="לחץ &quot;התחל אימון&quot; לתחילת המעקב">לחץ "התחל אימון" לתחילת המעקב</div>
         <div class="timer-btns">
-          <button id="startBtn" class="btn btn-success" onclick="startWorkout()" data-i18n="התחל אימון">▶ התחל אימון</button>
-          <button id="stopBtn" class="btn btn-danger" onclick="stopWorkout()" style="display:none" data-i18n="סיים אימון">⏹ סיים אימון</button>
+          <button id="startBtn" class="btn btn-success" onclick="startWorkout()" data-i18n="התחל אימון">התחל אימון</button>
+          <button id="stopBtn" class="btn btn-danger" onclick="stopWorkout()" style="display:none" data-i18n="סיים אימון">סיים אימון</button>
         </div>
       </div>
       <div id="activeBanner" class="active-banner" style="display:none">
@@ -1642,13 +2111,13 @@ input, textarea, select, button { font-family: inherit; }
       <div class="card" id="weightStatsCard" style="margin-bottom:12px;padding:14px 16px">
         <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
           <div style="flex:1;min-width:110px">
-            <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:4px">⚖️ משקל נוכחי (ק"ג)</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:4px" data-i18n="משקל נוכחי (ק&quot;ג)">משקל נוכחי (ק"ג)</div>
             <input id="myWeightInput" type="number" placeholder="75" step="0.1"
               style="width:100%;padding:7px 10px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.95rem;box-sizing:border-box"
               oninput="saveMyWeight()">
           </div>
           <div style="flex:1;min-width:110px">
-            <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:4px">🎯 יעד משקל (ק"ג)</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:4px" data-i18n="יעד משקל (ק&quot;ג)">יעד משקל (ק"ג)</div>
             <div id="traineeTargetWeightDisplay" style="padding:7px 10px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;color:var(--success);font-size:0.95rem;font-weight:600;min-height:36px;display:flex;align-items:center">—</div>
           </div>
           <div id="proteinTargetBar" style="flex:2;min-width:160px;font-size:0.82rem;line-height:1.6"></div>
@@ -1657,10 +2126,10 @@ input, textarea, select, button { font-family: inherit; }
       </div>
       <!-- MACRO CALCULATOR -->
       <div class="card macro-calc-card" style="margin-bottom:16px">
-        <div class="card-title" style="margin-bottom:12px" data-i18n="🧮 מחשבון מאקרו">🧮 מחשבון מאקרו</div>
+        <div class="card-title" style="margin-bottom:12px" data-i18n="מחשבון מאקרו">מחשבון מאקרו</div>
         <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;align-items:flex-end">
           <div style="flex:2;min-width:140px;position:relative">
-            <input id="macroSearchInput" placeholder="🔍 חפש מזון..." style="width:100%;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.85rem;box-sizing:border-box" oninput="renderMacroFoodList()" onfocus="renderMacroFoodList()" onblur="setTimeout(()=>{const d=el('macroDropdown');if(d)d.style.display='none'},200)">
+            <input id="macroSearchInput" placeholder="חפש מזון..." data-i18n-ph="חפש מזון..." style="width:100%;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.85rem;box-sizing:border-box" oninput="renderMacroFoodList()" onfocus="renderMacroFoodList()" onblur="setTimeout(()=>{const d=el('macroDropdown');if(d)d.style.display='none'},200)">
             <div id="macroDropdown" style="display:none;position:absolute;top:100%;right:0;left:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;max-height:180px;overflow-y:auto;z-index:100;box-shadow:0 4px 16px rgba(0,0,0,0.12)">
               <div id="macroFoodList"></div>
             </div>
@@ -1676,9 +2145,9 @@ input, textarea, select, button { font-family: inherit; }
       <!-- TODAY'S FOOD LOG -->
       <div class="card" style="margin-bottom:16px">
         <div class="flex-between" style="margin-bottom:10px">
-          <span class="card-title" data-i18n="📋 יומן אכילה היום">📋 יומן אכילה היום</span>
+          <span class="card-title" data-i18n="יומן אכילה היום">יומן אכילה היום</span>
           <div style="display:flex;gap:6px">
-            <button class="btn btn-ghost btn-sm" style="color:#A78BFA" onclick="openCheatDayModal()" data-i18n="📅 יום צ'יט">📅 יום צ'יט</button>
+            <button class="btn btn-ghost btn-sm" style="color:#00F0FF" onclick="openCheatDayModal()" data-i18n="יום צ'יט">יום צ'יט</button>
             <button class="btn btn-ghost btn-sm" onclick="clearFoodLog()" data-i18n="נקה">נקה</button>
           </div>
         </div>
@@ -1688,7 +2157,7 @@ input, textarea, select, button { font-family: inherit; }
 
       <!-- COACH MEAL PLAN -->
       <div class="flex-between" style="margin-bottom:12px">
-        <span class="card-title" data-i18n="🥗 תפריט מהמאמן">🥗 תפריט מהמאמן</span>
+        <span class="card-title" data-i18n="תפריט מהמאמן">תפריט מהמאמן</span>
         <button class="btn btn-ghost btn-sm" onclick="resetMealsToday()" id="resetMealsBtnTrainee" style="display:none">איפוס</button>
       </div>
       <div id="traineeMealList"></div>
@@ -1703,23 +2172,23 @@ input, textarea, select, button { font-family: inherit; }
         </div>
         <div class="cal-row mt-4">
           <span class="text-muted fs-sm" data-i18n="נותר">נותר</span>
-          <span id="calRemaining" style="font-size:0.85rem;font-weight:600;color:#64E2B7">0</span>
+          <span id="calRemaining" style="font-size:0.85rem;font-weight:600;color:#00F0FF">0</span>
         </div>
         <div class="progress-bar-bg mt-8">
-          <div class="progress-bar-fill" id="calBar" style="width:0%;background:linear-gradient(90deg,#FFB547,#FF6B9D)"></div>
+          <div class="progress-bar-fill" id="calBar" style="width:0%;background:#00F0FF"></div>
         </div>
         <div id="proteinSummary" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:none"></div>
       </div>
       <!-- REMAINING MACROS -->
       <div class="card remaining-card" id="remainingMacrosCard" style="display:none">
-        <div class="card-title" style="margin-bottom:10px" data-i18n="⏳ נותר להשלים היום">⏳ נותר להשלים היום</div>
+        <div class="card-title" style="margin-bottom:10px" data-i18n="נותר להשלים היום">נותר להשלים היום</div>
         <div id="remainingMacrosBody"></div>
       </div>
       <!-- CHEAT DAY REMINDER -->
       <div id="cheatDayReminder" style="display:none;margin-bottom:10px"></div>
       <!-- PER-MEAL REMAINDERS & ALTERNATIVES -->
       <div class="card" id="mealRemaindersCard" style="display:none;margin-bottom:14px">
-        <div class="card-title" style="margin-bottom:8px">🍽️ נשאר לאכול מהתפריט</div>
+        <div class="card-title" style="margin-bottom:8px">נשאר לאכול מהתפריט</div>
         <div id="mealRemaindersBody"></div>
       </div>
     </div>
@@ -1728,11 +2197,11 @@ input, textarea, select, button { font-family: inherit; }
     <div class="tab-panel" id="t-chat">
       <div class="chat-container">
         <div class="chat-target-bar" style="justify-content:center">
-          <span style="color:var(--text-muted);font-size:0.85rem" data-i18n="💬 שיחה עם המאמן שלך">💬 שיחה עם המאמן שלך</span>
+          <span style="color:var(--text-muted);font-size:0.85rem" data-i18n="שיחה עם המאמן שלך">שיחה עם המאמן שלך</span>
           <span id="traineeCoachName" style="font-weight:600;margin-right:8px"></span>
         </div>
         <div class="chat-messages" id="traineeChatMessages">
-          <div class="chat-empty"><div class="ce-icon">💬</div><div>שלח הודעה למאמן</div></div>
+          <div class="chat-empty"><div class="ce-icon"></div><div>שלח הודעה למאמן</div></div>
         </div>
         <div class="chat-input-row">
           <input type="file" id="traineePhotoInput" accept="image/*" style="display:none" onchange="sendChatPhoto('trainee')">
@@ -1757,13 +2226,13 @@ input, textarea, select, button { font-family: inherit; }
       </div>
       <div class="card" style="margin-bottom:12px">
         <div class="card-header">
-          <span class="card-title" data-i18n="📸 מעקב התקדמות">📸 מעקב התקדמות</span>
+          <span class="card-title" data-i18n="מעקב התקדמות">מעקב התקדמות</span>
           <button class="btn btn-ghost btn-sm" onclick="showWeightUpdateModal()" data-i18n="+ עדכון">+ עדכון</button>
         </div>
         <div id="progressLogList"></div>
       </div>
       <div class="card">
-        <div class="card-header"><span class="card-title" data-i18n="📅 האימונים שלי">📅 האימונים שלי</span></div>
+        <div class="card-header"><span class="card-title" data-i18n="האימונים שלי">האימונים שלי</span></div>
         <div id="traineeHistory"></div>
       </div>
     </div>
@@ -1772,12 +2241,12 @@ input, textarea, select, button { font-family: inherit; }
     <div id="t-reminders" class="tab-panel">
       <div class="card" style="margin-bottom:12px">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-          <div><div class="card-title" data-i18n="🔔 התרעות">🔔 התרעות</div><div id="notifPermStatus" style="font-size:0.78rem;color:var(--text-muted);margin-top:2px"></div></div>
+          <div><div class="card-title" data-i18n="התרעות">התרעות</div><div id="notifPermStatus" style="font-size:0.78rem;color:var(--text-muted);margin-top:2px"></div></div>
           <button class="btn btn-primary btn-sm" id="notifPermBtn" onclick="requestNotifPerm()" data-i18n="הפעל התרעות">הפעל התרעות</button>
         </div>
       </div>
       <div class="card" style="margin-bottom:12px">
-        <div class="card-title" style="margin-bottom:10px" data-i18n="🏋️ שעת אימון">🏋️ שעת אימון</div>
+        <div class="card-title" style="margin-bottom:10px" data-i18n="שעת אימון">שעת אימון</div>
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
           <input type="time" id="workoutTimeInput" style="padding:8px 12px;background:rgba(255,255,255,0.07);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.9rem;flex:1">
           <button class="btn btn-primary btn-sm" onclick="saveWorkoutReminder()" data-i18n="שמור">שמור</button>
@@ -1786,12 +2255,12 @@ input, textarea, select, button { font-family: inherit; }
         <div id="workoutReminderStatus" style="font-size:0.78rem;color:var(--text-muted);margin-top:6px"></div>
       </div>
       <div class="card" style="margin-bottom:12px">
-        <div class="card-title" style="margin-bottom:8px" data-i18n="🍽️ ארוחות">🍽️ ארוחות</div>
+        <div class="card-title" style="margin-bottom:8px" data-i18n="ארוחות">ארוחות</div>
         <div id="mealRemindersList"></div>
         <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="addMealReminderRow()" data-i18n="+ הוסף ארוחה">+ הוסף ארוחה</button>
       </div>
       <div class="card" style="margin-bottom:12px">
-        <div class="card-title" style="margin-bottom:8px" data-i18n="💊 תוספים">💊 תוספים</div>
+        <div class="card-title" style="margin-bottom:8px" data-i18n="תוספים">תוספים</div>
         <div id="suppRemindersList"></div>
         <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="addSuppReminderRow()" data-i18n="+ הוסף תוסף">+ הוסף תוסף</button>
       </div>
@@ -1813,17 +2282,34 @@ input, textarea, select, button { font-family: inherit; }
     </div>
   </div>
 
-  <!-- Bottom nav (mobile) -->
+  <!-- Bottom nav (mobile) — v0 style with SVG icons -->
   <div class="bottom-nav">
     <div class="bottom-nav-inner">
-      <button class="bnav-btn active" data-panel="t-workout" onclick="switchTabMobile(this,'trainee')"><span class="bicon">🏋️</span>אימון</button>
-      <button class="bnav-btn" data-panel="t-menu" onclick="switchTabMobile(this,'trainee')"><span class="bicon">🥗</span>תפריט</button>
-      <button class="bnav-btn has-dot" data-panel="t-chat" id="traineeChatBnav" onclick="switchTabMobile(this,'trainee')">
-        <span class="badge-dot"></span><span class="bicon">💬</span>צ׳אט
+      <button class="bnav-btn active" data-panel="t-workout" onclick="switchTabMobile(this,'trainee')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>אימון</span>
       </button>
-      <button class="bnav-btn" data-panel="t-history" onclick="switchTabMobile(this,'trainee')"><span class="bicon">📅</span>היסטוריה</button>
-      <button class="bnav-btn" data-panel="t-reminders" onclick="switchTabMobile(this,'trainee');renderReminderSettings()"><span class="bicon">⏰</span>תזכורות</button>
-      <button class="bnav-btn" data-panel="t-achievements" onclick="switchTabMobile(this,'trainee');renderAchievementsTab()"><span class="bicon">🏆</span>הישגים</button>
+      <button class="bnav-btn" data-panel="t-menu" onclick="switchTabMobile(this,'trainee')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5h11M6.5 12h11M6.5 17.5h11"/><circle cx="4" cy="6.5" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="17.5" r="1"/></svg>
+        <span>תפריט</span>
+      </button>
+      <button class="bnav-btn has-dot" data-panel="t-chat" id="traineeChatBnav" onclick="switchTabMobile(this,'trainee')">
+        <span class="badge-dot"></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span>צ׳אט</span>
+      </button>
+      <button class="bnav-btn" data-panel="t-history" onclick="switchTabMobile(this,'trainee')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <span>היסטוריה</span>
+      </button>
+      <button class="bnav-btn" data-panel="t-reminders" onclick="switchTabMobile(this,'trainee');renderReminderSettings()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span>תזכורות</span>
+      </button>
+      <button class="bnav-btn" data-panel="t-achievements" onclick="switchTabMobile(this,'trainee');renderAchievementsTab()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+        <span>הישגים</span>
+      </button>
     </div>
   </div>
 </div>
@@ -1857,7 +2343,7 @@ input, textarea, select, button { font-family: inherit; }
   <div class="modal-overlay" id="cheatMealModal">
     <div class="modal">
       <div class="modal-header">
-        <span class="modal-title">🍕 רישום צ'יט</span>
+        <span class="modal-title">רישום צ'יט</span>
         <button class="close-btn" onclick="closeModal('cheatMealModal')">×</button>
       </div>
       <div id="cheatModalBody">
@@ -1883,7 +2369,7 @@ input, textarea, select, button { font-family: inherit; }
 <div class="modal-overlay" id="cheatDayModal">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title">📅 יום צ'יט</span>
+      <span class="modal-title">יום צ'יט</span>
       <button class="close-btn" onclick="closeModal('cheatDayModal')">×</button>
     </div>
     <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:12px">קבע יום צ'יט — המאמן יקבל הודעה בצ'אט</div>
@@ -1938,7 +2424,7 @@ input, textarea, select, button { font-family: inherit; }
     <div class="form-group"><label>תאריך חדש לאימון</label><input id="rescheduleDateInput" type="date"></div>
     <div class="flex-between mt-12 gap-8">
       <button class="btn btn-ghost" onclick="closeModal('rescheduleModal')">ביטול</button>
-      <button class="btn btn-warning" onclick="confirmReschedule()">📅 העבר אימון</button>
+      <button class="btn btn-warning" onclick="confirmReschedule()">העבר אימון</button>
     </div>
   </div>
 </div>
@@ -2582,10 +3068,10 @@ const TR = {
   'לדוג׳ ירידה במשקל, עלייה במסה...':'e.g. weight loss, muscle gain...',
   '— בחר מאמן —':'— Select Coach —',
   // Trainee tabs
-  '🏋️ אימון':'🏋️ Workout', '🥗 תפריט':'🥗 Meal Plan',
-  '💬 צ׳אט':'💬 Chat', '📅 היסטוריה':'📅 History',
-  '⏰ תזכורות':'⏰ Reminders', '🏆 הישגים':'🏆 Achievements',
-  '🎵 מוזיקה':'🎵 Music', '🐛 דיווח':'🐛 Report',
+  'אימון':'Workout', 'תפריט':'Meal Plan',
+  'צ׳אט':'Chat', 'היסטוריה':'History',
+  'תזכורות':'Reminders', 'הישגים':'Achievements',
+  'מוזיקה':'Music', 'דיווח':'Report',
   // Nav
   'יציאה':'Logout',
   // Workout
@@ -2646,7 +3132,7 @@ const TR = {
   'מה קרה? על איזה מסך? מה ניסית לעשות?':'What happened? On which screen?',
   'צילום מסך (אופציונלי)':'Screenshot (optional)',
   '📎 לחץ להוספת תמונה':'📎 Click to add image',
-  'נקה':'Clear','📤 שלח דיווח':'📤 Submit Report',
+  'נקה':'Clear','📤 שלח דיווח':'Submit Report','שלח דיווח':'Submit Report',
   'שולח...':'Sending...',
   '✓ הדיווח נשלח! תודה רבה':'✓ Report sent! Thank you',
   // History/activity
@@ -2663,9 +3149,9 @@ const TR = {
   // History
   'מתוך':'of','תרגילים':'exercises',
   'עדיין לא סיימת אימון':'No completed workouts yet',
-  '📅 האימונים שלי':'📅 My Workouts',
+  'האימונים שלי':'My Workouts',
   // Progress
-  '📸 מעקב התקדמות':'📸 Progress Tracking',
+  'מעקב התקדמות':'Progress Tracking',
   'זמן לעדכון שבועי!':'Time for your weekly update!',
   'עדכן משקל והעלה תמונת התקדמות':'Update weight & upload a progress photo',
   'עדכן עכשיו':'Update Now',
@@ -2691,15 +3177,19 @@ const TR = {
   'שם התוסף':'Supplement Name',
   'שעת נטילה':'Time to Take',
   '+ הוסף תוסף':'+ Add Supplement',
-  '🔔 התרעות':'🔔 Notifications',
+  '🔔 התרעות':'Notifications','התרעות':'Notifications',
   'הפעל התרעות':'Enable Notifications',
-  '🏋️ שעת אימון':'🏋️ Workout Time',
-  '🍽️ ארוחות':'🍽️ Meals',
-  '💊 תוספים':'💊 Supplements',
+  '🏋️ שעת אימון':'Workout Time','שעת אימון':'Workout Time',
+  '🍽️ ארוחות':'Meals','ארוחות':'Meals',
+  '💊 תוספים':'Supplements','תוספים':'Supplements',
   '+ הוסף ארוחה':'+ Add Meal',
   'שמור':'Save', 'נקה':'Clear',
   '📸 עדכון שבועי':'📸 Weekly Update',
   'משקל נוכחי (ק"ג)':'Current Weight (kg)',
+  'יעד משקל (ק"ג)':'Target Weight (kg)',
+  'חפש מזון...':'Search food...',
+  '🔍 חפש מזון...':'Search food...',
+  'חלבון שנאכל':'Protein Consumed',
   'תמונת התקדמות (אופציונלי)':'Progress Photo (optional)',
   '💾 שמור עדכון':'💾 Save Update',
   'לא הוגדרה שעת אימון':'No workout time set',
@@ -2709,17 +3199,18 @@ const TR = {
   'יעד חלבון יומי':'Daily Protein Goal',
   'משקל יעד:':'Target Weight:',
   'הכנס משקל לחישוב יעד חלבון':'Enter weight to calculate protein goal',
-  '🥩 חלבון שנאכל':'🥩 Protein Consumed',
-  '⏳ נותר להשלים היום':'⏳ Remaining for Today',
+  '🥩 חלבון שנאכל':'Protein Consumed',
+  'נותר להשלים היום':'Remaining for Today',
   'עדיין לא נרשם אוכל להיום':'No food logged today',
-  '🧮 מחשבון מאקרו':'🧮 Macro Calculator',
-  '📋 יומן אכילה היום':'📋 Today\'s Food Log',
-  '📅 יום צ\'יט':'📅 Cheat Day',
-  '🥗 תפריט מהמאמן':'🥗 Coach\'s Meal Plan',
+  '🧮 מחשבון מאקרו':'Macro Calculator',
+  'מחשבון מאקרו':'Macro Calculator',
+  '📋 יומן אכילה היום':'Today\'s Food Log','יומן אכילה היום':'Today\'s Food Log',
+  '📅 יום צ\'יט':'Cheat Day','יום צ\'יט':'Cheat Day',
+  '🥗 תפריט מהמאמן':'Coach\'s Meal Plan','תפריט מהמאמן':'Coach\'s Meal Plan',
   'קלוריות שנאכלו (סה"כ)':'Calories Eaten (Total)',
   'שיחה עם:':'Chat with:',
   'שלח שאלה למאמן שלך!':'Send your coach a question!',
-  '💬 שיחה עם המאמן שלך':'💬 Chat with your coach',
+  '💬 שיחה עם המאמן שלך':'Chat with your coach','שיחה עם המאמן שלך':'Chat with your coach',
   'שיחה עם:':'Chat with:',
   // Achievements
   'התחלה':'Beginner', 'האימון הראשון שלך':'Your first workout',
@@ -2736,7 +3227,7 @@ const TR = {
   // Chat empty state
   'שלח שאלה למאמן שלך!':'Send your coach a question!',
   // Weekly reminder banner
-  '📅 האימונים שלי':'📅 My Workouts',
+  'האימונים שלי':'My Workouts',
   // Modal buttons
   'ביצוע':'Done','הבא':'Next','סגור':'Close',
   'כן, סיים':'Yes, Finish','המשך אימון':'Continue Workout',
@@ -2793,6 +3284,8 @@ function setLang(lang) {
   }
   // Re-render ALL trainee content
   if (currentUser && currentUser.role === 'trainee') {
+    try { renderTraineeGreeting(); } catch(e) {}
+    try { renderV0HeroSection(); } catch(e) {}
     try { renderTraineeDayNav(); } catch(e) {}
     try { renderTraineeWorkoutForDay(traineeSelectedDate || dateKey(new Date())); } catch(e) {}
     try { renderTraineeMenu(); } catch(e) {}
@@ -2805,6 +3298,90 @@ function setLang(lang) {
     try { renderBugReportPanel('traineeBugPanel'); } catch(e) {}
     try { checkWeeklyReminder(); } catch(e) {}
     try { updateNotifPermUI(); } catch(e) {}
+  }
+}
+
+// ── Profile Panel ───────────────────────────────
+function openProfilePanel() {
+  const panel = document.getElementById('profilePanel');
+  if (!panel || !currentUser) return;
+  const c = avatarColor(currentUser.id);
+  const sessions = (db.sessions||[]).filter(s=>s.traineeId===currentUser.id&&s.end);
+  const isTrainee = currentUser.role === 'trainee';
+  const coach = isTrainee ? db.users.find(u=>u.id===currentUser.coachId) : null;
+  const hasPhoto = !!currentUser.profilePhoto;
+  document.getElementById('profilePanelContent').innerHTML = `
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
+      <div style="position:relative;flex-shrink:0">
+        <div onclick="el('profilePhotoInput').click()" style="width:56px;height:56px;border-radius:50%;
+          ${hasPhoto ? `background:url('${currentUser.profilePhoto}') center/cover;border:2px solid ${c.border}` : `background:${c.bg};border:2px solid ${c.border};color:${c.text};display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800`};
+          box-shadow:0 0 16px ${c.border};cursor:pointer;overflow:hidden">
+          ${hasPhoto ? '' : initials(currentUser.name)}
+        </div>
+        <div onclick="el('profilePhotoInput').click()" style="position:absolute;bottom:0;right:0;width:18px;height:18px;border-radius:50%;background:#00F0FF;color:#0A0E12;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:800;cursor:pointer;border:2px solid #121820">+</div>
+        <input type="file" id="profilePhotoInput" accept="image/*" style="display:none" onchange="uploadProfilePhoto(this)">
+      </div>
+      <div style="flex:1">
+        <div style="font-size:1rem;font-weight:800;color:#E6F1F5">${displayName(currentUser)}</div>
+        <div style="font-size:0.78rem;color:#7C8B94">${currentUser.email}</div>
+      </div>
+      <button onclick="closeProfilePanel()" style="background:none;border:none;color:#7C8B94;cursor:pointer;font-size:1.2rem;padding:4px">×</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+      <div style="background:#1C2128;border-radius:12px;padding:12px;text-align:center">
+        <div style="font-size:1.4rem;font-weight:800;color:${c.text}">${sessions.length}</div>
+        <div style="font-size:0.7rem;color:#7C8B94">אימונים</div>
+      </div>
+      ${isTrainee && currentUser.startWeight ? `<div style="background:#1C2128;border-radius:12px;padding:12px;text-align:center">
+        <div style="font-size:1.4rem;font-weight:800;color:#FF3B6B">${currentUser.startWeight}</div>
+        <div style="font-size:0.7rem;color:#7C8B94">משקל ק"ג</div>
+      </div>` : `<div style="background:#1C2128;border-radius:12px;padding:12px;text-align:center">
+        <div style="font-size:1.4rem;font-weight:800;color:#7C8B94">${currentUser.role === 'coach' ? (db.users.filter(u=>u.role==='trainee'&&u.coachId===currentUser.id).length) : '—'}</div>
+        <div style="font-size:0.7rem;color:#7C8B94">${currentUser.role === 'coach' ? 'מתאמנים' : '—'}</div>
+      </div>`}
+    </div>
+    ${isTrainee && currentUser.goal ? `<div style="background:#1C2128;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:0.85rem;color:#E6F1F5"><span style="color:#7C8B94">מטרה: </span>${currentUser.goal}</div>` : ''}
+    ${coach ? `<div style="background:#1C2128;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:0.85rem;color:#E6F1F5"><span style="color:#7C8B94">מאמן: </span>${displayName(coach)}</div>` : ''}
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+      <button onclick="openEngNameModal()" style="width:100%;padding:10px;border-radius:10px;border:1px solid #1F2A33;background:none;color:#E6F1F5;font-size:0.85rem;cursor:pointer;text-align:right">שם באנגלית</button>
+      <button onclick="closeProfilePanel();doLogout()" style="width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,59,107,0.3);background:none;color:#FF3B6B;font-size:0.85rem;cursor:pointer;text-align:right">יציאה</button>
+    </div>`;
+  panel.style.display = 'flex';
+  panel.onclick = (e) => { if (e.target === panel) closeProfilePanel(); };
+}
+function closeProfilePanel() {
+  const p = document.getElementById('profilePanel');
+  if (p) p.style.display = 'none';
+}
+
+function uploadProfilePhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  resizeImageToBase64(file, 200, function(b64) {
+    const u = getUser(currentUser.id);
+    if (u) { u.profilePhoto = b64; currentUser.profilePhoto = b64; }
+    saveDB();
+    // Update topnav avatar
+    updateNavAvatar();
+    // Refresh panel
+    openProfilePanel();
+  });
+}
+
+function updateNavAvatar() {
+  const avatarId = currentUser.role === 'coach' ? 'coachAvatar' : 'traineeAvatar';
+  const avatarEl = el(avatarId);
+  if (!avatarEl) return;
+  if (currentUser.profilePhoto) {
+    avatarEl.textContent = '';
+    avatarEl.style.backgroundImage = `url('${currentUser.profilePhoto}')`;
+    avatarEl.style.backgroundSize = 'cover';
+    avatarEl.style.backgroundPosition = 'center';
+    avatarEl.style.color = 'transparent';
+  } else {
+    avatarEl.textContent = initials(currentUser.name);
+    avatarEl.style.backgroundImage = '';
+    applyAvatarColor(avatarEl, currentUser.id);
   }
 }
 
@@ -2858,20 +3435,28 @@ window.addEventListener('DOMContentLoaded', function() {
   if (saved !== 'he') setLang(saved);
 });
 
-// ── Theme (light/dark) ──
-function applyTheme(dark) {
-  document.body.classList.toggle('dark', dark);
-  const icon = dark ? '🌙' : '☀️';
+// ── Theme (light/dark/auto) ──
+function applyTheme(mode) {
+  document.body.classList.remove('dark','light');
+  if (mode === 'dark') document.body.classList.add('dark');
+  else if (mode === 'light') document.body.classList.add('light');
+  // 'auto' → @media (prefers-color-scheme) handles it
+  const isDark = mode === 'dark' || (mode === 'auto' && window.matchMedia('(prefers-color-scheme:dark)').matches);
+  const icon = isDark ? '🌙' : '☀️';
   ['themeToggleCoach','themeToggleTrainee'].forEach(id => { const b = el(id); if(b) b.textContent = icon; });
 }
 function toggleTheme() {
-  const isDark = !document.body.classList.contains('dark');
-  localStorage.setItem('tt_theme', isDark ? 'dark' : 'light');
-  applyTheme(isDark);
+  const saved = localStorage.getItem('tt_theme') || 'auto';
+  const next = saved === 'auto' ? 'dark' : saved === 'dark' ? 'light' : 'auto';
+  localStorage.setItem('tt_theme', next);
+  applyTheme(next);
 }
-// Apply saved preference immediately
-// Default is DARK (fitness app = high energy dark theme)
-(function() { applyTheme(localStorage.getItem('tt_theme') !== 'light'); })();
+// Default: follow device setting (auto)
+(function() { applyTheme(localStorage.getItem('tt_theme') || 'auto'); })();
+// Listen for device preference changes
+window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change', () => {
+  if (!localStorage.getItem('tt_theme') || localStorage.getItem('tt_theme') === 'auto') applyTheme('auto');
+});
 
 // Start Firebase after page loads
 window.addEventListener('load', () => { try { initFirebase(); } catch(e) {} checkFaceIDButton(); });
@@ -3220,7 +3805,7 @@ function renderBugReportPanel(containerId) {
   if (!c) return;
   c.innerHTML = `
     <div style="max-width:520px;margin:0 auto;padding:8px 0">
-      <div style="font-size:1.1rem;font-weight:700;margin-bottom:4px">🐛 ${t('דיווח על בעיה')}</div>
+      <div style="font-size:1.1rem;font-weight:700;margin-bottom:4px">${t('דיווח על בעיה')}</div>
       <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:20px">${t('הדיווח יישלח ישירות למנהל המערכת')}</div>
 
       <div class="form-group">
@@ -3251,7 +3836,7 @@ function renderBugReportPanel(containerId) {
 
       <div style="display:flex;gap:8px;margin-top:16px">
         <button class="btn btn-ghost" style="flex:1" onclick="clearBugForm()">${t('נקה')}</button>
-        <button class="btn btn-primary" style="flex:2" onclick="submitBugReport2()">${t('📤 שלח דיווח')}</button>
+        <button class="btn btn-primary" style="flex:2" onclick="submitBugReport2()">${t('שלח דיווח')}</button>
       </div>
       <div id="bugSendStatus" style="margin-top:10px;text-align:center;font-size:0.85rem;min-height:20px"></div>
     </div>
@@ -3386,7 +3971,7 @@ function renderAdminDash() {
 
   // Load bug reports from Firestore
   const bugSection = `<div class="card" style="margin-top:16px">
-    <div class="card-header"><span class="card-title">🐛 דיווחי בעיות</span></div>
+    <div class="card-header"><span class="card-title">דיווחי בעיות</span></div>
     <div id="adminBugList"><div class="empty-state"><p>טוען...</p></div></div>
   </div>`;
 
@@ -3399,11 +3984,11 @@ function renderAdminDash() {
           <div style="font-size:0.8rem;color:var(--text-muted)">מאמנים</div>
         </div>
         <div style="background:var(--surface2);border-radius:12px;padding:14px 20px;flex:1;min-width:120px;text-align:center">
-          <div style="font-size:1.8rem;font-weight:700;color:#64E2B7">${trainees.length}</div>
+          <div style="font-size:1.8rem;font-weight:700;color:#00F0FF">${trainees.length}</div>
           <div style="font-size:0.8rem;color:var(--text-muted)">מתאמנים</div>
         </div>
         <div style="background:var(--surface2);border-radius:12px;padding:14px 20px;flex:1;min-width:120px;text-align:center">
-          <div style="font-size:1.8rem;font-weight:700;color:#FFB547">${trainees.reduce((s,t)=>s+traineeStats(t).workouts,0)}</div>
+          <div style="font-size:1.8rem;font-weight:700;color:#00F0FF">${trainees.reduce((s,t)=>s+traineeStats(t).workouts,0)}</div>
           <div style="font-size:0.8rem;color:var(--text-muted)">אימונים שבוצעו</div>
         </div>
         <div style="background:var(--surface2);border-radius:12px;padding:14px 20px;flex:1;min-width:120px;text-align:center">
@@ -3531,6 +4116,28 @@ function sortedMealEntries(grouped) {
   });
 }
 function initials(name) { return name.split(' ').map(w=>w[0]).join('').slice(0,2); }
+
+// Unique color per user based on their ID
+const AVATAR_COLORS = [
+  { bg:'rgba(0,240,255,0.15)',  border:'rgba(0,240,255,0.4)',  text:'#00F0FF' },
+  { bg:'rgba(57,255,20,0.15)',  border:'rgba(57,255,20,0.4)',  text:'#39FF14' },
+  { bg:'rgba(255,59,107,0.15)', border:'rgba(255,59,107,0.4)', text:'#FF3B6B' },
+  { bg:'rgba(255,181,0,0.15)',  border:'rgba(255,181,0,0.4)',  text:'#FFB500' },
+  { bg:'rgba(167,71,255,0.15)', border:'rgba(167,71,255,0.4)', text:'#A747FF' },
+  { bg:'rgba(0,229,120,0.15)',  border:'rgba(0,229,120,0.4)',  text:'#00E578' },
+];
+function avatarColor(userId) {
+  let hash = 0;
+  for (let i=0; i<(userId||'').length; i++) hash = (hash*31 + userId.charCodeAt(i)) & 0xffffffff;
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+}
+function applyAvatarColor(el, userId) {
+  const c = avatarColor(userId);
+  el.style.background = c.bg;
+  el.style.borderColor = c.border;
+  el.style.color = c.text;
+  el.style.boxShadow = `0 0 12px ${c.border}`;
+}
 function getUser(id) { return db.users.find(u => u.id === id); }
 function myTrainees() { return db.users.filter(u => u.role==='trainee' && u.coachId===currentUser.id); }
 
@@ -3570,6 +4177,9 @@ function switchTabMobile(btn, role) {
 function initCoach() {
   el('coachNavName').textContent = displayName(currentUser);
   el('coachAvatar').textContent = initials(currentUser.name);
+  applyAvatarColor(el('coachAvatar'), currentUser.id);
+  el('coachAvatar').onclick = () => openProfilePanel();
+  updateNavAvatar();
   renderCoachOverview();
   renderCoachTrainees();
   initPlanEditor();
@@ -3607,7 +4217,7 @@ function renderCoachOverview() {
         return `<div class="active-banner"><div class="pulse-dot"></div>
           <div><strong>${t?.name||'מתאמן'}</strong> <span class="text-muted fs-sm"> · מתאמן כבר ${formatDur(Date.now()-s.start)}</span></div></div>`;
       }).join('')
-    : '<div class="empty-state"><div class="es-icon">😴</div><p>אין מתאמנים פעילים כרגע</p></div>';
+    : '<div class="empty-state"><div class="es-icon" style="opacity:0.2">—</div><p>אין מתאמנים פעילים כרגע</p></div>';
 
   const sessions = db.sessions.filter(s => s.end && trainees.some(t=>t.id===s.traineeId))
     .sort((a,b)=>b.end-a.end).slice(0,10);
@@ -3646,7 +4256,7 @@ function traineeCardHTML(t, showCoach) {
     : `<button onclick="openTransferModal('${t.id}')" style="padding:4px 10px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);font-size:0.75rem;cursor:pointer;white-space:nowrap">העבר</button>`;
   return `<div class="trainee-card ${active?'active-workout':''}">
     <div class="trainee-info">
-      <div class="avatar avatar-initials">${initials(t.name)}</div>
+      <div class="avatar avatar-initials" style="background:${avatarColor(t.id).bg};color:${avatarColor(t.id).text};border-color:${avatarColor(t.id).border};box-shadow:0 0 10px ${avatarColor(t.id).border}">${initials(t.name)}</div>
       <div>
         <div class="trainee-name">${t.name}</div>
         <div class="trainee-meta">🎯 ${t.goal||'ללא מטרה'} · ${sessionsCount} אימונים${weightInfo?' · '+weightInfo:''}</div>
@@ -3654,7 +4264,7 @@ function traineeCardHTML(t, showCoach) {
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:8px">
-      <span class="badge ${active?'badge-active':'badge-rest'}">${active?'🔥 פעיל':'במנוחה'}</span>
+      <span class="badge ${active?'badge-active':'badge-rest'}">${active?'פעיל':'במנוחה'}</span>
       ${showCoach ? assignBtn : ''}
     </div>
   </div>`;
@@ -3667,10 +4277,10 @@ function renderCoachTrainees() {
     const trainees = myTrainees();
     list.innerHTML = trainees.length
       ? trainees.map(t => traineeCardHTML(t, false)).join('')
-      : '<div class="empty-state"><div class="es-icon">👥</div><p>אין מתאמנים משויכים אליך עדיין</p></div>';
+      : '<div class="empty-state"><div class="es-icon" style="opacity:0.2">—</div><p>אין מתאמנים משויכים אליך עדיין</p></div>';
   } else {
     const all = db.users.filter(u => u.role === 'trainee');
-    if (!all.length) { list.innerHTML = '<div class="empty-state"><div class="es-icon">👥</div><p>אין מתאמנים במערכת</p></div>'; return; }
+    if (!all.length) { list.innerHTML = '<div class="empty-state"><div class="es-icon" style="opacity:0.2">—</div><p>אין מתאמנים במערכת</p></div>'; return; }
     list.innerHTML = all.map(t => traineeCardHTML(t, true)).join('');
   }
 }
@@ -3757,7 +4367,7 @@ function renderExerciseBank() {
   if (!bankListEl) return;
   const exs = myExerciseBank();
   if (!exs.length) {
-    bankListEl.innerHTML = '<div class="empty-state"><div class="es-icon">🏋️</div><p>הבנק ריק — הוסף תרגיל ראשון</p></div>';
+    bankListEl.innerHTML = '<div class="empty-state"><div class="es-icon" style="opacity:0.2">—</div><p>הבנק ריק — הוסף תרגיל ראשון</p></div>';
     return;
   }
   const groups = {};
@@ -3773,7 +4383,6 @@ function renderExerciseBank() {
     const open = exCatOpen[cat];
     return `<div style="margin-bottom:8px;border:1px solid var(--border);border-radius:10px;overflow:hidden">
       <div onclick="toggleExCat('${cat}')" style="display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;background:rgba(255,255,255,0.03);user-select:none">
-        <span style="font-size:1rem">${CAT_ICON[cat]||'🏋️'}</span>
         <span style="font-weight:700;font-size:0.9rem;color:var(--primary);flex:1">${cat}</span>
         <span style="font-size:0.75rem;color:var(--text-muted)">${groups[cat].length}</span>
         <span style="font-size:0.8rem;color:var(--text-muted);transition:transform 0.2s;display:inline-block;transform:rotate(${open?'0':'180deg'})"">▲</span>
@@ -3787,7 +4396,7 @@ function renderExerciseBank() {
               <button class="btn-icon" onclick="removeBankExercise('${ex.id}')">🗑️</button>
             </div>
           </div>
-          <div class="bank-ex-meta">📦 ${ex.sets} סטים · 🔁 ${ex.reps} חזרות${ex.videoUrl?` · <a href="${ex.videoUrl}" target="_blank" style="color:var(--primary);font-size:0.75rem">▶ וידאו</a>`:''}</div>
+          <div class="bank-ex-meta">${ex.sets} סטים · ${ex.reps} חזרות${ex.videoUrl?` · <a href="${ex.videoUrl}" target="_blank" style="color:var(--primary);font-size:0.75rem">▶ וידאו</a>`:''}</div>
           ${ex.description?`<div class="bank-ex-desc">${ex.description}</div>`:''}
         </div>`).join('')}
       </div>` : ''}
@@ -3881,7 +4490,7 @@ function renderCalendar() {
   const grid = el('calendarGrid');
   if (!grid) return;
   if (!calTraineeId) {
-    grid.innerHTML = '<div class="empty-state"><div class="es-icon">📅</div><p>בחר מתאמן לניהול לוח האימונים</p></div>';
+    grid.innerHTML = '<div class="empty-state"><div class="es-icon" style="opacity:0.2">—</div><p>בחר מתאמן לניהול לוח האימונים</p></div>';
     return;
   }
   const days = getWeekDays();
@@ -3996,7 +4605,7 @@ function checkCoachNotifications() {
   unread.forEach(n=>{ n.read = true; });
   saveDB();
   const last = unread[unread.length-1];
-  showNotifToast('🔥', last.traineeName + ' התחיל אימון!', formatTime(last.timestamp));
+  showNotifToast('●', last.traineeName + ' התחיל אימון!', formatTime(last.timestamp));
 }
 
 function initPlanEditor() {
@@ -4020,8 +4629,8 @@ function loadPlanEditor() {
     const sw = t?.startWeight;
     const tw = t?.targetWeight;
     if (sw) {
-      let html = `⚖️ משקל נוכחי: <b style="color:var(--success)">${sw} ק"ג</b>`;
-      if (tw) html += ` &nbsp;·&nbsp; 🎯 יעד: <b style="color:var(--primary)">${tw} ק"ג</b>`;
+      let html = `משקל נוכחי: <b style="color:var(--success)">${sw} ק"ג</b>`;
+      if (tw) html += ` &nbsp;·&nbsp; יעד: <b style="color:var(--primary)">${tw} ק"ג</b>`;
       html += ` &nbsp;·&nbsp; חלבון: <b>${(sw*1.6).toFixed(0)}–${(sw*2.2).toFixed(0)}g</b>`;
       twInfo.innerHTML = html;
     } else {
@@ -4081,12 +4690,12 @@ function renderExerciseEditor() {
           <button class="btn-icon" onclick="removeExercise(${i})">🗑️</button>
         </div>
         <div class="exercise-details">
-          <span class="ex-chip">📦 ${ex.sets} סטים</span>
-          <span class="ex-chip">🔁 ${ex.reps} חזרות</span>
+          <span class="ex-chip">${ex.sets} סטים</span>
+          <span class="ex-chip">${ex.reps} חזרות</span>
         </div>
         ${ex.notes ? `<div class="exercise-note">💬 ${ex.notes}</div>` : ''}
       </div>`).join('')
-    : '<div class="empty-state"><div class="es-icon">🏃</div><p>אין תרגילים בתוכנית</p></div>';
+    : '<div class="empty-state"><div class="es-icon" style="opacity:0.2">—</div><p>אין תרגילים בתוכנית</p></div>';
 }
 
 function renderMealEditor() {
@@ -4097,7 +4706,7 @@ function renderMealEditor() {
   const calTarget  = t?.dailyCalTarget;
   const protTarget = t?.dailyProteinTarget;
   if (!meals.length) {
-    el('mealList').innerHTML = '<div class="empty-state"><div class="es-icon">🥗</div><p>אין פריטים בתפריט</p></div>';
+    el('mealList').innerHTML = '<div class="empty-state"><div class="es-icon" style="opacity:0.2">—</div><p>אין פריטים בתפריט</p></div>';
     return;
   }
   const grouped = {};
@@ -4346,6 +4955,9 @@ async function addTraineeByCoach() {
 function initTrainee() {
   el('traineeNavName').textContent = displayName(currentUser);
   el('traineeAvatar').textContent = initials(currentUser.name);
+  applyAvatarColor(el('traineeAvatar'), currentUser.id);
+  el('traineeAvatar').onclick = () => openProfilePanel();
+  updateNavAvatar();
   const coach = getUser(currentUser.coachId);
   el('traineeCoachName').textContent = displayName(coach);
   renderTraineeWorkout();
@@ -4400,8 +5012,196 @@ function selectTraineeDay(dateStr) {
 }
 
 function renderTraineeWorkout() {
+  renderTraineeGreeting();
+  renderV0HeroSection();
   renderTraineeDayNav();
   renderTraineeWorkoutForDay(traineeSelectedDate || dateKey(new Date()));
+}
+
+function renderV0HeroSection() {
+  const wrap = el('v0HeroWrap');
+  if (!wrap || !currentUser) return;
+
+  // Get today's workout info
+  const todayStr = dateKey(new Date());
+  const schedExs = getScheduleForDay(currentUser.id, todayStr);
+  const exs = schedExs.length > 0 ? schedExs
+    : (currentUser.exercises||[]).map(e=>({customName:e.name,sets:e.sets,reps:e.reps}));
+  const count = exs.length;
+  const goal = currentUser.goal || '';
+  const isEn = currentLang === 'en';
+
+  // Category label based on goal
+  let cat = isEn ? 'Training' : 'אימון';
+  if (goal.includes('חיטוב') || goal.toLowerCase().includes('cut')) cat = isEn ? 'Cardio' : 'חיטוב';
+  else if (goal.includes('מסה') || goal.toLowerCase().includes('bulk')) cat = isEn ? 'Strength' : 'כוח';
+
+  // Workout name
+  const workoutName = isEn ? "Today's Workout" : 'אימון היום';
+  const meta = count > 0
+    ? `${count} ${isEn ? 'exercises' : 'תרגילים'}`
+    : (isEn ? 'No workout scheduled' : 'אין אימון מתוכנן');
+
+  // Stats
+  const sessions = (db.sessions||[]).filter(s=>s.traineeId===currentUser.id&&s.end);
+  const weekAgo = Date.now() - 7*24*60*60*1000;
+  const weekSessions = sessions.filter(s=>s.end>weekAgo).length;
+  const stateKey = `wstate_${currentUser.id}_${todayStr}`;
+  const state = JSON.parse(localStorage.getItem(stateKey)||'{}');
+  let doneSets=0, totalSets=0;
+  exs.forEach(item => {
+    const s = parseInt(item.sets||3);
+    totalSets += s;
+    for (let i=0;i<s;i++) { if (state[item.id+'_s'+i]) doneSets++; }
+  });
+
+  // Labels
+  const todayLabel = isEn ? "TODAY'S WORKOUT" : 'אימון היום';
+  const startLabel = isEn ? 'Start Workout' : 'התחל אימון';
+  const statsLabel = isEn ? 'STATS' : 'סטטיסטיקות';
+
+  // Hero image (use Unsplash fitness image or gradient)
+  const heroImg = `https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80&fit=crop`;
+
+  wrap.innerHTML = `
+    <div class="v0-section-gap">
+      <span class="v0-label">${todayLabel}</span>
+      <div class="v0-hero-card">
+        <div class="v0-hero-img">
+          <img src="${heroImg}" alt="workout" onerror="this.style.display='none'">
+          <div class="v0-hero-img-overlay"></div>
+          <span class="v0-hero-pill">${cat}</span>
+        </div>
+        <div class="v0-hero-body">
+          <div class="v0-hero-name">${workoutName}</div>
+          <div class="v0-hero-meta">${meta}</div>
+          <button class="v0-start-btn" onclick="startWorkout()">
+            <span class="v0-play-icon"></span>
+            ${startLabel}
+          </button>
+        </div>
+      </div>
+
+      <div class="v0-stats-grid">
+        <div class="v0-stat-card">
+          <div class="v0-stat-num">${sessions.length}</div>
+          <div class="v0-stat-sub">${isEn ? 'Total · workouts' : 'סה"כ · אימונים'}</div>
+        </div>
+        <div class="v0-stat-card">
+          <div class="v0-stat-num">${weekSessions}</div>
+          <div class="v0-stat-sub">${isEn ? 'This Week · workouts' : 'השבוע · אימונים'}</div>
+        </div>
+        <div class="v0-stat-card">
+          <div class="v0-stat-num" style="color:var(--primary)">${doneSets}<span style="font-size:1rem;font-weight:500">/${totalSets}</span></div>
+          <div class="v0-stat-sub">${isEn ? 'Today · sets done' : 'היום · סטים'}</div>
+        </div>
+        <div class="v0-stat-card">
+          <div class="v0-stat-num" style="color:var(--calories)">${currentUser.startWeight||'—'}</div>
+          <div class="v0-stat-sub">${isEn ? 'Weight · kg' : 'משקל · ק"ג'}</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function toggleStreakBubble(btn) {
+  const bubble = document.getElementById('streakBubble');
+  if (!bubble) return;
+  const isOpen = bubble.style.display !== 'none';
+  bubble.style.display = isOpen ? 'none' : 'block';
+  if (!isOpen) {
+    // close on next outside click
+    setTimeout(() => {
+      document.addEventListener('click', function close(e) {
+        if (!btn.parentElement.contains(e.target)) {
+          bubble.style.display = 'none';
+          document.removeEventListener('click', close);
+        }
+      });
+    }, 10);
+  }
+}
+
+function renderTraineeGreeting() {
+  const wrap = el('traineeGreetingWrap');
+  if (!wrap || !currentUser) return;
+  const hr = new Date().getHours();
+  const greeting = currentLang === 'en'
+    ? (hr < 12 ? 'Good morning,' : hr < 18 ? 'Good afternoon,' : 'Good evening,')
+    : (hr < 12 ? 'בוקר טוב,' : hr < 18 ? 'צהריים טובים,' : 'ערב טוב,');
+  const name = displayName(currentUser);
+  // Streak: consecutive days with completed workout
+  const sessions = (db.sessions||[]).filter(s=>s.traineeId===currentUser.id&&s.end);
+  const sessionDays = new Set(sessions.map(s => dateKey(new Date(s.end))));
+  let streak = 0;
+  const today = new Date();
+  for (let i = 1; i <= 365; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    if (sessionDays.has(dateKey(d))) streak++;
+    else break;
+  }
+  // Count today too if already worked out
+  if (sessionDays.has(dateKey(today))) streak++;
+  // Flame SVG — exact from PulseGrid reference
+  const flameSvg = `<svg width="16" height="16" viewBox="0 0 24 24" fill="#FF3B6B" stroke="none">
+    <path d="M12 2c.5 3 2.5 5 4 6.5C17.5 10 19 12 19 14.5a7 7 0 1 1-14 0c0-1.5.7-3 2-4 .3 1 .8 1.8 1.5 2.3-.2-2.3 1-5 3.5-6.8C12.3 5 12 3.5 12 2z"/>
+  </svg>`;
+
+  // Check if trainee met goals today
+  const todayStr = dateKey(new Date());
+  const stateKey = `wstate_${currentUser.id}_${todayStr}`;
+  const wstate = JSON.parse(localStorage.getItem(stateKey)||'{}');
+  const todayExs = getScheduleForDay(currentUser.id, todayStr);
+  const workoutDone = todayExs.length > 0 &&
+    todayExs.every(ex => {
+      const sets = parseInt(ex.sets||3);
+      return Array.from({length:sets}, (_,i) => wstate[ex.id+'_s'+i]).some(Boolean);
+    });
+  const foodLogKey = 'foodlog_' + currentUser.id + '_' + todayStr;
+  const foodLog = JSON.parse(localStorage.getItem(foodLogKey)||'[]');
+  const mealPlanDone = foodLog.length > 0;
+  const metGoals = workoutDone && mealPlanDone;
+  const partialGoals = workoutDone || mealPlanDone;
+
+  let bubbleTitle, bubbleMsg, bubbleColor;
+  if (metGoals) {
+    bubbleTitle = currentLang==='en' ? `Day ${streak} — Goals Met!` : `היום ה-${streak} לתהליך`;
+    bubbleMsg   = currentLang==='en' ? 'Workout + meal plan complete. Well done!' : 'אימון + תפריט הושלמו — כל הכבוד!';
+    bubbleColor = '#39FF14';
+  } else if (partialGoals) {
+    bubbleTitle = currentLang==='en' ? `Day ${streak}` : `היום ה-${streak} לתהליך`;
+    bubbleMsg   = workoutDone
+      ? (currentLang==='en' ? 'Workout done — log your meals too!' : 'אימון הושלם — אל תשכח לרשום תפריט!')
+      : (currentLang==='en' ? 'Meals logged — complete your workout!' : 'תפריט נרשם — השלם את האימון!');
+    bubbleColor = '#FFB547';
+  } else {
+    bubbleTitle = currentLang==='en' ? `Day ${streak}` : `היום ה-${streak} לתהליך`;
+    bubbleMsg   = currentLang==='en' ? 'Complete workout + meals to keep your streak' : 'השלם אימון ותפריט כדי לשמור על הרצף';
+    bubbleColor = '#7C8B94';
+  }
+
+  wrap.innerHTML = `
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px">
+      <div>
+        <p style="font-size:14px;color:#7C8B94;margin-bottom:2px">${greeting}</p>
+        <h1 style="font-size:24px;font-weight:800;letter-spacing:-0.02em;line-height:1.2">${name}</h1>
+      </div>
+      <div style="position:relative">
+        <div onclick="toggleStreakBubble(this)" style="display:flex;align-items:center;gap:6px;border:1px solid #1F2A33;border-radius:999px;padding:6px 14px;background:#121820;font-weight:700;font-size:14px;cursor:pointer;user-select:none">
+          ${flameSvg}
+          <span>${streak}</span>
+        </div>
+        <div id="streakBubble" style="display:none;position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);
+          background:#121820;border:1px solid #1F2A33;border-radius:14px;padding:12px 16px;
+          white-space:nowrap;z-index:999;box-shadow:0 4px 24px rgba(0,0,0,0.6);min-width:220px;text-align:right">
+          <div style="font-size:13px;font-weight:800;color:#E6F1F5;margin-bottom:4px">${bubbleTitle}</div>
+          <div style="font-size:12px;color:${bubbleColor}">${bubbleMsg}</div>
+          <div style="position:absolute;top:-5px;left:50%;transform:translateX(-50%);
+            width:10px;height:10px;background:#121820;border-top:1px solid #1F2A33;border-right:1px solid #1F2A33;
+            rotate:315deg;"></div>
+        </div>
+      </div>
+    </div>`;
 }
 
 function renderTraineeWorkoutForDay(dateStr) {
@@ -4411,7 +5211,7 @@ function renderTraineeWorkoutForDay(dateStr) {
   if (rescheduledTo) {
     if (reschedBtn) reschedBtn.style.display = 'none';
     el('traineeExList').innerHTML = `<div class="card" style="text-align:center;padding:24px">
-      <div style="font-size:2.5rem;margin-bottom:8px">📅</div>
+      <div style="font-size:1.5rem;margin-bottom:8px;opacity:0.3">—</div>
       <div style="font-weight:700;font-size:1.05rem;margin-bottom:6px">${t('האימון הועבר')}</div>
       <div style="font-size:0.9rem;color:var(--text-muted)">ל-${formatDateHe(rescheduledTo)}</div>
     </div>`;
@@ -4427,7 +5227,7 @@ function renderTraineeWorkoutForDay(dateStr) {
     const gen = currentUser.exercises || [];
     if (reschedBtn) reschedBtn.style.display = 'none';
     if (!gen.length) {
-      el('traineeExList').innerHTML = `<div class="empty-state"><div class="es-icon">🏃</div><p>${t('אין אימון מתוכנן ליום זה')}</p></div>`;
+      el('traineeExList').innerHTML = `<div class="empty-state"><div class="es-icon" style="opacity:0.2">—</div><p>${t('אין אימון מתוכנן ליום זה')}</p></div>`;
       el('workoutProgress').style.display = 'none'; return;
     }
     exs = gen.map(e => ({id:e.id, customName:e.name, sets:e.sets, reps:e.reps, note:e.notes, bankExId:null}));
@@ -4437,45 +5237,121 @@ function renderTraineeWorkoutForDay(dateStr) {
 
   const stateKey = `wstate_${currentUser.id}_${dateStr}`;
   const state = JSON.parse(localStorage.getItem(stateKey)||'{}');
-  const total = exs.length;
-  const completed = exs.filter(ex => state[ex.id]?.done).length;
 
-  el('workoutProgress').style.display = '';
-  el('progText').textContent = `${completed}/${total}`;
-  el('progBar').style.width = `${total?(completed/total)*100:0}%`;
+  // Calculate per-set completion stats
+  let totalSets = 0, doneSets = 0;
+  exs.forEach(item => {
+    const sets = parseInt(item.sets || (db.exerciseBank||[]).find(e=>e.id===item.bankExId)?.sets || 3);
+    totalSets += sets;
+    for (let s = 0; s < sets; s++) {
+      if (state[item.id + '_s' + s]) doneSets++;
+    }
+    // backward compat: if old-style done, count all sets
+    if (state[item.id]?.done && !state[item.id + '_s0']) doneSets += sets;
+  });
+  const pct = totalSets > 0 ? Math.round((doneSets / totalSets) * 100) : 0;
 
-  el('traineeExList').innerHTML = exs.map(item => {
+  // Build workout stats bar
+  const elapsed = workoutStart ? Math.floor((Date.now() - workoutStart) / 1000) : 0;
+  const elapsedStr = elapsed > 0
+    ? `${String(Math.floor(elapsed/3600)).padStart(2,'0')}:${String(Math.floor((elapsed%3600)/60)).padStart(2,'0')}:${String(elapsed%60).padStart(2,'0')}`
+    : '—';
+
+  el('workoutProgress').style.display = 'none'; // hide old progress bar
+
+  const setsLabel = currentLang === 'en' ? 'SETS' : 'סטים';
+  const elapsedLabel = currentLang === 'en' ? 'ELAPSED' : 'זמן';
+  const progressLabel = currentLang === 'en' ? 'Session progress' : 'התקדמות';
+  const finishLabel = currentLang === 'en' ? '🏁 Finish Workout' : '🏁 סיים אימון';
+  const videoLabel = currentLang === 'en' ? '📹' : '📹';
+  const cantLabel = currentLang === 'en' ? "Can't do" : 'לא יכול';
+
+  const statsHtml = `
+    <div class="workout-stats-bar">
+      <div class="workout-stat-chip">
+        <div class="workout-stat-val" style="color:var(--primary)">${doneSets}/${totalSets}</div>
+        <div class="workout-stat-lbl">${setsLabel}</div>
+      </div>
+      <div class="workout-stat-chip">
+        <div class="workout-stat-val" style="color:var(--calories)">${exs.length}</div>
+        <div class="workout-stat-lbl">${currentLang==='en'?'EXERCISES':'תרגילים'}</div>
+      </div>
+      <div class="workout-stat-chip">
+        <div class="workout-stat-val" style="color:var(--nutrition)">${elapsedStr}</div>
+        <div class="workout-stat-lbl">${elapsedLabel}</div>
+      </div>
+    </div>
+    <div class="workout-progress-bar">
+      <span class="workout-progress-label">${progressLabel}</span>
+      <div class="workout-progress-track"><div class="workout-progress-fill" style="width:${pct}%"></div></div>
+      <span class="workout-progress-pct">${pct}%</span>
+    </div>`;
+
+  const cardsHtml = exs.map((item, idx) => {
     const bankEx = item.bankExId ? (db.exerciseBank||[]).find(e=>e.id===item.bankExId) : null;
-    const name = item.customName || bankEx?.name || 'תרגיל';
-    const sets = item.sets || bankEx?.sets || 3;
+    const name = item.customName || bankEx?.name || (currentLang==='en'?'Exercise':'תרגיל');
+    const sets = parseInt(item.sets || bankEx?.sets || 3);
     const reps = item.reps || bankEx?.reps || '10';
     const note = item.note || bankEx?.description || '';
-    const isDone   = !!state[item.id]?.done;
-    const isCannot = !!state[item.id]?.cannotDo;
-    return `<div class="ex-check-item ${isDone?'done':''} ${isCannot?'cannot':''}">
-      <div class="check-box ${isDone?'checked':''}" onclick="toggleExDone('${item.id}','${dateStr}')"></div>
-      <div style="flex:1">
-        <div class="exercise-name">${name}</div>
-        <div class="exercise-details mt-4">
-          <span class="ex-chip">📦 ${sets} ${t('סטים')}</span>
-          <span class="ex-chip">🔁 ${reps} ${t('חזרות')}</span>
-        </div>
-        ${note?`<div class="exercise-note">💬 ${note}</div>`:''}
+    const setsDone = Array.from({length:sets}, (_,s) => !!state[item.id+'_s'+s] || (state[item.id]?.done));
+    const exDone = setsDone.filter(Boolean).length;
+    const numStr = String(idx+1).padStart(2,'0');
+
+    const setRows = Array.from({length:sets}, (_,s) => {
+      const done = setsDone[s];
+      return `<div class="ex-set-row ${done?'set-done':''}" onclick="toggleSetDone('${item.id}',${s},'${dateStr}')">
+        <span class="ex-set-num">${s+1}</span>
+        <span class="ex-set-weight">—</span>
+        <span class="ex-set-reps">${reps} ${currentLang==='en'?'reps':'חז׳'}</span>
+        <div class="set-check-circle ${done?'checked':''}">${done?'✓':''}</div>
+      </div>`;
+    }).join('');
+
+    return `<div class="ex-workout-card">
+      <div class="ex-workout-header">
+        <div class="ex-num-badge">${numStr}</div>
+        <span class="ex-workout-category">${currentLang==='en'?'Exercise':'תרגיל'}</span>
+        <span class="ex-workout-progress">${exDone}/${sets}</span>
+        <button class="btn btn-ghost btn-sm" style="padding:3px 8px;font-size:0.78rem;color:var(--text-muted)" onclick="openExerciseVideoModal('${name.replace(/'/g,"\\'")}')" title="${videoLabel}">📹</button>
       </div>
-      <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
-        <button class="cannot-btn ${isCannot?'active':''}" onclick="toggleCannotDo('${item.id}','${dateStr}')">${isCannot?t('❌ לא יכול'):t('😣 לא יכול')}</button>
-        <button class="btn btn-ghost btn-sm" style="padding:3px 8px;font-size:0.78rem;color:#A78BFA" onclick="openExerciseVideoModal('${name.replace(/'/g,"\\'")}')" title="הקלט סרטון">📹</button>
+      <div class="ex-workout-name">${name}</div>
+      ${note?`<div class="ex-workout-note">ℹ️ ${note}</div>`:''}
+      <div class="ex-sets-table">
+        <div class="ex-sets-header">
+          <span>${currentLang==='en'?'SET':'סט'}</span>
+          <span>${currentLang==='en'?'WEIGHT':'משקל'}</span>
+          <span>${currentLang==='en'?'REPS':'חזרות'}</span>
+          <span>${currentLang==='en'?'DONE':'סיום'}</span>
+        </div>
+        ${setRows}
       </div>
     </div>`;
   }).join('');
+
+  const bottomBar = `<div class="workout-bottom-bar">
+    <button class="workout-btn-secondary" onclick="openRescheduleModal ? openRescheduleModal() : null">${currentLang==='en'?'Skip Day':'דלג יום'}</button>
+    <button class="workout-btn-primary" onclick="stopWorkout()">${finishLabel}</button>
+  </div>`;
+
+  el('traineeExList').innerHTML = statsHtml + cardsHtml + bottomBar;
+}
+
+function toggleSetDone(itemId, setIdx, dateStr) {
+  const stateKey = `wstate_${currentUser.id}_${dateStr}`;
+  const state = JSON.parse(localStorage.getItem(stateKey)||'{}');
+  const key = itemId + '_s' + setIdx;
+  state[key] = !state[key];
+  // Update legacy done flag based on all sets
+  localStorage.setItem(stateKey, JSON.stringify(state));
+  renderTraineeWorkoutForDay(dateStr);
 }
 
 function toggleExDone(itemId, dateStr) {
+  // Legacy — toggle all sets
   const stateKey = `wstate_${currentUser.id}_${dateStr}`;
   const state = JSON.parse(localStorage.getItem(stateKey)||'{}');
   if (!state[itemId]) state[itemId] = {};
   state[itemId].done = !state[itemId].done;
-  if (state[itemId].done) state[itemId].cannotDo = false;
   localStorage.setItem(stateKey, JSON.stringify(state));
   renderTraineeWorkoutForDay(dateStr);
 }
@@ -4515,7 +5391,7 @@ function renderProgressLog() {
     const prev = log[idx+1];
     const diff = prev ? (item.weight - prev.weight) : null;
     const diffStr = diff !== null
-      ? `<span style="color:${diff<0?'#64E2B7':diff>0?'#FF6B9D':'var(--text-muted)'}">${diff>0?'+':''}${diff.toFixed(1)} ${t('ק"ג')}</span>`
+      ? `<span style="color:${diff<0?'#00F0FF':diff>0?'#FF6B9D':'var(--text-muted)'}">${diff>0?'+':''}${diff.toFixed(1)} ${t('ק"ג')}</span>`
       : '';
     const [y,m,d] = item.date.split('-');
     return `<div class="progress-log-item">
@@ -4716,7 +5592,7 @@ function renderFoodBank() {
   const items = (db.foodBank||[]).filter(f => !query || f.name.toLowerCase().includes(query));
   const list = el('foodBankList');
   if (!list) return;
-  if (!items.length) { list.innerHTML = '<div class="empty-state"><div class="es-icon">🍎</div><p>אין פריטים בבנק</p></div>'; return; }
+  if (!items.length) { list.innerHTML = '<div class="empty-state"><div class="es-icon" style="opacity:0.2">—</div><p>אין פריטים בבנק</p></div>'; return; }
 
   // When searching — flat list
   if (query) {
@@ -4736,7 +5612,6 @@ function renderFoodBank() {
     const open = foodCatOpen[cat];
     return `<div style="margin-bottom:8px;border:1px solid var(--border);border-radius:10px;overflow:hidden">
       <div onclick="toggleFoodCat('${cat}')" style="display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;background:rgba(255,255,255,0.03);user-select:none">
-        <span style="font-size:1rem">${FOOD_CAT_ICON[cat]||'🍽️'}</span>
         <span style="font-weight:700;font-size:0.9rem;color:var(--primary);flex:1">${cat}</span>
         <span style="font-size:0.75rem;color:var(--text-muted)">${groups[cat].length}</span>
         <span style="font-size:0.8rem;color:var(--text-muted);display:inline-block;transform:rotate(${open?'0':'180deg'})">▲</span>
@@ -4751,7 +5626,7 @@ function foodBankItemHTML(f) {
     <div style="flex:1">
       <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
         <span class="food-bank-name">${f.name}</span>
-        ${f.wholeUnit ? `<span class="food-cat-badge" style="background:rgba(100,226,183,0.15);color:#64E2B7">🥚 ${f.wholeUnit} = ${f.wholeGrams}g</span>` : ''}
+        ${f.wholeUnit ? `<span class="food-cat-badge" style="background:rgba(100,226,183,0.15);color:#00F0FF"> ${f.wholeUnit} = ${f.wholeGrams}g</span>` : ''}
       </div>
       <div class="food-bank-macros">ל-100g: 🥩 ${f.protein}g · 🍞 ${f.carbs}g · 🧈 ${f.fat}g · 🔥 ${f.cal} קל׳</div>
     </div>
@@ -4984,10 +5859,10 @@ function renderFoodLog() {
   if (totals) {
     totals.style.display='';
     totals.innerHTML = `<div class="macro-total-row">
-      <div class="macro-total-chip"><span class="val" style="color:#FF6B9D">${tp}g</span><span class="lbl">חלבון</span></div>
-      <div class="macro-total-chip"><span class="val" style="color:#FFB547">${tc}g</span><span class="lbl">פחמימה</span></div>
-      <div class="macro-total-chip"><span class="val" style="color:#64E2B7">${tf}g</span><span class="lbl">שומן</span></div>
-      <div class="macro-total-chip"><span class="val" style="color:#A78BFA">${tcal}</span><span class="lbl">קלוריות</span></div>
+      <div class="macro-total-chip"><span class="val" style="color:#00F0FF">${tp}g</span><span class="lbl">חלבון</span></div>
+      <div class="macro-total-chip"><span class="val" style="color:#00F0FF">${tc}g</span><span class="lbl">פחמימה</span></div>
+      <div class="macro-total-chip"><span class="val" style="color:#00F0FF">${tf}g</span><span class="lbl">שומן</span></div>
+      <div class="macro-total-chip"><span class="val" style="color:#00F0FF">${tcal}</span><span class="lbl">קלוריות</span></div>
     </div>`;
   }
 }
@@ -5024,7 +5899,7 @@ function renderTraineeMenu() {
   const mk = `meals_${currentUser.id}_${todayKey()}`;
   const state = JSON.parse(localStorage.getItem(mk)||'{}');
   if (!meals.length) {
-    el('traineeMealList').innerHTML = `<div class="empty-state"><div class="es-icon">🥗</div><p>${t('המאמן עדיין לא הגדיר תפריט')||'המאמן עדיין לא הגדיר תפריט'}</p></div>`;
+    el('traineeMealList').innerHTML = `<div class="empty-state"><div class="es-icon" style="opacity:0.2">—</div><p>${t('המאמן עדיין לא הגדיר תפריט')||'המאמן עדיין לא הגדיר תפריט'}</p></div>`;
   } else {
     const grouped = {};
     meals.forEach(m=>{ grouped[m.type]=grouped[m.type]||[]; grouped[m.type].push(m); });
@@ -5050,7 +5925,7 @@ function renderTraineeMenu() {
               <button onclick="changeWholeUnits('${m.id}',${m.wholeGrams||100},${target},1)"
                 style="width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:rgba(255,255,255,0.06);color:var(--text);font-size:1rem;cursor:pointer;line-height:1">+</button>
               <span style="font-size:0.72rem;color:var(--text-muted)">${m.wholeUnit} / ${targetUnits}</span>
-              ${done ? '<span style="color:#64E2B7;font-size:0.95rem">✓</span>' : ''}
+              ${done ? '<span style="color:#00F0FF;font-size:0.95rem">✓</span>' : ''}
             </div>
             ${toggleBtn}
           </div>` : `
@@ -5059,7 +5934,7 @@ function renderTraineeMenu() {
               <input type="number" class="meal-partial-input" placeholder="0" value="${reported||''}" min="0"
                 onchange="reportMealGrams('${m.id}', this.value, ${target})">
               <span style="font-size:0.75rem;color:var(--text-muted)">/${target}g</span>
-              ${done ? '<span style="color:#64E2B7;font-size:0.95rem">✓</span>' : ''}
+              ${done ? '<span style="color:#00F0FF;font-size:0.95rem">✓</span>' : ''}
             </div>
             ${toggleBtn}
           </div>`;
@@ -5067,7 +5942,7 @@ function renderTraineeMenu() {
           <div style="flex:1">
             <div class="meal-partial-name">${m.name}</div>
             <div class="meal-partial-macros">${isWhole?`${targetUnits} ${m.wholeUnit} (${target}g)`:`${target}g`} · 🔥${m.cal}קל׳${m.protein?` · 🥩${m.protein}g`:''}</div>
-            <div class="progress-bar-bg" style="margin-top:4px;height:3px"><div class="progress-bar-fill" style="width:${pct}%;background:${done?'#64E2B7':'var(--primary)'}"></div></div>
+            <div class="progress-bar-bg" style="margin-top:4px;height:3px"><div class="progress-bar-fill" style="width:${pct}%;background:${done?'#00F0FF':'var(--primary)'}"></div></div>
           </div>
           ${inputSection}
         </div>`;
@@ -5098,7 +5973,7 @@ function renderTraineeMenu() {
   const remEl = el('calRemaining');
   if (remEl) {
     remEl.textContent = totalTarget ? (remaining >= 0 ? remaining : 0) : '—';
-    remEl.style.color = remaining < 0 ? 'var(--danger)' : '#64E2B7';
+    remEl.style.color = remaining < 0 ? 'var(--danger)' : '#00F0FF';
   }
   el('calBar').style.width = totalTarget ? `${Math.min(100,(totalEaten/totalTarget)*100)}%` : '0%';
 
@@ -5111,8 +5986,8 @@ function renderTraineeMenu() {
       const maxP = (weight*2.2).toFixed(0);
       const targetW = currentUser.targetWeight;
       protBar.innerHTML = `<div style="color:var(--text-muted)">${t('יעד חלבון יומי')}</div>
-        <div style="font-weight:600;color:#FF6B9D">${minP}–${maxP}g <span style="font-weight:400;font-size:0.78rem;color:var(--text-muted)">(${weight}${t('ק"ג')} × 1.6–2.2)</span></div>
-        ${targetW ? `<div style="font-size:0.78rem;color:var(--text-muted)">${t('משקל יעד:')} <b style="color:#64E2B7">${targetW} ${t('ק"ג')}</b></div>` : ''}`;
+        <div style="font-weight:600;color:#00F0FF">${minP}–${maxP}g <span style="font-weight:400;font-size:0.78rem;color:var(--text-muted)">(${weight}${t('ק"ג')} × 1.6–2.2)</span></div>
+        ${targetW ? `<div style="font-size:0.78rem;color:var(--text-muted)">${t('משקל יעד:')} <b style="color:#00F0FF">${targetW} ${t('ק"ג')}</b></div>` : ''}`;
     } else {
       protBar.innerHTML = `<div style="color:var(--text-muted);font-size:0.8rem">${t('הכנס משקל לחישוב יעד חלבון')}</div>`;
     }
@@ -5125,10 +6000,10 @@ function renderTraineeMenu() {
     const pct = Math.min(100, (foodLogProtein/minP)*100).toFixed(0);
     protSummary.style.display = '';
     protSummary.innerHTML = `<div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:4px">
-      <span>${t('🥩 חלבון שנאכל')}</span>
-      <span style="font-weight:600;color:#FF6B9D">${foodLogProtein.toFixed(1)}g / ${(weight*1.6).toFixed(0)}–${(weight*2.2).toFixed(0)}g</span>
+      <span>${t('חלבון שנאכל')}</span>
+      <span style="font-weight:600;color:#00F0FF">${foodLogProtein.toFixed(1)}g / ${(weight*1.6).toFixed(0)}–${(weight*2.2).toFixed(0)}g</span>
     </div>
-    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%;background:linear-gradient(90deg,#FF6B9D,#A78BFA)"></div></div>`;
+    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%;background:#00F0FF"></div></div>`;
   } else if (protSummary) { protSummary.style.display = 'none'; }
 
   // Show cheat day reminder if set
@@ -5145,7 +6020,7 @@ function renderTraineeMenu() {
             <button class="btn btn-ghost btn-sm" onclick="openCheatDayModal()" style="font-size:0.75rem">${currentLang==='en'?'Reschedule':'הזז תאריך'}</button>
           </div>`
         : `<div style="font-size:0.8rem;color:var(--text-muted);padding:4px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
-            <span>📅 ${currentLang==='en'?'Next cheat day:':'יום הצ\'יט הבא:'} <b style="color:#A78BFA">${formatDateHe(cheatDay)}</b></span>
+            <span>📅 ${currentLang==='en'?'Next cheat day:':'יום הצ\'יט הבא:'} <b style="color:#00F0FF">${formatDateHe(cheatDay)}</b></span>
             <button class="btn btn-ghost btn-sm" onclick="openCheatDayModal()" style="font-size:0.75rem">${currentLang==='en'?'Reschedule':'הזז תאריך'}</button>
           </div>`;
     } else {
@@ -5331,7 +6206,7 @@ function renderCheatBank() {
   if (!list) return;
   const allItems = db.cheatBank || [];
   const items = allItems.filter(i => !query || i.name.toLowerCase().includes(query));
-  if (!items.length) { list.innerHTML = '<div class="empty-state"><div class="es-icon">🍕</div><p>בנק הצ\'יטים ריק</p></div>'; return; }
+  if (!items.length) { list.innerHTML = '<div class="empty-state"><div class="es-icon" style="opacity:0.2">—</div><p>בנק הצ\'יטים ריק</p></div>'; return; }
   list.innerHTML = items.map(i=>`
     <div class="food-bank-item">
       <div style="flex:1">
@@ -5626,7 +6501,7 @@ const ALL_ACHIEVEMENTS = [
   {id:'w100', type:'count', target:100, emoji:'🏆', title:'100 אימונים', desc:'מאה אימונים — אגדי!',         color:'#FF6B9D', pts:1000},
   {id:'d60',  type:'dur',   target:60,  emoji:'⏱️', title:'שעה שלמה',   desc:'אימון מעל 60 דקות',    color:'#A78BFA', pts:75},
   {id:'d90',  type:'dur',   target:90,  emoji:'💪', title:'שעה וחצי',   desc:'אימון מעל 90 דקות',    color:'#FF6B9D', pts:150},
-  {id:'d120', type:'dur',   target:120, emoji:'🔥', title:'שעתיים!',    desc:'אימון מעל 120 דקות',   color:'#64E2B7', pts:300},
+  {id:'d120', type:'dur',   target:120, emoji:'🔥', title:'שעתיים!',    desc:'אימון מעל 120 דקות',   color:'#00F0FF', pts:300},
 ];
 
 function checkAchievements(duration) {
@@ -5733,7 +6608,7 @@ function renderAchievementsTab() {
       <div style="font-size:1.4rem;font-weight:800;color:#FFB547">${totalPts.toLocaleString()} <span style="font-size:0.75rem;color:var(--text-muted);font-weight:400">/ ${maxPts.toLocaleString()}</span></div>
     </div>
     <div style="background:rgba(255,255,255,0.08);border-radius:99px;height:10px;overflow:hidden">
-      <div style="width:${xpPct}%;height:100%;background:linear-gradient(90deg,#FFB547,#FF6B9D);border-radius:99px;transition:width 0.5s"></div>
+      <div style="width:${xpPct}%;height:100%;background:#00F0FF;border-radius:99px;transition:width 0.5s"></div>
     </div>
     <div style="font-size:0.72rem;color:var(--text-muted);margin-top:6px;text-align:left">${xpPct}${t('% מסך כל ההישגים')}</div>
   </div>`;
@@ -5787,7 +6662,7 @@ function renderAchievementsTab() {
   }
 
   body.innerHTML = xpBar + summary +
-    renderGroup(currentLang==='en'?'🏋️ Workout Count':'🏋️ מספר אימונים', countAchs) +
+    renderGroup(currentLang==='en'?'Workout Count':'מספר אימונים', countAchs) +
     renderGroup(currentLang==='en'?'⏱️ Workout Duration':'⏱️ משך אימון', durAchs);
 }
 
@@ -5797,7 +6672,7 @@ function startConfetti() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   const ctx = canvas.getContext('2d');
-  const colors = ['#FFB547','#A78BFA','#FF6B9D','#64E2B7','#60A5FA','#FCD34D'];
+  const colors = ['#FFB547','#A78BFA','#FF6B9D','#00F0FF','#60A5FA','#FCD34D'];
   _confettiParticles = Array.from({length:80}, ()=>({
     x: Math.random()*canvas.width, y: -10,
     r: Math.random()*7+3, c: colors[Math.floor(Math.random()*colors.length)],
@@ -5894,7 +6769,7 @@ function initCoachChat() {
 function loadCoachChat() {
   chatTraineeId = v('chatTraineeSelect');
   if (!chatTraineeId) {
-    el('coachChatMessages').innerHTML = '<div class="chat-empty"><div class="ce-icon">💬</div><div>בחר מתאמן להתחלת שיחה</div></div>';
+    el('coachChatMessages').innerHTML = '<div class="chat-empty"><div class="ce-icon"></div><div>בחר מתאמן להתחלת שיחה</div></div>';
     return;
   }
   markMessagesRead(currentUser.id, chatTraineeId, 'coach');
@@ -5906,7 +6781,7 @@ function renderCoachChatMessages() {
   const msgs = getMessages(currentUser.id, chatTraineeId);
   const wrap = el('coachChatMessages');
   if (!msgs.length) {
-    wrap.innerHTML = '<div class="chat-empty"><div class="ce-icon">💬</div><div>אין הודעות עדיין — שלח הודעה ראשונה!</div></div>';
+    wrap.innerHTML = '<div class="chat-empty"><div class="ce-icon"></div><div>אין הודעות עדיין — שלח הודעה ראשונה!</div></div>';
     return;
   }
   wrap.innerHTML = renderMessages(msgs, 'coach');
@@ -5933,7 +6808,7 @@ function renderTraineeChatMessages() {
   const msgs = getMessages(currentUser.coachId, currentUser.id);
   const wrap = el('traineeChatMessages');
   if (!msgs.length) {
-    wrap.innerHTML = `<div class="chat-empty"><div class="ce-icon">💬</div><div>${t('שלח שאלה למאמן שלך!')}</div></div>`;
+    wrap.innerHTML = `<div class="chat-empty"><div class="ce-icon"></div><div>${t('שלח שאלה למאמן שלך!')}</div></div>`;
     return;
   }
   wrap.innerHTML = renderMessages(msgs, 'trainee');
@@ -6261,7 +7136,7 @@ function updateNotifPermUI() {
   const status = el('notifPermStatus');
   if (!btn||!status) return;
   const p = ('Notification' in window) ? Notification.permission : 'default';
-  if (p==='granted') { btn.textContent=currentLang==='en'?'✓ Enabled':'✓ מופעל'; btn.disabled=true; status.textContent=currentLang==='en'?'Notifications active ✓':'התרעות פועלות ✓'; status.style.color='#64E2B7'; }
+  if (p==='granted') { btn.textContent=currentLang==='en'?'✓ Enabled':'✓ מופעל'; btn.disabled=true; status.textContent=currentLang==='en'?'Notifications active ✓':'התרעות פועלות ✓'; status.style.color='#00F0FF'; }
   else if (p==='denied') { btn.textContent=currentLang==='en'?'Blocked':'חסום'; btn.disabled=true; status.textContent=currentLang==='en'?'Blocked — change in browser settings':'חסום — שנה בהגדרות הדפדפן'; status.style.color='var(--danger)'; }
   else { btn.disabled=false; btn.textContent=t('הפעל התרעות'); status.textContent=''; }
 }
@@ -6391,6 +7266,13 @@ window.addEventListener('beforeinstallprompt', e => {
   deferredPrompt = e;
 });
 </script>
+
+<!-- PROFILE PANEL -->
+<div id="profilePanel" style="display:none;position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);align-items:flex-start;justify-content:flex-end;padding:60px 16px 0">
+  <div id="profilePanelInner" style="background:#121820;border:1px solid #1F2A33;border-radius:20px;width:300px;padding:24px;box-shadow:0 8px 40px rgba(0,0,0,0.7)">
+    <div id="profilePanelContent"></div>
+  </div>
+</div>
 
 <!-- ENGLISH NAME MODAL -->
 <div id="engNameModal" class="modal-overlay" style="display:none">
