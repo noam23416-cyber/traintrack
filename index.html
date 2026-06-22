@@ -1499,7 +1499,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
 ════════════════════════════════════════════ -->
 <div id="adminGate" style="position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#0a0a1a 0%,#0f0f2a 100%);display:flex;align-items:center;justify-content:center;font-family:inherit">
   <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:22px;padding:40px 32px;width:320px;max-width:92vw;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.5)">
-    <div style="font-size:2.6rem;margin-bottom:10px">🔐</div>
+    
     <div style="font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:4px">כניסה מאובטחת</div>
     <div style="font-size:0.82rem;color:rgba(255,255,255,0.45);margin-bottom:28px">יש להזין פרטי מנהל כדי להמשיך</div>
     <div style="text-align:right;margin-bottom:6px;font-size:0.8rem;color:rgba(255,255,255,0.6)">שם משתמש</div>
@@ -1537,21 +1537,33 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
     <!-- Floating decorative cards -->
 
     <div class="hero-content">
-      <div class="hero-logo">💪</div>
+      
       <div class="hero-title">TrainTrack</div>
       <div class="hero-subtitle">הפלטפורמה החכמה לניהול אימונים בין מאמן למתאמן</div>
 
       <div class="hero-features">
         <div class="hero-feature">
-          <div class="ficon" style="background:rgba(124,111,255,0.15)">📋</div>
+          <div class="ficon" style="background:rgba(0,240,255,0.08);box-shadow:0 0 12px rgba(0,240,255,0.2)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F0FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 4px #00F0FF)">
+              <path d="M12 2c.5 3 2.5 5 4 6.5C17.5 10 19 12 19 14.5a7 7 0 1 1-14 0c0-1.5.7-3 2-4 .3 1 .8 1.8 1.5 2.3-.2-2.3 1-5 3.5-6.8C12.3 5 12 3.5 12 2z" fill="rgba(0,240,255,0.15)" stroke="#00F0FF"/>
+            </svg>
+          </div>
           <div class="ftext"><strong>תוכניות אישיות</strong>בניית תוכנית אימון ותפריט מותאם</div>
         </div>
         <div class="hero-feature">
-          <div class="ficon" style="background:rgba(62,207,173,0.15)">⏱</div>
+          <div class="ficon" style="background:rgba(57,255,20,0.08);box-shadow:0 0 12px rgba(57,255,20,0.2)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#39FF14" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 4px #39FF14)">
+              <circle cx="12" cy="12" r="9" fill="rgba(57,255,20,0.1)"/><polyline points="12 7 12 12 15 15"/>
+            </svg>
+          </div>
           <div class="ftext"><strong>מעקב אימון חי</strong>טיימר ועדכונים בזמן אמת</div>
         </div>
         <div class="hero-feature">
-          <div class="ficon" style="background:rgba(255,107,157,0.15)"></div>
+          <div class="ficon" style="background:rgba(255,59,107,0.08);box-shadow:0 0 12px rgba(255,59,107,0.2)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF3B6B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 4px #FF3B6B)">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" fill="rgba(255,59,107,0.1)"/>
+            </svg>
+          </div>
           <div class="ftext"><strong>צ׳אט ישיר</strong>תקשורת מידית בין מאמן למתאמן</div>
         </div>
       </div>
@@ -1571,7 +1583,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
 
     <!-- LOGIN FORM -->
     <div id="loginForm">
-      <div class="auth-panel-title" data-i18n="ברוך הבא! 👋">ברוך הבא! 👋</div>
+      <div class="auth-panel-title" data-i18n="ברוך הבא">ברוך הבא</div>
       <div class="auth-panel-sub" data-i18n="התחבר לחשבונך">התחבר לחשבונך</div>
 
       <div class="alert-error" id="loginError"></div>
@@ -1586,14 +1598,14 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
       <div class="form-group">
         <label data-i18n="סיסמא">סיסמא</label>
         <div class="input-icon">
-          <span class="iicon">🔒</span>
+          <span class="iicon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
           <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
         </div>
       </div>
       <button class="btn btn-primary btn-full" onclick="doLogin()" style="margin-top:8px" data-i18n="כניסה →">כניסה →</button>
       <div id="faceIdLoginBtn" style="display:none;margin-top:10px">
         <button class="btn btn-ghost btn-full" onclick="loginWithFaceID()" style="display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--border)">
-          <span style="font-size:1.2rem">🔐</span> <span data-i18n="כניסה עם Face ID / טביעת אצבע">כניסה עם Face ID / טביעת אצבע</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00F0FF" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> <span data-i18n="כניסה עם Face ID / טביעת אצבע">כניסה עם Face ID / טביעת אצבע</span>
         </button>
       </div>
       <div class="divider-text mt-12" data-i18n="אין לך חשבון?">אין לך חשבון?</div>
@@ -1602,12 +1614,12 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
 
     <!-- REGISTER FORM -->
     <div id="registerForm" style="display:none">
-      <div class="auth-panel-title" data-i18n="הצטרף אלינו 🚀">הצטרף אלינו 🚀</div>
+      <div class="auth-panel-title" data-i18n="הצטרף אלינו">הצטרף אלינו</div>
       <div class="auth-panel-sub" data-i18n="צור חשבון חדש">צור חשבון חדש</div>
 
       <!-- ההרשמה הציבורית היא למתאמנים בלבד; מאמן חדש מתווסף ע"י מאמן קיים -->
       <div style="background:rgba(124,111,255,0.08);border:1px solid rgba(124,111,255,0.2);border-radius:10px;padding:10px 14px;margin-bottom:18px;font-size:0.84rem;color:var(--text-muted)">
-        🏋️ הרשמה זו היא <strong style="color:var(--text)">למתאמנים בלבד</strong>. מאמן חדש יתווסף ע"י מאמן קיים.
+        הרשמה זו היא <strong style="color:var(--text)">למתאמנים בלבד</strong>. מאמן חדש יתווסף ע"י מאמן קיים.
       </div>
 
       <div class="alert-error" id="registerError"></div>
@@ -1686,7 +1698,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
     <button class="tab-btn has-dot" data-panel="coach-chat" id="coachChatTab" onclick="switchTab(this,'coach')">
       <span class="unread-badge"></span>צ׳אט
     </button>
-    <button class="tab-btn" data-panel="coach-admin" id="adminDashTab" onclick="switchTab(this,'coach');renderAdminDash()" style="display:none">🛡️ Admin</button>
+    <button class="tab-btn" data-panel="coach-admin" id="adminDashTab" onclick="switchTab(this,'coach');renderAdminDash()" style="display:none">Admin</button>
     <button class="tab-btn" data-panel="coach-bug" onclick="switchTab(this,'coach')">דיווח</button>
   </div>
 
@@ -1707,7 +1719,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
     <!-- TRAINEES -->
     <div class="tab-panel" id="coach-trainees">
       <div class="flex-between" style="margin-bottom:12px">
-        <span class="card-title">👥 מתאמנים</span>
+        <span class="card-title">מתאמנים</span>
         <div style="display:flex;gap:8px">
           <button class="btn btn-ghost btn-sm" onclick="openModal('addCoachModal')">+ מאמן</button>
           <button class="btn btn-primary btn-sm" onclick="openModal('addTraineeModal')">+ מתאמן</button>
@@ -1773,7 +1785,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
       <!-- FOOD BANK PANEL -->
       <div id="foodBankPanel" style="display:none">
         <div class="flex-between" style="margin-bottom:12px">
-          <span class="card-title">🍎 בנק מזון</span>
+          <span class="card-title">בנק מזון</span>
           <button class="btn btn-ghost btn-sm" onclick="toggleForm('foodBankAddForm')">+ הוסף מזון</button>
         </div>
         <div class="add-form" id="foodBankAddForm">
@@ -1807,7 +1819,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
           </div>
         </div>
         <div style="margin-bottom:10px">
-          <input id="foodBankSearch" placeholder="🔍 חפש מזון..." style="width:100%;padding:8px 12px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.87rem" oninput="renderFoodBank()">
+          <input id="foodBankSearch" placeholder="חפש מזון..." style="width:100%;padding:8px 12px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.87rem" oninput="renderFoodBank()">
         </div>
         <div id="foodBankList"></div>
       </div>
@@ -1840,7 +1852,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
           </div>
         </div>
         <div style="margin-bottom:10px">
-          <input id="cheatBankSearch" placeholder="🔍 חפש בצ'יטים..." style="width:100%;padding:8px 12px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.87rem" oninput="renderCheatBank()">
+          <input id="cheatBankSearch" placeholder="חפש בצ'יטים..." style="width:100%;padding:8px 12px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.87rem" oninput="renderCheatBank()">
         </div>
         <div id="cheatBankList"></div>
       </div>
@@ -1858,7 +1870,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
       <div id="planEditorArea" style="display:none">
         <!-- Weight goals -->
         <div class="card" style="margin-bottom:12px">
-          <div class="card-header"><span class="card-title">⚖️ משקל מתאמן</span></div>
+          <div class="card-header"><span class="card-title">משקל מתאמן</span></div>
           <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
             <div class="form-group" style="max-width:150px;margin:0">
               <label>משקל יעד (ק"ג)</label>
@@ -1868,8 +1880,8 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
               <label>מטרת אימון</label>
               <div style="display:flex;gap:6px;flex-wrap:wrap">
                 <button id="goalBtn_חיטוב" class="btn btn-ghost btn-sm" onclick="setTraineeGoal('חיטוב')" style="border-radius:20px">חיטוב</button>
-                <button id="goalBtn_מסה" class="btn btn-ghost btn-sm" onclick="setTraineeGoal('מסה')" style="border-radius:20px">💪 מסה</button>
-                <button id="goalBtn_נטרלי" class="btn btn-ghost btn-sm" onclick="setTraineeGoal('נטרלי')" style="border-radius:20px">⚖️ נטרלי</button>
+                <button id="goalBtn_מסה" class="btn btn-ghost btn-sm" onclick="setTraineeGoal('מסה')" style="border-radius:20px">מסה</button>
+                <button id="goalBtn_נטרלי" class="btn btn-ghost btn-sm" onclick="setTraineeGoal('נטרלי')" style="border-radius:20px">נטרלי</button>
               </div>
             </div>
             <div id="traineeWeightInfo" style="font-size:0.83rem;color:var(--text-muted);padding-bottom:4px;flex:1"></div>
@@ -1897,7 +1909,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
         </div>
         <!-- Nutrition goals -->
         <div class="card" style="margin-bottom:12px">
-          <div class="card-header"><span class="card-title">🎯 יעדי תזונה יומיים</span></div>
+          <div class="card-header"><span class="card-title">יעדי תזונה יומיים</span></div>
           <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
             <div class="form-group" style="max-width:130px;margin:0">
               <label>קלוריות יומיות</label>
@@ -1985,7 +1997,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
         </div>
         <div class="chat-input-row">
           <input type="file" id="coachPhotoInput" accept="image/*" style="display:none" onchange="sendChatPhoto('coach')">
-          <button class="chat-photo-btn" onclick="el('coachPhotoInput').click()" title="שלח תמונה">📷</button>
+          <button class="chat-photo-btn" onclick="el('coachPhotoInput').click()" title="שלח תמונה"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
           <input class="chat-input" id="coachChatInput" placeholder="כתוב הודעה..." onkeydown="if(event.key==='Enter')sendCoachMsg()">
           <button class="chat-send-btn" onclick="sendCoachMsg()">➤</button>
         </div>
@@ -2033,7 +2045,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
 
 <!-- NOTIFICATION TOAST -->
 <div id="notifToast" class="notif-toast">
-  <span class="notif-icon" id="notifIcon">🔥</span>
+  <span class="notif-icon" id="notifIcon">●</span>
   <div class="notif-body">
     <div class="notif-title" id="notifTitle"></div>
     <div class="notif-msg" id="notifMsg"></div>
@@ -2095,7 +2107,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
       </div>
       <div id="activeBanner" class="active-banner" style="display:none">
         <div class="pulse-dot"></div>
-        <span>אימון פעיל — סמן תרגילים שהשלמת 💪</span>
+        <span>אימון פעיל — סמן תרגילים שהשלמת</span>
       </div>
       <div id="workoutProgress" style="display:none" class="progress-wrap card">
         <div class="progress-meta"><span>התקדמות</span><span id="progText">0/0</span></div>
@@ -2205,7 +2217,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
         </div>
         <div class="chat-input-row">
           <input type="file" id="traineePhotoInput" accept="image/*" style="display:none" onchange="sendChatPhoto('trainee')">
-          <button class="chat-photo-btn" onclick="el('traineePhotoInput').click()" title="שלח תמונה">📷</button>
+          <button class="chat-photo-btn" onclick="el('traineePhotoInput').click()" title="שלח תמונה"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
           <button class="btn btn-ghost btn-sm chat-photo-btn" id="traineeRecordBtn" onclick="toggleVideoRecord()" title="הקלט סרטון">⏺</button>
           <span id="recordTimer" style="display:none;font-size:0.75rem;color:var(--danger);font-weight:700;align-self:center"></span>
           <input class="chat-input" id="traineeChatInput" placeholder="כתוב שאלה..." data-i18n-ph="כתוב שאלה..." onkeydown="if(event.key==='Enter')sendTraineeMsg()">
@@ -2217,7 +2229,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
     <!-- HISTORY -->
     <div class="tab-panel" id="t-history">
       <div id="weeklyReminderBanner" style="display:none" class="weekly-reminder-banner" onclick="showWeightUpdateModal()">
-        <div class="wr-icon">📸</div>
+        <div class="wr-icon"></div>
         <div class="wr-text">
           <div class="wr-title" data-i18n="זמן לעדכון שבועי!">זמן לעדכון שבועי!</div>
           <div class="wr-sub" data-i18n="עדכן משקל והעלה תמונת התקדמות">עדכן משקל והעלה תמונת התקדמות</div>
@@ -2246,7 +2258,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
         </div>
       </div>
       <div class="card" style="margin-bottom:12px">
-        <div class="card-title" style="margin-bottom:10px" data-i18n="שעת אימון">שעת אימון</div>
+        <div class="card-title" style="margin-bottom:10px;display:flex;align-items:center;gap:6px" data-i18n="שעת אימון"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00F0FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>שעת אימון</div>
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
           <input type="time" id="workoutTimeInput" style="padding:8px 12px;background:rgba(255,255,255,0.07);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.9rem;flex:1">
           <button class="btn btn-primary btn-sm" onclick="saveWorkoutReminder()" data-i18n="שמור">שמור</button>
@@ -2318,7 +2330,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
 <div id="weightUpdateModal" class="modal-overlay">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title" data-i18n="📸 עדכון שבועי">📸 עדכון שבועי</span>
+      <span class="modal-title" data-i18n="📸 עדכון שבועי">עדכון שבועי</span>
       <button class="close-btn" onclick="closeModal('weightUpdateModal')">×</button>
     </div>
     <div class="form-group">
@@ -2416,7 +2428,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
 <div class="modal-overlay" id="rescheduleModal">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title">📅 דחיית אימון</span>
+      <span class="modal-title">דחיית אימון</span>
       <button class="close-btn" onclick="closeModal('rescheduleModal')">×</button>
     </div>
     <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:12px">לאיזה תאריך להעביר את האימון?</div>
@@ -3050,8 +3062,8 @@ const TR = {
   // Auth tabs
   'כניסה':'Login', 'הרשמה':'Sign Up',
   // Auth titles
-  'ברוך הבא! 👋':'Welcome! 👋', 'התחבר לחשבונך':'Sign in to your account',
-  'הצטרף אלינו 🚀':'Join Us 🚀', 'צור חשבון חדש':'Create a new account',
+  'ברוך הבא':'Welcome! 👋', 'התחבר לחשבונך':'Sign in to your account',
+  'הצטרף אלינו':'Join Us 🚀', 'צור חשבון חדש':'Create a new account',
   'יצירת חשבון →':'Sign Up →', 'כבר יש לך חשבון?':'Already have an account?',
   // Auth labels
   'כתובת מייל':'Email Address', 'סיסמא':'Password',
@@ -3142,6 +3154,7 @@ const TR = {
   'אין אימון מתוכנן ליום זה':'No workout scheduled for today',
   'האימון הועבר':'Workout Rescheduled',
   'אימון פעיל ⚡':'Active Workout ⚡',
+  'אימון פעיל':'Active Workout',
   'סטים':'sets','חזרות':'reps',
   '😣 לא יכול':'😣 Can\'t do','❌ לא יכול':'❌ Can\'t do',
   'תרגיל':'Exercise',
@@ -3163,7 +3176,7 @@ const TR = {
   // Achievements
   'הישגים שלי':'My Achievements',
   'עוד לא השגת הישגים — התחל לאמן!':'No achievements yet — start training!',
-  '⚡ נקודות XP':'⚡ XP Points',
+  '⚡ נקודות XP':'XP Points',
   'סיכום אימונים':'Workout Summary',
   'אימונים':'Workouts','ממוצע (דקות)':'Avg (min)',
   'התקדמות':'Progress','הושג!':'Achieved!',
@@ -3184,7 +3197,7 @@ const TR = {
   '💊 תוספים':'Supplements','תוספים':'Supplements',
   '+ הוסף ארוחה':'+ Add Meal',
   'שמור':'Save', 'נקה':'Clear',
-  '📸 עדכון שבועי':'📸 Weekly Update',
+  '📸 עדכון שבועי':'Weekly Update',
   'משקל נוכחי (ק"ג)':'Current Weight (kg)',
   'יעד משקל (ק"ג)':'Target Weight (kg)',
   'חפש מזון...':'Search food...',
@@ -3615,7 +3628,16 @@ function adminLoginAs(userId) {
 
 // ════════════ FACE ID / WebAuthn ════════════
 function isFaceIDSupported() {
-  return !!window.PublicKeyCredential;
+  if (!window.PublicKeyCredential) return false;
+  // WebAuthn requires HTTPS or localhost — not file://
+  const proto = location.protocol;
+  if (proto !== 'https:' && location.hostname !== 'localhost') return false;
+  return true;
+}
+
+function getRpId() {
+  const host = location.hostname;
+  return host && host !== '' ? host : 'localhost';
 }
 
 function checkFaceIDButton() {
@@ -3636,7 +3658,7 @@ async function offerFaceIDRegistration(user) {
     const cred = await navigator.credentials.create({
       publicKey: {
         challenge,
-        rp: { name: 'TrainTrack', id: location.hostname },
+        rp: { name: 'TrainTrack', id: getRpId() },
         user: { id: userId, name: user.email, displayName: user.name },
         pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
         authenticatorSelection: { userVerification: 'required' },
@@ -3654,7 +3676,10 @@ async function offerFaceIDRegistration(user) {
 }
 
 async function loginWithFaceID() {
-  if (!isFaceIDSupported()) { alert('הדפדפן שלך לא תומך ב-Face ID'); return; }
+  if (!isFaceIDSupported()) {
+    alert('Face ID זמין רק כשהאפליקציה פתוחה מ-HTTPS (GitHub Pages). כרגע אתה בקובץ מקומי.');
+    return;
+  }
   try {
     // Collect all stored credential IDs
     const allowCreds = db.users
@@ -3668,7 +3693,7 @@ async function loginWithFaceID() {
     const challenge = new Uint8Array(32);
     crypto.getRandomValues(challenge);
     const assertion = await navigator.credentials.get({
-      publicKey: { challenge, allowCredentials: allowCreds, userVerification: 'required', timeout: 60000 }
+      publicKey: { challenge, allowCredentials: allowCreds, userVerification: 'required', timeout: 60000, rpId: getRpId() }
     });
     const usedCredId = btoa(String.fromCharCode(...new Uint8Array(assertion.rawId)));
     const userId = localStorage.getItem('faceId_user_' + usedCredId);
@@ -5397,7 +5422,7 @@ function renderProgressLog() {
     return `<div class="progress-log-item">
       ${item.photo
         ? `<img class="progress-photo-thumb" src="${item.photo}" alt="תמונה">`
-        : `<div style="width:60px;height:60px;border-radius:10px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0">📷</div>`
+        : `<div style="width:60px;height:60px;border-radius:10px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;flex-shrink:0;opacity:0.3"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>`
       }
       <div class="progress-log-info">
         <div class="progress-log-date">${d}/${m}/${y}</div>
@@ -6020,7 +6045,7 @@ function renderTraineeMenu() {
             <button class="btn btn-ghost btn-sm" onclick="openCheatDayModal()" style="font-size:0.75rem">${currentLang==='en'?'Reschedule':'הזז תאריך'}</button>
           </div>`
         : `<div style="font-size:0.8rem;color:var(--text-muted);padding:4px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
-            <span>📅 ${currentLang==='en'?'Next cheat day:':'יום הצ\'יט הבא:'} <b style="color:#00F0FF">${formatDateHe(cheatDay)}</b></span>
+            <span>${currentLang==='en'?'Next cheat day:':'יום הצ\'יט הבא:'} <b style="color:#00F0FF">${formatDateHe(cheatDay)}</b></span>
             <button class="btn btn-ghost btn-sm" onclick="openCheatDayModal()" style="font-size:0.75rem">${currentLang==='en'?'Reschedule':'הזז תאריך'}</button>
           </div>`;
     } else {
@@ -6460,7 +6485,7 @@ function startWorkout() {
   el('startBtn').style.display='none';
   el('stopBtn').style.display='inline-flex';
   el('activeBanner').style.display='flex';
-  el('timerLabel').textContent = t('אימון פעיל ⚡');
+  el('timerLabel').textContent = t('אימון פעיל');
   timerInterval = setInterval(()=>{
     el('timerDisplay').textContent = formatDur(Date.now()-workoutStart);
   }, 1000);
@@ -6536,7 +6561,7 @@ function checkAchievements(duration) {
         color: a.color,
         isAchievementUnlock: true,
         pts: a.pts,
-        stats: [{icon:'⚡', label:'XP זכית ב', value:`+${a.pts}`}]
+        stats: [{icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="#00F0FF" stroke="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>', label:'XP זכית ב', value:`+${a.pts}`}]
       });
     }, i * 3200);
   });
@@ -6604,7 +6629,7 @@ function renderAchievementsTab() {
   const xpPct = maxPts > 0 ? Math.round((totalPts/maxPts)*100) : 0;
   const xpBar = `<div class="card" style="margin-bottom:16px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-      <div style="font-weight:700;font-size:1rem">${t('⚡ נקודות XP')}</div>
+      <div style="font-weight:700;font-size:1rem;display:flex;align-items:center;gap:5px"><svg width="14" height="14" viewBox="0 0 24 24" fill="#00F0FF" stroke="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>${currentLang==='en'?'XP Points':'נקודות XP'}</div>
       <div style="font-size:1.4rem;font-weight:800;color:#FFB547">${totalPts.toLocaleString()} <span style="font-size:0.75rem;color:var(--text-muted);font-weight:400">/ ${maxPts.toLocaleString()}</span></div>
     </div>
     <div style="background:rgba(255,255,255,0.08);border-radius:99px;height:10px;overflow:hidden">
@@ -6638,7 +6663,7 @@ function renderAchievementsTab() {
             : `${Math.min(a.current,a.target)}/${a.target} דקות`;
           return `<div style="background:${a.earned?`rgba(255,255,255,0.06)`:'rgba(255,255,255,0.02)'};border:1px solid ${a.earned?a.color+'66':'var(--border)'};border-radius:14px;padding:14px 16px;${a.earned?'':'opacity:0.6'}">
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:${a.earned?'0':'10px'}">
-              <div style="font-size:1.9rem;min-width:36px;text-align:center">${a.earned?a.emoji:'🔒'}</div>
+              <div style="font-size:1.9rem;min-width:36px;text-align:center;display:flex;align-items:center;justify-content:center">${a.earned ? (a.emoji === '⭐' ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="#FFB500" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>' : a.emoji) : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'}</div>
               <div style="flex:1">
                 <div style="display:flex;justify-content:space-between;align-items:baseline">
                   <div style="font-weight:700;font-size:0.9rem">${t(a.title)}</div>
