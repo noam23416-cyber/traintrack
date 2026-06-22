@@ -9,31 +9,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   :root {
-    --bg: #F5F5F5;
-    --surface: #FFFFFF;
-    --surface2: #F0F0F0;
-    --border: rgba(0,0,0,0.08);
-    --primary: #5C9900;
-    --primary2: #0099BB;
-    --accent: #FF5722;
-    --pink: #D4548A;
-    --red: #FF5722;
-    --text: #111111;
-    --muted: #666666;
-    --radius: 14px;
+    --bg: #F5F7FA; --surface: #FFFFFF; --surface2: #F0F2F5;
+    --border: #D0D7DE; --primary: #0077A8; --primary2: #0097A7;
+    --accent: #D4580A; --pink: #C53030; --red: #C53030;
+    --text: #0D1117; --muted: #6A737D; --radius: 18px;
   }
   body.dark {
-    --bg: #121212;
-    --surface: #1E1E1E;
-    --surface2: #252525;
-    --border: rgba(255,255,255,0.07);
-    --primary: #CCFF00;
-    --primary2: #00E5FF;
-    --accent: #FF5722;
-    --pink: #F472B6;
-    --red: #FF5722;
-    --text: #F5F5F5;
-    --muted: #888;
+    --bg: #0A0E12; --surface: #121820; --surface2: #161E28;
+    --border: #1F2A33; --primary: #00F0FF; --primary2: #00F0FF;
+    --accent: #FF3B6B; --pink: #FF3B6B; --red: #FF3B6B;
+    --text: #E6F1F5; --muted: #7C8B94; --radius: 18px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
@@ -218,7 +203,7 @@
 <!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-box">
-    <div style="font-size:2.5rem;margin-bottom:8px">🛡️</div>
+    <div style="font-size:2.5rem;margin-bottom:8px"></div>
     <h1>Admin Dashboard</h1>
     <p>TrainTrack — גישה למנהל בלבד</p>
     <input type="email" id="adminEmail" placeholder="מייל" value="admin@admin.com">
@@ -231,24 +216,24 @@
 <!-- APP -->
 <div id="appScreen">
   <div class="header">
-    <div class="header-logo">🛡️ TrainTrack Admin</div>
+    <div class="header-logo">TrainTrack Admin</div>
     <div class="header-right">
       <div class="search-wrap">
         <span class="search-icon">🔍</span>
         <input class="search-input" id="globalSearch" placeholder="חיפוש שם, מייל..." oninput="onSearch(this.value)">
       </div>
-      <button class="refresh-btn" onclick="loadData()">🔄 רענן</button>
+      <button class="refresh-btn" onclick="loadData()">רענן</button>
       <button class="refresh-btn" id="dashThemeToggle" onclick="toggleDashTheme()" title="מצב לילה/יום" style="font-size:1.1rem;padding:5px 10px">☀️</button>
       <button class="logout-btn" onclick="doLogout()">יציאה</button>
     </div>
   </div>
 
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showTab('overview')">📊 סקירה כללית</button>
-    <button class="nav-tab" onclick="showTab('coaches')">🧑‍💼 מאמנים</button>
-    <button class="nav-tab" onclick="showTab('trainees')">🏃 מתאמנים</button>
-    <button class="nav-tab" onclick="showTab('activity')">📈 פעילות</button>
-    <button class="nav-tab" onclick="showTab('bugs')">🐛 דיווחי בעיות</button>
+    <button class="nav-tab active" onclick="showTab('overview')">סקירה כללית</button>
+    <button class="nav-tab" onclick="showTab('coaches')">מאמנים</button>
+    <button class="nav-tab" onclick="showTab('trainees')">מתאמנים</button>
+    <button class="nav-tab" onclick="showTab('activity')">פעילות</button>
+    <button class="nav-tab" onclick="showTab('bugs')">דיווחי בעיות</button>
   </div>
 
   <div class="main">
@@ -258,30 +243,30 @@
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
         <div style="font-size:0.9rem;color:var(--muted)">לחץ על קוביה לצפייה בפרטים</div>
         <div style="display:flex;gap:8px">
-          <button onclick="restoreDefaults()" id="restoreDefaultsBtn" style="display:none;background:none;border:1px solid var(--border);border-radius:8px;padding:6px 14px;cursor:pointer;color:var(--muted);font-size:0.82rem">↩️ שחזר ברירת מחדל</button>
-          <button onclick="toggleEditMode()" id="editModeBtn" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 14px;cursor:pointer;color:var(--muted);font-size:0.82rem" title="ערוך קוביות">✏️ ערוך</button>
+          <button onclick="restoreDefaults()" id="restoreDefaultsBtn" style="display:none;background:none;border:1px solid var(--border);border-radius:8px;padding:6px 14px;cursor:pointer;color:var(--muted);font-size:0.82rem">שחזר ברירת מחדל</button>
+          <button onclick="toggleEditMode()" id="editModeBtn" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 14px;cursor:pointer;color:var(--muted);font-size:0.82rem" title="ערוך קוביות">ערוך</button>
         </div>
       </div>
       <div class="stats-row" id="statsRow"></div>
       <div class="charts-row">
         <div class="chart-card">
-          <div class="chart-title">🥧 מתאמנים לפי מאמן</div>
+          <div class="chart-title">מתאמנים לפי מאמן</div>
           <div class="chart-wrap"><canvas id="pieChart"></canvas></div>
         </div>
         <div class="chart-card">
-          <div class="chart-title">🏋️ אימונים לפי מתאמן (Top 10)</div>
+          <div class="chart-title">אימונים לפי מתאמן (Top 10)</div>
           <div class="chart-wrap"><canvas id="barChart"></canvas></div>
         </div>
         <div class="chart-card">
-          <div class="chart-title">⚖️ שינוי משקל מתאמנים (ק"ג)</div>
+          <div class="chart-title">שינוי משקל מתאמנים (ק"ג)</div>
           <div class="chart-wrap"><canvas id="weightChart"></canvas></div>
         </div>
         <div class="chart-card">
-          <div class="chart-title">💬 תגובות מאמנים בצ׳אט</div>
+          <div class="chart-title">תגובות מאמנים בצ׳אט</div>
           <div class="chart-wrap"><canvas id="chatChart"></canvas></div>
         </div>
         <div class="chart-card">
-          <div class="chart-title">📅 פעילות שבועית (30 יום אחרונים)</div>
+          <div class="chart-title">פעילות שבועית (30 יום אחרונים)</div>
           <div class="chart-wrap"><canvas id="lineChart"></canvas></div>
         </div>
       </div>
@@ -321,7 +306,7 @@
 <!-- ADD COACH MODAL -->
 <div id="addCoachModal" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.5);align-items:center;justify-content:center">
   <div style="background:var(--surface);border-radius:20px;padding:32px;width:100%;max-width:420px;box-shadow:0 8px 40px rgba(0,0,0,0.3)">
-    <div style="font-size:1.1rem;font-weight:700;margin-bottom:20px">🧑‍💼 הוסף מאמן חדש</div>
+    <div style="font-size:1.1rem;font-weight:700;margin-bottom:20px">הוסף מאמן חדש</div>
     <div id="addCoachError" style="color:var(--red);font-size:0.85rem;margin-bottom:10px;min-height:18px"></div>
     <div style="margin-bottom:12px">
       <label style="font-size:0.8rem;color:var(--muted);display:block;margin-bottom:4px">שם מלא</label>
@@ -341,7 +326,7 @@
     </div>
     <div style="display:flex;gap:8px">
       <button onclick="closeAddCoachModal()" style="flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer">ביטול</button>
-      <button onclick="saveNewCoach()" style="flex:2;padding:10px;border-radius:8px;border:none;background:var(--primary);color:#fff;font-weight:700;cursor:pointer">➕ הוסף מאמן</button>
+      <button onclick="saveNewCoach()" style="flex:2;padding:10px;border-radius:8px;border:none;background:var(--primary);color:#fff;font-weight:700;cursor:pointer">הוסף מאמן</button>
     </div>
   </div>
 </div>
@@ -360,7 +345,7 @@
 <!-- CARD EDITOR MODAL -->
 <div id="cardEditorOverlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);align-items:center;justify-content:center">
   <div style="background:var(--surface);border-radius:16px;padding:28px;width:340px;box-shadow:0 8px 40px rgba(0,0,0,0.3)">
-    <div style="font-size:1rem;font-weight:700;margin-bottom:20px" id="cardEditorTitle">✏️ ערוך קוביה</div>
+    <div style="font-size:1rem;font-weight:700;margin-bottom:20px" id="cardEditorTitle">ערוך קוביה</div>
     <input type="hidden" id="cardEditorIdx">
     <div style="margin-bottom:12px">
       <label style="font-size:0.8rem;color:var(--muted);display:block;margin-bottom:4px">אייקון (אמוג׳י)</label>
@@ -397,7 +382,7 @@
 
     <!-- Data source picker — shown only for new tabs -->
     <div id="dataSourceWrap" style="display:none;margin-bottom:20px;background:rgba(124,111,255,0.06);border:1px solid rgba(124,111,255,0.2);border-radius:10px;padding:12px">
-      <div style="font-size:0.8rem;font-weight:700;color:var(--primary);margin-bottom:8px">📊 מה להציג בטאב החדש?</div>
+      <div style="font-size:0.8rem;font-weight:700;color:var(--primary);margin-bottom:8px">מה להציג בטאב החדש?</div>
       <select id="cardEditorDataSource" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:0.88rem">
         <option value="trainees_all">כל המתאמנים + פרטים</option>
         <option value="trainees_cut">מתאמנים בחיטוב בלבד</option>
@@ -447,13 +432,13 @@ let customTabs = JSON.parse(localStorage.getItem('dash_custom_tabs')||'{}'); // 
 function saveCustomTabs() { localStorage.setItem('dash_custom_tabs', JSON.stringify(customTabs)); }
 
 const DEFAULT_CARDS = [
-  { id:'coaches',  icon:'🧑‍💼', label:'מאמנים',                   color:'var(--primary)',  tab:'coaches'  },
-  { id:'trainees', icon:'🏃',   label:'מתאמנים',                   color:'var(--primary2)', tab:'trainees' },
-  { id:'workouts', icon:'🏋️',   label:'לוחות אימון',               color:'var(--accent)',   tab:'activity' },
-  { id:'meals',    icon:'🥗',   label:'פריטי תפריט',               color:'var(--pink)',     tab:'trainees' },
-  { id:'weight',   icon:'⚖️',   label:'מתאמנים עם מעקב משקל',     color:'#60A5FA',         tab:'trainees' },
-  { id:'chat',     icon:'💬',   label:'תגובות מאמנים בצ׳אט',     color:'#34D399',         tab:'coaches'  },
-  { id:'bugs',     icon:'🐛',   label:'דיווחי בעיות',              color:'var(--red)',       tab:'bugs'     },
+  { id:'coaches',  icon:'', label:'מאמנים',                   color:'var(--primary)',  tab:'coaches'  },
+  { id:'trainees', icon:'', label:'מתאמנים',                   color:'var(--primary2)', tab:'trainees' },
+  { id:'workouts', icon:'', label:'לוחות אימון',               color:'var(--accent)',   tab:'activity' },
+  { id:'meals',    icon:'', label:'פריטי תפריט',               color:'var(--pink)',     tab:'trainees' },
+  { id:'weight',   icon:'', label:'מתאמנים עם מעקב משקל',     color:'#60A5FA',         tab:'trainees' },
+  { id:'chat',     icon:'', label:'תגובות מאמנים בצ׳אט',     color:'#34D399',         tab:'coaches'  },
+  { id:'bugs',     icon:'', label:'דיווחי בעיות',              color:'var(--red)',       tab:'bugs'     },
 ];
 
 function loadCardConfig() {
@@ -870,10 +855,10 @@ function renderStats() {
       style="cursor:${editMode?'default':'pointer'};transition:transform 0.15s,border-color 0.15s;position:relative"
       ${!editMode ? `onmouseover="this.style.transform='translateY(-3px)';this.style.borderColor='rgba(124,111,255,0.4)'" onmouseout="this.style.transform='';this.style.borderColor=''"` : ''}>
       <div class="card-edit-btns">
-        <button class="card-edit-btn" style="background:#7C6FFF;color:#fff" onclick="openEditCard(${i})" title="ערוך">✏️</button>
+        <button class="card-edit-btn" style="background:#7C6FFF;color:#fff" onclick="openEditCard(${i})" title="ערוך">✎</button>
         <button class="card-edit-btn" style="background:#FF6464;color:#fff" onclick="deleteCard(${i})" title="מחק">✕</button>
       </div>
-      <div class="stat-icon">${c.icon}</div>
+      <div class="stat-icon"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${c.color}"></span></div>
       <div class="stat-num" style="color:${c.color}">${num}</div>
       <div class="stat-label">${c.label}</div>
     </div>`;
@@ -885,7 +870,7 @@ function renderStats() {
 function toggleEditMode() {
   editMode = !editMode;
   const btn = document.getElementById('editModeBtn');
-  if (btn) btn.textContent = editMode ? '✓ סיים עריכה' : '✏️ ערוך';
+  if (btn) btn.textContent = editMode ? '✓ סיים עריכה' : 'ערוך';
   const restoreBtn = document.getElementById('restoreDefaultsBtn');
   if (restoreBtn) restoreBtn.style.display = editMode ? 'inline-block' : 'none';
   renderStats();
@@ -915,7 +900,11 @@ function refreshTabDatalist() {
     {value:'activity', label:'פעילות'},
     {value:'bugs',     label:'דיווחי בעיות'},
   ];
-  const customs = Object.entries(customTabs).map(([id,cfg]) => ({value:id, label:cfg.label||id}));
+  // Merge in-memory customTabs with any saved in localStorage to catch all custom tabs
+  let storedCustom = {};
+  try { storedCustom = JSON.parse(localStorage.getItem('dash_custom_tabs') || '{}'); } catch(e) {}
+  const merged = Object.assign({}, storedCustom, customTabs);
+  const customs = Object.entries(merged).map(([id,cfg]) => ({value:id, label:cfg.label||id}));
   dl.innerHTML = [...builtins, ...customs]
     .map(o => `<option value="${o.value}">${o.label}</option>`).join('');
 }
@@ -936,7 +925,7 @@ function openAddCard() {
 function openEditCard(idx) {
   const cards = loadCardConfig();
   const c = cards[idx];
-  document.getElementById('cardEditorTitle').textContent = '✏️ ערוך קוביה';
+  document.getElementById('cardEditorTitle').textContent = 'ערוך קוביה';
   document.getElementById('cardEditorIdx').value = idx;
   document.getElementById('cardEditorIcon').value = c.icon;
   document.getElementById('cardEditorLabel').value = c.label;
@@ -1066,7 +1055,7 @@ function renderMealAnalysisTab(container, ts) {
             ${stag?`<span style="background:rgba(255,180,71,0.15);color:var(--accent);font-size:0.75rem;padding:2px 8px;border-radius:20px;font-weight:700">⚠️ משקל תקוע — שנה תפריט</span>`:''}
           </div>
           <div style="display:flex;gap:8px;align-items:center">
-            ${agedays!==null?`<span style="font-size:0.78rem;color:var(--muted)">⏱ ${agedays} ימים על התפריט</span>`:''}
+            ${agedays!==null?`<span style="font-size:0.78rem;color:var(--muted)">${agedays} ימים על התפריט</span>`:''}
             <span class="table-count">${meals.length} פריטים</span>
           </div>
         </div>
@@ -1104,7 +1093,7 @@ function renderCustomTab(tabId) {
   else if (ds === 'recent_activity') { renderActivityTab(); return; }
   else if (ds === 'meal_analysis') { renderMealAnalysisTab(container, ts); return; }
   else if (ds === 'weight_progress') {
-    container.innerHTML = `<div class="table-card"><div class="table-header-row"><span class="table-title">⚖️ התקדמות משקל</span></div><div style="overflow-x:auto"><table><thead><tr><th>שם</th><th>משקל התחלה</th><th>משקל נוכחי</th><th>שינוי</th><th>יעד</th></tr></thead><tbody>${
+    container.innerHTML = `<div class="table-card"><div class="table-header-row"><span class="table-title">התקדמות משקל</span></div><div style="overflow-x:auto"><table><thead><tr><th>שם</th><th>משקל התחלה</th><th>משקל נוכחי</th><th>שינוי</th><th>יעד</th></tr></thead><tbody>${
       ts.filter(t=>getWeightLog(t.id).length>0||t.startWeight).map(t=>{
         const sw=parseFloat(t.startWeight)||null; const cw=currentWeight(t.id); const delta=weightChange(t.id,sw);
         return `<tr><td><strong style="cursor:pointer;color:var(--primary)" onclick="openTraineeModal('${t.id}')">${t.name}</strong></td><td>${sw?sw+'kg':'—'}</td><td>${cw?cw+'kg':'—'}</td><td>${formatWeightChange(delta,t.goal)}</td><td>${goalBadge(t.goal)}</td></tr>`;
@@ -1155,7 +1144,7 @@ function renderOverviewTables() {
 function coachTableHTML(cs, title) {
   return `<div class="table-card">
     <div class="table-header-row">
-      <span class="table-title">🧑‍💼 ${title}</span>
+      <span class="table-title">${title}</span>
       <span class="table-count">${cs.length}</span>
     </div>
     <div style="overflow-x:auto">
@@ -1186,7 +1175,7 @@ function coachTableHTML(cs, title) {
 function traineeTableHTML(ts, title) {
   return `<div class="table-card">
     <div class="table-header-row">
-      <span class="table-title">🏃 ${title}</span>
+      <span class="table-title">${title}</span>
       <span class="table-count">${ts.length}</span>
     </div>
     <div style="overflow-x:auto">
@@ -1238,7 +1227,7 @@ function renderCoachesTab() {
     });
     return `<div class="table-card" style="margin-top:20px">
       <div class="table-header-row">
-        <span class="table-title">🧑‍💼 ${c.name} <span style="color:var(--muted);font-size:0.8rem">${c.email}</span></span>
+        <span class="table-title">${c.name} <span style="color:var(--muted);font-size:0.8rem">${c.email}</span></span>
         <span class="table-count">${myT.length} מתאמנים</span>
       </div>
       <div style="padding:16px;display:flex;gap:16px;flex-wrap:wrap">
@@ -1296,7 +1285,7 @@ function renderTraineesTab() {
     const diff = sw && tw ? Math.abs(sw-tw) : 0;
     return `<div class="table-card" style="margin-top:16px">
       <div class="table-header-row">
-        <span class="table-title" style="cursor:pointer;color:var(--primary)" onclick="openTraineeModal('${t.id}')">🏃 ${hl(t.name,searchQuery)} <span style="font-size:0.75rem;opacity:0.7">↗</span></span>
+        <span class="table-title" style="cursor:pointer;color:var(--primary)" onclick="openTraineeModal('${t.id}')">${hl(t.name,searchQuery)} <span style="font-size:0.75rem;opacity:0.7">↗</span></span>
         <span style="color:var(--muted);font-size:0.82rem">${coach?'מאמן: '+coach.name:'לא משויך'}</span>
       </div>
       <div style="padding:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px">
@@ -1376,7 +1365,7 @@ function renderActivityTab() {
   document.getElementById('activityContent').innerHTML = `
     <div class="table-card">
       <div class="table-header-row">
-        <span class="table-title">📅 לוחות אימון מוגדרים</span>
+        <span class="table-title">לוחות אימון מוגדרים</span>
         <span class="table-count">${allEntries.length}</span>
       </div>
       <div style="overflow-x:auto">
@@ -1405,14 +1394,14 @@ function renderBugsTab() {
   document.getElementById('bugsContent').innerHTML = `
     <div class="table-card">
       <div class="table-header-row">
-        <span class="table-title">🐛 דיווחי בעיות</span>
+        <span class="table-title">דיווחי בעיות</span>
         <span class="table-count">${filtered.length}</span>
       </div>
       ${filtered.length ? filtered.map(r => `
         <div class="bug-item">
           <div class="bug-subject">${hl(r.subject||'ללא נושא', searchQuery)}</div>
           <div class="bug-meta">
-            👤 ${hl(r.userName||'—', searchQuery)} (${r.userRole||'—'}) · 📧 ${hl(r.userEmail||'—', searchQuery)} · 📅 ${r.when ? formatDate(r.when) : formatDate(r.createdAt)}
+            ${hl(r.userName||'—', searchQuery)} (${r.userRole||'—'}) · ${hl(r.userEmail||'—', searchQuery)} · ${r.when ? formatDate(r.when) : formatDate(r.createdAt)}
           </div>
           ${r.details ? `<div class="bug-details">${hl(r.details, searchQuery)}</div>` : ''}
           ${r.screenshot ? `<div style="margin-top:8px"><img src="${r.screenshot}" style="max-width:100%;max-height:280px;border-radius:8px;border:1px solid var(--border)"></div>` : ''}
@@ -1470,7 +1459,7 @@ function renderTraineeModal() {
 
     <!-- EDIT FIELDS -->
     <div style="background:var(--surface2);border-radius:14px;padding:16px;margin-bottom:20px">
-      <div style="font-size:0.85rem;font-weight:700;margin-bottom:12px;color:var(--primary)">✏️ עריכה — ישמר ויסתנכרן לאפליקציה</div>
+      <div style="font-size:0.85rem;font-weight:700;margin-bottom:12px;color:var(--primary)">עריכה — ישמר ויסתנכרן לאפליקציה</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div>
           <label style="font-size:0.75rem;color:var(--muted);display:block;margin-bottom:3px">שם</label>
@@ -1510,7 +1499,7 @@ function renderTraineeModal() {
 
     <!-- WEIGHT LOG -->
     ${wlog.length ? `<div style="margin-bottom:20px">
-      <div style="font-size:0.85rem;font-weight:700;margin-bottom:8px">📊 היסטוריית משקל</div>
+      <div style="font-size:0.85rem;font-weight:700;margin-bottom:8px">היסטוריית משקל</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px">
         ${wlog.slice(-10).map((e,i,arr)=>{
           const prev = i>0?arr[i-1].weight:null;
@@ -1523,7 +1512,7 @@ function renderTraineeModal() {
 
     <!-- MEALS -->
     ${meals.length ? `<div style="margin-bottom:20px">
-      <div style="font-size:0.85rem;font-weight:700;margin-bottom:8px">🥗 תפריט (${meals.length} פריטים)</div>
+      <div style="font-size:0.85rem;font-weight:700;margin-bottom:8px">תפריט (${meals.length} פריטים)</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px">
         ${meals.slice(0,12).map(m=>`<span style="background:rgba(100,226,183,0.08);border:1px solid rgba(100,226,183,0.2);border-radius:20px;padding:4px 10px;font-size:0.78rem">${m.name} — ${m.cal}kcal</span>`).join('')}
         ${meals.length>12?`<span style="color:var(--muted);font-size:0.78rem">+${meals.length-12} נוספים</span>`:''}
@@ -1532,7 +1521,7 @@ function renderTraineeModal() {
 
     <!-- EXERCISES -->
     ${exercises.length ? `<div>
-      <div style="font-size:0.85rem;font-weight:700;margin-bottom:8px">💪 תרגילים (${exercises.length})</div>
+      <div style="font-size:0.85rem;font-weight:700;margin-bottom:8px">תרגילים (${exercises.length})</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px">
         ${exercises.slice(0,10).map(e=>`<span style="background:rgba(124,111,255,0.08);border:1px solid rgba(124,111,255,0.2);border-radius:20px;padding:4px 10px;font-size:0.78rem">${e.name}</span>`).join('')}
         ${exercises.length>10?`<span style="color:var(--muted);font-size:0.78rem">+${exercises.length-10} נוספים</span>`:''}
@@ -1578,7 +1567,7 @@ function showTab(name, fromCard) {
   if (name === 'overview') {
     editMode = false;
     const eb = document.getElementById('editModeBtn');
-    if (eb) eb.textContent = '✏️ ערוך';
+    if (eb) eb.textContent = 'ערוך';
     renderStats();
     setTimeout(renderCharts, 80);
   }
