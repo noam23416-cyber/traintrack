@@ -671,8 +671,18 @@ input, textarea, select, button { font-family: inherit; }
   overflow-y: auto;
   position: relative; z-index: 2;
 }
-.auth-panel-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; }
-.auth-panel-sub { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 28px; }
+.auth-panel-title {
+  font-size: 2rem; font-weight: 800; margin-bottom: 6px;
+  color: #00F0FF;
+  text-shadow: 0 0 20px rgba(0,240,255,0.4);
+  letter-spacing: -0.02em; line-height: 1.1;
+  font-family: 'Rubik', system-ui, sans-serif;
+}
+.auth-panel-sub {
+  color: rgba(255,255,255,0.55); font-size: 0.88rem;
+  margin-bottom: 28px; font-weight: 400;
+  font-family: 'Rubik', system-ui, sans-serif;
+}
 
 /* Auth Tabs */
 .auth-tab-row { display: flex; gap: 4px; background: var(--surface2); border-radius: 12px; padding: 4px; margin-bottom: 24px; }
@@ -798,7 +808,7 @@ input, textarea, select, button { font-family: inherit; }
   padding: 8px 0 env(safe-area-inset-bottom);
   z-index: 100;
 }
-.bottom-nav-inner { display: flex; justify-content: space-around; }
+.bottom-nav-inner { display: flex; justify-content: space-around; width: 100%; max-width: 100vw; }
 .bnav-btn {
   display: flex; flex-direction: column; align-items: center; gap: 3px;
   padding: 6px 16px; border: none; background: none;
@@ -998,12 +1008,14 @@ input, textarea, select, button { font-family: inherit; }
   background: linear-gradient(135deg, rgba(10,10,20,0.78) 0%, rgba(10,10,20,0.58) 100%);
 }
 .timer-time {
-  font-size: 4.5rem; font-weight: 800;
-  font-variant-numeric: tabular-nums; letter-spacing: 4px;
+  font-size: clamp(2.2rem, 10vw, 4.5rem);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums; letter-spacing: 2px;
   background: linear-gradient(135deg, #fff, var(--primary));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text; position: relative;
-  text-shadow: none;
+  text-shadow: none; white-space: nowrap; overflow: hidden;
+  text-overflow: ellipsis; max-width: 100%;
 }
 .timer-label { color: var(--text-muted); margin-top: 6px; font-size: 0.88rem; position: relative; }
 .timer-btns { display: flex; gap: 12px; justify-content: center; margin-top: 20px; position: relative; }
@@ -1369,6 +1381,16 @@ input, textarea, select, button { font-family: inherit; }
 /* Professional UI */
 .tab-btn { font-size: 0.95rem !important; font-weight: 700 !important; letter-spacing: 0.01em; }
 .tab-btn.active { font-weight: 900 !important; font-size: 1rem !important; }
+
+/* Hide top tabs entirely — use bottom nav only */
+#traineeScreen .tabs { display: none !important; }
+#traineeScreen .bottom-nav {
+  display: block !important;
+  position: fixed !important;
+  left: 0 !important; right: 0 !important; bottom: 0 !important;
+  width: 100% !important;
+}
+#traineeScreen .content { padding-bottom: 90px !important; }
 .topnav-logo { font-size: 0.95rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
 .bicon { display: none; }
 
@@ -1383,6 +1405,17 @@ input, textarea, select, button { font-family: inherit; }
 .bnav-btn span { font-size: 0.58rem; letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; line-height: 1; }
 .bnav-btn.active { color: var(--primary); }
 
+/* More menu items */
+.more-menu-item {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 16px 8px; border: none; background: #161E28; border-radius: 16px;
+  color: #7C8B94; cursor: pointer; font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.04em; text-transform: uppercase; transition: all 0.15s;
+}
+.more-menu-item:hover, .more-menu-item:active {
+  background: rgba(0,240,255,0.08); color: #00F0FF;
+}
+
 /* v0 section label style */
 .v0-label {
   font-size: 0.68rem; font-weight: 700; letter-spacing: 0.18em;
@@ -1393,12 +1426,12 @@ input, textarea, select, button { font-family: inherit; }
 .v0-hero-card {
   border-radius: 20px; overflow: hidden;
   border: 1px solid var(--border);
-  background: var(--surface);
+  background: #0D1117; /* always dark for hero */
   margin-bottom: 16px;
 }
 .v0-hero-img {
   position: relative; height: 180px; width: 100%;
-  background: linear-gradient(to top,#121820 12%,rgba(18,24,32,.15)), radial-gradient(circle at 70% 30%,rgba(0,240,255,.25),transparent 60%),#1a242e;
+  background: linear-gradient(to top,#0D1117 12%,rgba(13,17,23,.15)), radial-gradient(circle at 70% 30%,rgba(0,240,255,.25),transparent 60%),#1a242e;
   overflow: hidden;
 }
 .v0-hero-img img {
@@ -1406,7 +1439,7 @@ input, textarea, select, button { font-family: inherit; }
 }
 .v0-hero-img-overlay {
   position: absolute; inset: 0;
-  background: linear-gradient(to top, var(--surface) 0%, rgba(13,18,32,0.15) 60%);
+  background: linear-gradient(to top, #0D1117 0%, rgba(13,17,23,0.1) 60%);
 }
 .v0-hero-pill {
   position: absolute; top: 14px; right: 14px;
@@ -1414,15 +1447,18 @@ input, textarea, select, button { font-family: inherit; }
   font-size: 0.72rem; font-weight: 800; letter-spacing: 0.04em;
   padding: 5px 12px; border-radius: 999px;
 }
-.v0-hero-body { padding: 16px 20px 20px; }
-.v0-hero-name { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 4px; }
-.v0-hero-meta { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px; }
+.v0-hero-body {
+  padding: 16px 20px 20px;
+  background: #0D1117; /* always dark */
+}
+.v0-hero-name { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 4px; color: #E6F1F5; }
+.v0-hero-meta { font-size: 0.82rem; color: #7C8B94; margin-bottom: 16px; }
 .v0-start-btn {
   width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
   padding: 15px; border-radius: 14px; border: none; cursor: pointer;
   background: var(--primary); color: #06181B;
   font-size: 0.9rem; font-weight: 800; letter-spacing: 0.04em;
-  box-shadow: var(--shadow-glow);
+  box-shadow: 0 0 18px rgba(0,240,255,0.45);
   transition: transform 0.15s, box-shadow 0.15s;
 }
 .v0-start-btn:hover { transform: translateY(-1px); box-shadow: 0 0 32px var(--primary-glow); }
@@ -1440,16 +1476,16 @@ input, textarea, select, button { font-family: inherit; }
   display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;
 }
 .v0-stat-card {
-  background: var(--surface); border: 1px solid var(--border);
+  background: #0D1117; border: 1px solid #1F2A33; /* always dark */
   border-radius: 16px; padding: 18px 20px;
   transition: border-color 0.15s;
 }
 .v0-stat-card:hover { border-color: var(--primary); }
 .v0-stat-num {
   font-size: 1.9rem; font-weight: 800; letter-spacing: -0.03em;
-  line-height: 1.1; margin-bottom: 5px;
+  line-height: 1.1; margin-bottom: 5px; color: #E6F1F5;
 }
-.v0-stat-sub { font-size: 0.75rem; color: var(--text-muted); }
+.v0-stat-sub { font-size: 0.75rem; color: #7C8B94; }
 
 /* ── Hide top tabs on narrow screens, show only bottom nav ── */
 @media (max-width: 640px) {
@@ -1573,12 +1609,14 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
   <!-- Auth Form Side -->
   <div class="auth-panel">
     <!-- Mode tabs -->
-    <div class="auth-tab-row">
-      <button class="auth-tab active" onclick="switchAuthMode('login')" data-i18n="כניסה">כניסה</button>
-      <button class="auth-tab" onclick="switchAuthMode('register')" data-i18n="הרשמה">הרשמה</button>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <span style="font-size:1.1rem;font-weight:800;color:#FFFFFF" data-i18n="כניסה">כניסה</span>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button onclick="setLang(currentLang==='he'?'en':'he')" class="lang-toggle-btn" style="background:none;border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:4px 12px;font-size:0.78rem;cursor:pointer;color:rgba(255,255,255,0.6)">EN</button>
+        <button onclick="toggleTheme()" id="authThemeBtn" style="background:none;border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:4px 12px;font-size:0.78rem;cursor:pointer;color:rgba(255,255,255,0.6)">יום</button>
+      </div>
     </div>
-    <div style="text-align:center;margin-bottom:12px">
-      <button class="lang-toggle-btn" onclick="setLang(currentLang==='he'?'en':'he')" style="background:none;border:1px solid var(--border-light);border-radius:20px;padding:5px 14px;font-size:0.82rem;cursor:pointer;color:var(--text-muted)">🌐 English</button>
+    <div style="display:none">
     </div>
 
     <!-- LOGIN FORM -->
@@ -1591,7 +1629,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
       <div class="form-group">
         <label data-i18n="כתובת מייל">כתובת מייל</label>
         <div class="input-icon">
-          <span class="iicon">📧</span>
+          <svg class="iicon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 8 10-8"/></svg>
           <input type="email" id="loginEmail" placeholder="coach@example.com" autocomplete="email">
         </div>
       </div>
@@ -1609,7 +1647,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
         </button>
       </div>
       <div class="divider-text mt-12" data-i18n="אין לך חשבון?">אין לך חשבון?</div>
-      <button class="btn btn-ghost btn-full" onclick="switchAuthMode('register')" data-i18n="הרשמה חינמית">הרשמה חינמית</button>
+      <button class="btn btn-ghost btn-full" onclick="switchAuthMode('register')" data-i18n="הרשמה">הרשמה</button>
     </div>
 
     <!-- REGISTER FORM -->
@@ -1684,7 +1722,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
     <div class="topnav-right">
       <span class="topnav-user" id="coachNavName"></span>
       <div class="topnav-avatar" id="coachAvatar" onclick="openEngNameModal()" style="cursor:pointer" title="Set English name"></div>
-      <button class="logout-btn" id="themeToggleCoach" onclick="toggleTheme()" title="עבור למצב לילה/יום" style="font-size:1.1rem;padding:5px 10px">☀️</button>
+      <button class="logout-btn" id="themeToggleCoach" onclick="toggleTheme()" title="עבור למצב לילה/יום" style="font-size:0.75rem;padding:5px 10px;letter-spacing:0.03em">יום</button>
       <button class="logout-btn" onclick="doLogout()">יציאה</button>
     </div>
   </nav>
@@ -1939,7 +1977,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
           <div class="add-form" id="mealAddForm">
             <!-- Food bank picker -->
             <div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)">
-              <label style="font-size:0.78rem;color:var(--text-muted);display:block;margin-bottom:4px">🍎 בחר מבנק המזון (אופציונלי)</label>
+              <label style="font-size:0.78rem;color:var(--text-muted);display:block;margin-bottom:4px">בחר מבנק המזון (אופציונלי)</label>
               <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
                 <div style="flex:2;min-width:140px;position:relative">
                   <input id="mealBankSearch" placeholder="חפש מזון..." style="width:100%;padding:7px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.85rem;box-sizing:border-box" oninput="renderMealBankList()" onfocus="renderMealBankList()" onblur="setTimeout(()=>{const d=el('mealBankDropdown');if(d)d.style.display='none'},200)">
@@ -2062,8 +2100,8 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
     <div class="topnav-right">
       <span class="topnav-user" id="traineeNavName"></span>
       <div class="topnav-avatar" id="traineeAvatar" onclick="openEngNameModal()" style="cursor:pointer" title="Set English name"></div>
-      <button class="lang-toggle-btn logout-btn" onclick="setLang(currentLang==='he'?'en':'he')" style="font-size:0.8rem">🌐 English</button>
-      <button class="logout-btn" id="themeToggleTrainee" onclick="toggleTheme()" title="עבור למצב לילה/יום" style="font-size:1.1rem;padding:5px 10px">☀️</button>
+      <button class="lang-toggle-btn logout-btn" onclick="setLang(currentLang==='he'?'en':'he')" style="font-size:0.8rem">EN</button>
+      <button class="logout-btn" id="themeToggleTrainee" onclick="toggleTheme()" title="עבור למצב לילה/יום" style="font-size:0.75rem;padding:5px 10px;letter-spacing:0.03em">יום</button>
       <button class="logout-btn" onclick="doLogout()" data-i18n="יציאה">יציאה</button>
     </div>
   </nav>
@@ -2079,6 +2117,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
     <button class="tab-btn" data-panel="t-achievements" onclick="switchTab(this,'trainee');renderAchievementsTab()" data-i18n="הישגים">הישגים</button>
     <button class="tab-btn" data-panel="t-music" onclick="switchTab(this,'trainee');renderMusicTab()" data-i18n="מוזיקה">מוזיקה</button>
     <button class="tab-btn" data-panel="t-bug" onclick="switchTab(this,'trainee')" data-i18n="דיווח">דיווח</button>
+    <button class="tab-btn" onclick="openMoreMenu()" style="flex:0 0 auto;padding:9px 18px;letter-spacing:0.05em">···</button>
   </div>
 
   <div class="content">
@@ -2101,7 +2140,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
         <div class="timer-time" id="timerDisplay">00:00:00</div>
         <div class="timer-label" id="timerLabel" data-i18n="לחץ &quot;התחל אימון&quot; לתחילת המעקב">לחץ "התחל אימון" לתחילת המעקב</div>
         <div class="timer-btns">
-          <button id="startBtn" class="btn btn-success" onclick="startWorkout()" data-i18n="התחל אימון">התחל אימון</button>
+          <button id="startBtn" class="btn btn-success" onclick="startWorkout()" data-i18n="התחל אימון" style="display:none">התחל אימון</button>
           <button id="stopBtn" class="btn btn-danger" onclick="stopWorkout()" style="display:none" data-i18n="סיים אימון">סיים אימון</button>
         </div>
       </div>
@@ -2314,13 +2353,9 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         <span>היסטוריה</span>
       </button>
-      <button class="bnav-btn" data-panel="t-reminders" onclick="switchTabMobile(this,'trainee');renderReminderSettings()">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        <span>תזכורות</span>
-      </button>
-      <button class="bnav-btn" data-panel="t-achievements" onclick="switchTabMobile(this,'trainee');renderAchievementsTab()">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
-        <span>הישגים</span>
+      <button class="bnav-btn" onclick="openMoreMenu()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <span>עוד</span>
       </button>
     </div>
   </div>
@@ -2330,7 +2365,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
 <div id="weightUpdateModal" class="modal-overlay">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title" data-i18n="📸 עדכון שבועי">עדכון שבועי</span>
+      <span class="modal-title" data-i18n="עדכון שבועי">עדכון שבועי</span>
       <button class="close-btn" onclick="closeModal('weightUpdateModal')">×</button>
     </div>
     <div class="form-group">
@@ -2346,7 +2381,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
     </div>
     <div class="flex-between mt-12 gap-8">
       <button class="btn btn-ghost" onclick="closeModal('weightUpdateModal')" data-i18n="ביטול">ביטול</button>
-      <button class="btn btn-primary" onclick="saveWeightUpdate()" data-i18n="💾 שמור עדכון">💾 שמור עדכון</button>
+      <button class="btn btn-primary" onclick="saveWeightUpdate()" data-i18n="שמור עדכון">שמור עדכון</button>
     </div>
   </div>
 </div>
@@ -2398,7 +2433,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
     </div>
     <div class="flex-between mt-12 gap-8">
       <button class="btn btn-ghost" onclick="closeModal('cheatDayModal')">ביטול</button>
-      <button class="btn btn-warning" onclick="confirmCheatDay()">קבע יום צ'יט 🍕</button>
+      <button class="btn btn-warning" onclick="confirmCheatDay()">קבע יום צ'יט</button>
     </div>
   </div>
 </div>
@@ -2408,14 +2443,14 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
   <canvas id="confettiCanvas" style="position:absolute;inset:0;pointer-events:none;width:100%;height:100%"></canvas>
   <div id="achievementBody" style="position:relative;z-index:2;color:#fff;max-width:360px;width:100%">
   </div>
-  <button onclick="closeAchievement()" style="position:relative;z-index:2;margin-top:24px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.35);color:#fff;padding:12px 36px;border-radius:24px;font-size:1rem;cursor:pointer;font-weight:600">🎉 כל הכבוד!</button>
+  <button onclick="closeAchievement()" style="position:relative;z-index:2;margin-top:24px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.35);color:#fff;padding:12px 36px;border-radius:24px;font-size:1rem;cursor:pointer;font-weight:600">כל הכבוד!</button>
 </div>
 
 <!-- EXERCISE VIDEO MODAL -->
 <div class="modal-overlay" id="exerciseVideoModal">
   <div class="modal" style="text-align:center">
     <div class="modal-header">
-      <span class="modal-title" id="exerciseVideoTitle">📹 הקלט תרגיל</span>
+      <span class="modal-title" id="exerciseVideoTitle">הקלט תרגיל</span>
       <button class="close-btn" onclick="closeExerciseVideoModal()">×</button>
     </div>
     <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:16px">עד 10 שניות — הסרטון ישלח למאמן עם שם התרגיל</div>
@@ -2445,7 +2480,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
 <div class="modal-overlay" id="editMealModal">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title">✏️ עריכת פריט תפריט</span>
+      <span class="modal-title">עריכת פריט תפריט</span>
       <button class="close-btn" onclick="closeModal('editMealModal')">×</button>
     </div>
     <div class="form-group"><label>שם הפריט</label><input id="editMealName" placeholder="חזה עוף"></div>
@@ -2520,11 +2555,11 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
 <div id="addCoachModal" class="modal-overlay">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title">🧑‍💼 הוספת מאמן חדש</span>
+      <span class="modal-title">הוספת מאמן חדש</span>
       <button class="close-btn" onclick="closeModal('addCoachModal')">×</button>
     </div>
     <div style="background:rgba(255,181,71,0.08);border:1px solid rgba(255,181,71,0.25);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:0.83rem;color:var(--text-muted)">
-      ⚠️ רק מאמן קיים יכול להוסיף מאמן חדש למערכת.
+      רק מאמן קיים יכול להוסיף מאמן חדש למערכת.
     </div>
     <div class="alert-error" id="addCoachError"></div>
     <div class="form-row">
@@ -2543,7 +2578,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
 <!-- EDIT EXERCISE MODAL -->
 <div id="editExModal" class="modal-overlay">
   <div class="modal">
-    <div class="modal-header"><span class="modal-title">✏️ עריכת תרגיל</span><button class="close-btn" onclick="closeModal('editExModal')">×</button></div>
+    <div class="modal-header"><span class="modal-title">עריכת תרגיל</span><button class="close-btn" onclick="closeModal('editExModal')">×</button></div>
     <input type="hidden" id="editExId">
     <div class="add-form-row">
       <div class="form-group" style="flex:2"><label>שם</label><input id="editExName"></div>
@@ -2565,7 +2600,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
 <!-- EDIT FOOD MODAL -->
 <div id="editFoodModal" class="modal-overlay">
   <div class="modal">
-    <div class="modal-header"><span class="modal-title">✏️ עריכת מזון</span><button class="close-btn" onclick="closeModal('editFoodModal')">×</button></div>
+    <div class="modal-header"><span class="modal-title">עריכת מזון</span><button class="close-btn" onclick="closeModal('editFoodModal')">×</button></div>
     <input type="hidden" id="editFoodId">
     <div class="add-form-row">
       <div class="form-group" style="flex:2"><label>שם</label><input id="editFoodName"></div>
@@ -2597,7 +2632,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
 <!-- EDIT CHEAT MODAL -->
 <div id="editCheatModal" class="modal-overlay">
   <div class="modal">
-    <div class="modal-header"><span class="modal-title">✏️ עריכת צ'יט</span><button class="close-btn" onclick="closeModal('editCheatModal')">×</button></div>
+    <div class="modal-header"><span class="modal-title">עריכת צ'יט</span><button class="close-btn" onclick="closeModal('editCheatModal')">×</button></div>
     <input type="hidden" id="editCheatId">
     <div class="add-form-row">
       <div class="form-group" style="flex:2"><label>שם</label><input id="editCheatName"></div>
@@ -2620,7 +2655,7 @@ body.dark .tab-btn.active { animation: neon-box 3s ease-in-out infinite; }
 <div id="addToCalModal" class="modal-overlay">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title">📅 הוסף תרגיל ליום</span>
+      <span class="modal-title">הוסף תרגיל ליום</span>
       <button class="close-btn" onclick="closeModal('addToCalModal')">×</button>
     </div>
     <div class="form-group">
@@ -2978,7 +3013,7 @@ function subscribeToChatNotifications(user) {
         if (d.from === 'coach' && !d.readByTrainee && d.ts > lastTs) {
           lastTs = d.ts;
           const coachName = d.senderName || (currentLang==='en'?'Your coach':'המאמן שלך');
-          const title = currentLang==='en' ? `💬 New message from ${coachName}` : `💬 הודעה חדשה מ${coachName}`;
+          const title = currentLang==='en' ? `הודעה חדשה מ ${coachName}` : `הודעה חדשה מ${coachName}`;
           sendNotif(title, d.text || '');
           // Store message in local chat if not already there
           const msgs = db.chats[key] || [];
@@ -3007,7 +3042,7 @@ function subscribeToChatNotifications(user) {
           if (d.from === 'trainee' && !d.readByCoach && d.ts > lastTs) {
             lastTs = d.ts;
             const name = d.senderName || tr.name;
-            const title = currentLang==='en' ? `💬 New message from ${name}` : `💬 הודעה חדשה מ${name}`;
+            const title = currentLang==='en' ? `הודעה חדשה מ ${name}` : `הודעה חדשה מ${name}`;
             sendNotif(title, d.text || '');
             // Store in local chat
             if (!db.chats[key]) db.chats[key] = [];
@@ -3062,8 +3097,8 @@ const TR = {
   // Auth tabs
   'כניסה':'Login', 'הרשמה':'Sign Up',
   // Auth titles
-  'ברוך הבא':'Welcome! 👋', 'התחבר לחשבונך':'Sign in to your account',
-  'הצטרף אלינו':'Join Us 🚀', 'צור חשבון חדש':'Create a new account',
+  'ברוך הבא':'Welcome', 'התחבר לחשבונך':'Sign in to your account',
+  'הצטרף אלינו':'Join Us', 'צור חשבון חדש':'Create a new account',
   'יצירת חשבון →':'Sign Up →', 'כבר יש לך חשבון?':'Already have an account?',
   // Auth labels
   'כתובת מייל':'Email Address', 'סיסמא':'Password',
@@ -3071,7 +3106,7 @@ const TR = {
   'שם פרטי':'First Name', 'שם משפחה':'Last Name',
   'מטרת האימון שלי':'My Training Goal', 'בחר מאמן':'Select Coach',
   // Auth buttons
-  'כניסה →':'Login →', 'הרשמה חינמית':'Sign Up Free',
+  'כניסה →':'Login →', 'הרשמה חינמית':'Sign Up',
   'אין לך חשבון?':"Don't have an account?",
   'כניסה עם Face ID / טביעת אצבע':'Login with Face ID / Fingerprint',
   'הרשמה זו היא':'Registration is','למתאמנים בלבד':'for trainees only',
@@ -3094,7 +3129,7 @@ const TR = {
   'השלמתי':'Done', 'לא בוצע':'Not done',
   'סיים וקבל תגמול':'Finish & Earn Reward',
   'כן, סיים':'Yes, Finish', 'המשך אימון':'Continue Workout',
-  'אימון הסתיים! 🎉':'Workout Complete! 🎉',
+  'אימון הסתיים!':'Workout Complete!',
   'ביצוע מעולה':'Great performance',
   // Days
   'ראשון':'Sun','שני':'Mon','שלישי':'Tue','רביעי':'Wed',
@@ -3130,9 +3165,9 @@ const TR = {
   'לינק מ-Spotify או Apple Music':'Link from Spotify or Apple Music',
   '+ שתף פלייליסט':'+ Share Playlist',
   'פלייליסטים משותפים':'Shared Playlists',
-  'אין פלייליסטים עדיין — היה הראשון לשתף! 🎶':'No playlists yet — be the first! 🎶',
+  'אין פלייליסטים עדיין — היה הראשון לשתף!':'No playlists yet — be the first! 🎶',
   'שותף ע"י':'Shared by',
-  'למשל: אימון כוח 🔥':'e.g. Strength Training 🔥',
+  'למשל: אימון כוח':'e.g. Strength Training 🔥',
   'https://open.spotify.com/playlist/...':'https://open.spotify.com/playlist/...',
   // Bug report
   'דיווח על בעיה':'Report an Issue',
@@ -3143,8 +3178,8 @@ const TR = {
   'פירוט':'Details',
   'מה קרה? על איזה מסך? מה ניסית לעשות?':'What happened? On which screen?',
   'צילום מסך (אופציונלי)':'Screenshot (optional)',
-  '📎 לחץ להוספת תמונה':'📎 Click to add image',
-  'נקה':'Clear','📤 שלח דיווח':'Submit Report','שלח דיווח':'Submit Report',
+  'לחץ להוספת תמונה':'📎 Click to add image',
+  'נקה':'Clear','שלח דיווח':'Submit Report','שלח דיווח':'Submit Report',
   'שולח...':'Sending...',
   '✓ הדיווח נשלח! תודה רבה':'✓ Report sent! Thank you',
   // History/activity
@@ -3283,7 +3318,7 @@ function setLang(lang) {
   });
   // Update lang toggle buttons
   document.querySelectorAll('.lang-toggle-btn').forEach(b => {
-    b.textContent = isEn ? '🇮🇱 עברית' : '🌐 English';
+    b.textContent = isEn ? 'HE' : 'EN';
   });
   // Update nav names
   if (currentUser) {
@@ -3455,8 +3490,8 @@ function applyTheme(mode) {
   else if (mode === 'light') document.body.classList.add('light');
   // 'auto' → @media (prefers-color-scheme) handles it
   const isDark = mode === 'dark' || (mode === 'auto' && window.matchMedia('(prefers-color-scheme:dark)').matches);
-  const icon = isDark ? '🌙' : '☀️';
-  ['themeToggleCoach','themeToggleTrainee'].forEach(id => { const b = el(id); if(b) b.textContent = icon; });
+  const icon = isDark ? 'לילה' : 'יום';
+  ['themeToggleCoach','themeToggleTrainee','authThemeBtn'].forEach(id => { const b = el(id); if(b) b.textContent = icon; });
 }
 function toggleTheme() {
   const saved = localStorage.getItem('tt_theme') || 'auto';
@@ -4116,7 +4151,9 @@ function toggleForm(id) { el(id).classList.toggle('open'); }
 
 function pad(n) { return String(n).padStart(2,'0'); }
 function formatDur(ms) {
-  const s = Math.floor(ms/1000);
+  // Cap at 24 hours to prevent displaying stale/corrupt timer values
+  const capped = Math.min(ms, 24 * 60 * 60 * 1000);
+  const s = Math.floor(capped/1000);
   return `${pad(Math.floor(s/3600))}:${pad(Math.floor((s%3600)/60))}:${pad(s%60)}`;
 }
 function formatDate(ts) {
@@ -4978,6 +5015,16 @@ async function addTraineeByCoach() {
 //  TRAINEE INIT
 // ════════════════════════════════════════════════
 function initTrainee() {
+  // Remove any stale open sessions (app was closed mid-workout) — don't count them
+  const MAX_VALID_MS = 4 * 60 * 60 * 1000; // 4 hours max for a valid workout
+  db.sessions = (db.sessions||[]).filter(s => {
+    if (s.traineeId === currentUser.id && !s.end) {
+      // Only keep if started recently (within 4 hours) — otherwise discard
+      return (Date.now() - s.start) < MAX_VALID_MS;
+    }
+    return true;
+  });
+  workoutStart = null; // always reset on login
   el('traineeNavName').textContent = displayName(currentUser);
   el('traineeAvatar').textContent = initials(currentUser.name);
   applyAvatarColor(el('traineeAvatar'), currentUser.id);
@@ -5100,10 +5147,16 @@ function renderV0HeroSection() {
         <div class="v0-hero-body">
           <div class="v0-hero-name">${workoutName}</div>
           <div class="v0-hero-meta">${meta}</div>
-          <button class="v0-start-btn" onclick="startWorkout()">
-            <span class="v0-play-icon"></span>
-            ${startLabel}
-          </button>
+          ${workoutStart
+            ? `<button class="v0-start-btn" onclick="stopWorkout()" style="background:var(--danger);box-shadow:0 0 18px rgba(255,59,107,0.4)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+                ${currentLang==='en'?'Stop Workout':'סיים אימון'}
+              </button>`
+            : `<button class="v0-start-btn" onclick="startWorkout()">
+                <span class="v0-play-icon"></span>
+                ${startLabel}
+              </button>`
+          }
         </div>
       </div>
 
@@ -5126,6 +5179,40 @@ function renderV0HeroSection() {
         </div>
       </div>
     </div>`;
+}
+
+// ── More menu ────────────────────────────────
+function openMoreMenu() {
+  const overlay = document.getElementById('moreMenuOverlay');
+  const panel   = document.getElementById('moreMenuPanel');
+  if (!overlay || !panel) return;
+  overlay.style.display = 'block';
+  panel.style.display = 'block';
+  requestAnimationFrame(() => panel.style.transform = 'translateY(0)');
+}
+function closeMoreMenu() {
+  const overlay = document.getElementById('moreMenuOverlay');
+  const panel   = document.getElementById('moreMenuPanel');
+  if (panel) panel.style.transform = 'translateY(100%)';
+  setTimeout(() => {
+    if (overlay) overlay.style.display = 'none';
+    if (panel) panel.style.display = 'none';
+  }, 300);
+}
+function switchToTab(panelId, callback) {
+  closeMoreMenu();
+  setTimeout(() => {
+    // Activate the tab
+    const screen = document.getElementById('traineeScreen');
+    if (!screen) return;
+    screen.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById(panelId);
+    if (target) target.classList.add('active');
+    screen.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    // Deactivate bottom nav
+    screen.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
+    if (callback) callback();
+  }, 350);
 }
 
 function toggleStreakBubble(btn) {
@@ -5212,7 +5299,7 @@ function renderTraineeGreeting() {
         <h1 style="font-size:24px;font-weight:800;letter-spacing:-0.02em;line-height:1.2">${name}</h1>
       </div>
       <div style="position:relative">
-        <div onclick="toggleStreakBubble(this)" style="display:flex;align-items:center;gap:6px;border:1px solid #1F2A33;border-radius:999px;padding:6px 14px;background:#121820;font-weight:700;font-size:14px;cursor:pointer;user-select:none">
+        <div onclick="toggleStreakBubble(this)" style="display:flex;align-items:center;gap:6px;border:1px solid #1F2A33;border-radius:999px;padding:6px 14px;background:#121820;font-weight:700;font-size:14px;cursor:pointer;user-select:none;color:#E6F1F5">
           ${flameSvg}
           <span>${streak}</span>
         </div>
@@ -6041,7 +6128,7 @@ function renderTraineeMenu() {
       cdReminder.style.display = '';
       cdReminder.innerHTML = isToday
         ? `<div style="background:rgba(255,181,71,0.12);border:1px solid rgba(255,181,71,0.4);border-radius:10px;padding:10px 14px;font-size:0.85rem;color:var(--warning);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-            <span>🍕 ${currentLang==='en'?"Today is your cheat day! Enjoy 🎉":"היום הוא יום הצ'יט שלך! תהנה 🎉"}</span>
+            <span>🍕 ${currentLang==='en'?"Today is your cheat day!":"היום הוא יום הצ'יט שלך!"}</span>
             <button class="btn btn-ghost btn-sm" onclick="openCheatDayModal()" style="font-size:0.75rem">${currentLang==='en'?'Reschedule':'הזז תאריך'}</button>
           </div>`
         : `<div style="font-size:0.8rem;color:var(--text-muted);padding:4px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
@@ -6468,6 +6555,8 @@ function renderTraineeHistory() {
 //  TIMER
 // ════════════════════════════════════════════════
 function startWorkout() {
+  // Remove any unclosed sessions from previous visits before starting new one
+  db.sessions = (db.sessions||[]).filter(s => !(s.traineeId===currentUser.id && !s.end));
   workoutStart = Date.now();
   db.sessions.push({traineeId: currentUser.id, start: workoutStart, end: null, duration: 0});
   if (currentUser.coachId) {
@@ -6485,6 +6574,7 @@ function startWorkout() {
   el('startBtn').style.display='none';
   el('stopBtn').style.display='inline-flex';
   el('activeBanner').style.display='flex';
+  try { renderV0HeroSection(); } catch(e) {}
   el('timerLabel').textContent = t('אימון פעיל');
   timerInterval = setInterval(()=>{
     el('timerDisplay').textContent = formatDur(Date.now()-workoutStart);
@@ -6505,10 +6595,11 @@ function stopWorkout() {
   if (sess) { sess.end=end; sess.duration=duration; sess.exDone=exDone; sess.exTotal=exTotal; }
   saveDB();
   clearInterval(timerInterval); timerInterval=null; workoutStart=null;
-  el('timerLabel').textContent = `כל הכבוד! משך האימון: ${formatDur(duration)} 🎉`;
+  el('timerLabel').textContent = `כל הכבוד! משך האימון: ${formatDur(duration)}`;
   el('stopBtn').style.display='none';
-  el('startBtn').style.display='inline-flex';
+  el('startBtn').style.display='none';
   el('activeBanner').style.display='none';
+  try { renderV0HeroSection(); } catch(e) {}
   renderTraineeHistory();
   setTimeout(() => checkAchievements(duration), 600);
 }
@@ -6584,7 +6675,7 @@ function showAchievement(ach) {
     <div style="font-size:${ach.isAchievementUnlock?'5':'4'}rem;margin-bottom:6px;animation:achievePop 0.6s cubic-bezier(.36,2,.6,1)">${ach.emoji}</div>
     <div style="font-size:1.6rem;font-weight:800;margin-bottom:6px;line-height:1.2">${ach.title}</div>
     <div style="font-size:0.95rem;color:rgba(255,255,255,0.75);margin-bottom:${ach.isAchievementUnlock?'8':'20'}px">${ach.subtitle||ach.desc||''}</div>
-    ${ach.isAchievementUnlock ? `<div style="font-size:1.1rem;color:rgba(255,255,255,0.6);margin-bottom:20px">כל הכבוד — המשך כך! 💪</div>` : ''}
+    ${ach.isAchievementUnlock ? `<div style="font-size:1.1rem;color:rgba(255,255,255,0.6);margin-bottom:20px">כל הכבוד — המשך כך!</div>` : ''}
     ${(ach.stats||[]).map(s=>`
       <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:12px 20px;margin-bottom:10px;display:flex;align-items:center;gap:14px">
         <span style="font-size:1.6rem">${s.icon}</span>
@@ -7125,13 +7216,9 @@ async function checkAdminGate() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  // Show admin gate unless already passed this session
-  if (sessionStorage.getItem(ADMIN_GATE_KEY) !== '1') {
-    document.getElementById('adminGate').style.display = 'flex';
-    setTimeout(() => document.getElementById('gateUser').focus(), 100);
-  } else {
-    document.getElementById('adminGate').style.display = 'none';
-  }
+  // Admin gate removed — go straight to login
+  const gateEl = document.getElementById('adminGate');
+  if (gateEl) gateEl.style.display = 'none';
 
   const customBg = localStorage.getItem('tt_custom_bg');
   if (customBg) {
@@ -7292,6 +7379,30 @@ window.addEventListener('beforeinstallprompt', e => {
 });
 </script>
 
+<!-- MORE MENU -->
+<div id="moreMenuOverlay" style="display:none;position:fixed;inset:0;z-index:8500;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px)" onclick="closeMoreMenu()"></div>
+<div id="moreMenuPanel" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:8501;background:#121820;border-top:1px solid #1F2A33;border-radius:20px 20px 0 0;padding:12px 0 40px;transition:transform 0.3s ease">
+  <div style="width:40px;height:4px;background:#2A3A47;border-radius:2px;margin:0 auto 24px"></div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 20px">
+    <button class="more-menu-item" onclick="switchToTab('t-achievements',function(){renderAchievementsTab();})">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00F0FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+      <span>הישגים</span>
+    </button>
+    <button class="more-menu-item" onclick="switchToTab('t-reminders',function(){renderReminderSettings();})">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00F0FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span>תזכורות</span>
+    </button>
+    <button class="more-menu-item" onclick="switchToTab('t-music',function(){renderMusicTab();})">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00F0FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      <span>מוזיקה</span>
+    </button>
+    <button class="more-menu-item" onclick="switchToTab('t-bug',function(){renderBugReportPanel('traineeBugPanel');})">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00F0FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span>דיווח</span>
+    </button>
+  </div>
+</div>
+
 <!-- PROFILE PANEL -->
 <div id="profilePanel" style="display:none;position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);align-items:flex-start;justify-content:flex-end;padding:60px 16px 0">
   <div id="profilePanelInner" style="background:#121820;border:1px solid #1F2A33;border-radius:20px;width:300px;padding:24px;box-shadow:0 8px 40px rgba(0,0,0,0.7)">
@@ -7303,7 +7414,7 @@ window.addEventListener('beforeinstallprompt', e => {
 <div id="engNameModal" class="modal-overlay" style="display:none">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title">🌐 English Name</span>
+      <span class="modal-title">שם באנגלית</span>
       <button class="close-btn" onclick="closeModal('engNameModal')">×</button>
     </div>
     <div class="form-group">
